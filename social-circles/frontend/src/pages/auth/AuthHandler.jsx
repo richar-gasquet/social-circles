@@ -12,7 +12,7 @@ function AuthProvider({children}) {
         const authenticate = async () => {
             try {
                 // Request from backend: is user authenticated?
-                const response = await fetch('http://localhost:5000/authenticate', 
+                const response = await fetch('https://localhost:5000/authenticate', 
                                             {credentials : 'include'})
                 if (response.ok) {
                     const auth_data = await response.json();

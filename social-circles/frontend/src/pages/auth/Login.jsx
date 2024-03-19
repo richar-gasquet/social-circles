@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom'
 
 function Login() {
     const handleLogin = (e) => {
-        <Navigate to = "/login"></Navigate>
+        window.location.href = 'https://localhost:5000/login'
     }
 
     return (
