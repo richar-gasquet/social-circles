@@ -24,4 +24,18 @@ def logout():
 @app.route('/authenticate', methods = ['GET'])
 def authenticate():
     return auth.authenticate()
+
 #----------------------------------------------------------------------
+
+# Routes for querying user data from database
+@app.route('/user-data', methods = ['GET'])
+def get_user_data():
+    if 'email' in flask.session:
+        return flask.jsonify({
+            'email' : flask.session['email'],
+            'name' : flask.session['name']
+        })
+    else:
+        return flask.jsonify({
+            'error' : 'User not authenticated'
+        }), 401

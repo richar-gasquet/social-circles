@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 // Allow children components to get authentication status
 export const useAuth = () => useContext(AuthContext);
 
-const AuthContext = createContext({ isAuth: false, isLoading: true });
+const AuthContext = createContext({});
 
 function AuthProvider({children}) {
     const [isAuth, setAuth] = useState(false);

@@ -76,6 +76,7 @@ def callback():
                                      data = body).json()
     
     flask.session['email'] = userinfo_response.get('email')
+    flask.session['name'] = userinfo_response.get('name')
     
     return flask.redirect('https://localhost:5173/user-dashboard')
 #----------------------------------------------------------------------
