@@ -2,10 +2,13 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthHandler'
 
 function ProtectedRoute({component: Component, ...rest}) {
-    const { isAuth } = useAuth();
+    const { isAuth, isLoading } = useAuth();
+    if (isLoading) {
+        return <div>Loading...</div>; // Or a more sophisticated loader/spinner
+    }
 
     if (isAuth) {
-        return <Component {...rest} />
+        return <Component {...rest} />;
     } else {
         return <Navigate to="/login" replace />;
     }

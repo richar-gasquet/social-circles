@@ -3,10 +3,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 // Allow children components to get authentication status
 export const useAuth = () => useContext(AuthContext);
 
-const AuthContext = createContext({});
+const AuthContext = createContext({ isAuth: false, isLoading: true });
 
 function AuthProvider({children}) {
     const [isAuth, setAuth] = useState(false);
+    const [isLoading, setLoading] = useState(true); // Add loading state
 
     useEffect(() => {
         const authenticate = async () => {
@@ -22,13 +23,15 @@ function AuthProvider({children}) {
                 }
             } catch (error) {
                 console.error("Authentication check failed", error);
+            } finally {
+                setLoading(false); // Set loading to false after the check is complete
             }
         }
         authenticate();
     }, [])
 
     return (
-        <AuthContext.Provider value = {{isAuth, setAuth}}>
+        <AuthContext.Provider value={{ isAuth, isLoading }}>
             {children}
         </AuthContext.Provider>
     );
