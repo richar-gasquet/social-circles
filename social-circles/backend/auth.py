@@ -66,7 +66,7 @@ def callback():
     
     # Parse tokens
     client.parse_request_body_response(
-        json.dumps(token_response.json)
+        json.dumps(token_response.json())
     )
     
     # Using tokens, fetch the user's profile data 
@@ -77,12 +77,12 @@ def callback():
     
     flask.session['email'] = userinfo_response.get('email')
     
-    return flask.redirect('http://localhost:5173/user-dashboard')
+    return flask.redirect('https://localhost:5173/user-dashboard')
 #----------------------------------------------------------------------
 
 def logout():
     flask.session.clear()
-    return flask.redirect('http://localhost:5000/')
+    return flask.redirect('https://localhost:5173/')
 
 #----------------------------------------------------------------------
 

@@ -4,6 +4,7 @@ import AuthProvider from './pages/auth/AuthHandler.jsx'
 import ProtectedRoute from './pages/auth/ProtectedRoute.jsx'
 import LandingPage from './pages/guest/LandingPage.jsx'
 import UserDashboard from './pages/user/UserDashboard.jsx'
+import LoginPage from './pages/auth/LoginPage.jsx'
 
 function App() {
     return (
@@ -11,6 +12,7 @@ function App() {
             <AuthProvider>
                 <Routes>
                     <Route exact path="/" element={<LandingPage />} />
+                    <Route exact path="/login" element={<LoginPage />} />
                     <Route exact path="/user-dashboard" 
                            element={<ProtectedRoute component = {UserDashboard} />} />
                 </Routes>

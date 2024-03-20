@@ -3,7 +3,8 @@ import flask_cors
 import auth
 
 app = flask.Flask(__name__)
-flask_cors.CORS(app)
+app.secret_key = 'socialcircles'
+flask_cors.CORS(app, supports_credentials=True, origins=['https://localhost:5173'])
 
 #----------------------------------------------------------------------
 
