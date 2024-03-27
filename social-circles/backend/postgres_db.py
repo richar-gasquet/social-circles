@@ -32,7 +32,7 @@ def get_available_events(email: str) -> list:
                     SELECT user_id
                     FROM users
                     WHERE users.email = %s
-                ''', [email])
+                ''', (email,))
                 
                 user_results = cursor.fetchone()
                 
@@ -42,13 +42,13 @@ def get_available_events(email: str) -> list:
                 # Get all available events' info from event table
                 cursor.execute(f'''
                     SELECT DISTINCT events.event_id, events.event_name,
-                           events.date_and_time, events.capacity, 
-                           events.filled_spots
+                        events.date_and_time, events.capacity, 
+                        events.filled_spots
                     FROM events
-                    JOIN event_tags ON events.event_id = event_tags.event_id
-                    JOIN community_registrations ON event_tags.group_id = community_registrations.group_id
-                    WHERE community_registrations.user_id = %s
-                ''', [userId])
+                    INNER JOIN event_tags ON events.event_id = event_tags.event_id
+                    INNER JOIN community_registrations ON event_tags.group_id = community_registrations.group_id
+                    WHERE community_registrations.user_id = %
+                ''', (userId,))
                 
                 events_info = cursor.fetchall()
                 

@@ -61,7 +61,7 @@ def user_events():
                     'event_name': event[1],
                     'date_and_time': event[2],
                     'capacity': event[3],
-                    'filled_sports': event[4]
+                    'filled_spots': event[4]
                 }
                 events_list.append(event_dict)
                 
