@@ -47,13 +47,12 @@ def get_user_data():
 
 # Routes for querying EVENT data from database
 
-@app.route('/get-user-events', methods = ['GET'])
+@app.route('/get-available-events', methods = ['GET'])
 def user_events():
     if 'email' in flask.session:
         try:
             user_email = flask.session['email']
             user_events_info = db.get_available_events(user_email)
-            
             events_list = []
             for event in user_events_info:
                 event_dict = {

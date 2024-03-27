@@ -14,6 +14,29 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 # Event methods
 
+def _get_user_id(email: str, cursor) -> str: 
+    """_summary_
+
+    Args:
+        email (str): _description_
+        cursor (_type_): _description_
+
+    Returns:
+        str: _description_
+    """
+    # Get user results based on their email
+    cursor.execute(f'''
+        SELECT user_id
+        FROM users
+        WHERE users.email = %s
+    ''', (email))
+                        
+    user_results = cursor.fetchone()
+                        
+    # Get userId (index 0 for user's row)
+    userId = user_results[0]
+    return userId
+
 def get_available_events(email: str) -> list:
     """ Get all events available to user
 
@@ -27,17 +50,8 @@ def get_available_events(email: str) -> list:
     try: 
         with psycopg2.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
-                # Get user results based on their email
-                cursor.execute(f'''
-                    SELECT user_id
-                    FROM users
-                    WHERE users.email = %s
-                ''', (email,))
-                
-                user_results = cursor.fetchone()
-                
-                # Get userId (index 0 for user's row)
-                userId = user_results[0]
+                # Get userId associated with user's email:
+                userId = _get_user_id(email, cursor)
                 
                 # Get all available events' info from event table
                 cursor.execute(f'''
@@ -47,8 +61,8 @@ def get_available_events(email: str) -> list:
                     FROM events
                     INNER JOIN event_tags ON events.event_id = event_tags.event_id
                     INNER JOIN community_registrations ON event_tags.group_id = community_registrations.group_id
-                    WHERE community_registrations.user_id = %
-                ''', (userId,))
+                    WHERE community_registrations.user_id = %s
+                ''', (userId))
                 
                 events_info = cursor.fetchall()
                 
@@ -65,9 +79,32 @@ def get_registered_events(email: str) -> list:
         email (str): user's email
 
     Returns:
-        list: list containing event details queried by the server
+        list: list containing event the user has registered for
     """
-    pass
+    try: 
+        with psycopg2.connect(DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                # Get userId associated with user's email
+                userId = _get_user_id(email, cursor)
+                
+                # Get events user has registered for
+                cursor.execute('''
+                    SELECT DISTINCT events.event_id, events.event_name, 
+                           events.date_and_time, events.capacity, 
+                           events.filled_spots
+                    FROM events
+                    INNER JOIN event_registrations ON event.event_id = event_registrations.event_id
+                    WHERE event_registrations.user_id = %s
+                ''', (userId))
+                
+                events_info = cursor.fetchall()
+                
+                return events_info
+                
+    except Exception:
+        raise Exception("It seems there was an error getting the events"
+                        + " you registered for. Please contact the"
+                        + " administrator.")
 
 def get_event_details(eventId: int) -> list:
     """ Get event details for a single event

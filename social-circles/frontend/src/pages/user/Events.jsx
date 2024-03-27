@@ -8,7 +8,7 @@ function Events() {
     useEffect(() => {
         const getUserEvents = async () => {
             try {
-                const response = await fetch('https://localhost:5000/get-user-events', 
+                const response = await fetch('https://localhost:5000/get-available-events', 
                                             {credentials: 'include'});
                 if (response.ok) {
                     const data = await response.json();
