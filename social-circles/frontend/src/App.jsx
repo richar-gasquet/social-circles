@@ -3,8 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AuthProvider from './pages/auth/AuthHandler.jsx'
 import ProtectedRoute from './pages/auth/ProtectedRoute.jsx'
 import LandingPage from './pages/guest/LandingPage.jsx'
-import UserDashboard from './pages/user/UserDashboard.jsx'
 import LoginPage from './pages/auth/LoginPage.jsx'
+import UserDashboard from './pages/user/UserDashboard.jsx'
+import Events from './pages/user/Events.jsx'
 
 function App() {
     return (
@@ -15,6 +16,8 @@ function App() {
                     <Route exact path="/login" element={<LoginPage />} />
                     <Route exact path="/user-dashboard" 
                            element={<ProtectedRoute component = {UserDashboard} />} />
+                    <Route exact path="/events"
+                           element={<ProtectedRoute component = {Events} />} />
                 </Routes>
             </AuthProvider>
         </BrowserRouter>

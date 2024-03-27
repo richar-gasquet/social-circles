@@ -14,11 +14,11 @@ function LoginPage() {
     }
 
     return (
-        <div>
+        <>
             <GuestHeader />
             <h2>This is the login page.</h2>
             <button onClick={handleLogin}>Log In with Google</button>
-        </div>
+        </>
     )
 }
 

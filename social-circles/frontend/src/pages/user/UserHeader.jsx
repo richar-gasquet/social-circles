@@ -1,3 +1,5 @@
+import { NavLink } from 'react-router-dom'
+
 function UserHeader() {
     return (
         <header>
@@ -5,7 +7,7 @@ function UserHeader() {
             <nav>
                 <ul>
                     <li><a href = "#">Calendar</a></li>
-                    <li><a href = "#">Events</a></li>
+                    <li><NavLink to ='/events'>Events</ NavLink></li>
                     <li><a href = "#">Groups</a></li>
                     <li><a href = "#">Resources</a></li>
                     <li><a href = "#">Profile</a></li>
