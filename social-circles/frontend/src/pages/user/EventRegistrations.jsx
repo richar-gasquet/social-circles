@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
-import UserHeader from '../user/UserHeader.jsx'
+import React, { useState, useEffect } from "react"
+import UserHeader from "./UserHeader"
 
-function Events() {
+function EventRegistrations() {
     const [events, setEvents] = useState([])
     const [error, setError] = useState('')
 
     useEffect(() => {
-        const getAllEvents = async () => {
+        const getRegisteredEvents = async () => {
             try {
-                const response = await fetch('https://localhost:5000/get-available-events', 
+                const response = await fetch('https://localhost:5000/get-registered-events', 
                                             {credentials: 'include'});
                 if (response.ok) {
-                    const data = await response.json();
+                    const data = response.json()
                     setEvents(data.results)
                 } else {
                     const errorData = await response.json()
@@ -23,15 +22,14 @@ function Events() {
                 setError('Server error. Please contact the administrator')
             }
         }
-        getAllEvents()
-    }, []);
-
+        getRegisteredEvents()
+    }, [])
 
     return (
         <>
             <UserHeader />
-            <h2>This is the Events page.</h2>
-            <p>Here are all available events: </p>
+            <h2>This is the Registered Events Page</h2>
+            <p>Here are the events you registered for: </p>
             <ul>
                 {events.map(event => (
                     <li key = {event.event_id}>
@@ -39,10 +37,8 @@ function Events() {
                     </li>
                 ))}
             </ul>
-            
-            <NavLink to="/event-registrations">Click here to see the events you're registered for </NavLink>
         </>
     )
 }
 
-export default Events
+export default EventRegistrations

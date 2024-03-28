@@ -89,7 +89,7 @@ def logout():
 
 def authenticate():
     if 'email' in flask.session:
-        return {'status' : 'auth'}, 200
-    return {'status' : 'not auth'}, 401
+        return {'status' : 'auth'}, 200 # ok
+    return {'status' : 'not auth'}, 401 # unauthorized
 
     

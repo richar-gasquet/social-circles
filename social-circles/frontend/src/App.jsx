@@ -6,6 +6,7 @@ import LandingPage from './pages/guest/LandingPage.jsx'
 import LoginPage from './pages/auth/LoginPage.jsx'
 import UserDashboard from './pages/user/UserDashboard.jsx'
 import Events from './pages/user/Events.jsx'
+import EventRegistrations from './pages/user/EventRegistrations.jsx'
 
 function App() {
     return (
@@ -18,6 +19,8 @@ function App() {
                            element={<ProtectedRoute component = {UserDashboard} />} />
                     <Route exact path="/events"
                            element={<ProtectedRoute component = {Events} />} />
+                    <Route exact path="/event-registrations"
+                           element={<ProtectedRoute component = {EventRegistrations} />} />
                 </Routes>
             </AuthProvider>
         </BrowserRouter>
