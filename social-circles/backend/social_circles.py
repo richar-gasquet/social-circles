@@ -98,11 +98,11 @@ def get_registered_events():
             events_list = []
             for events in registered_events_info:
                 event_dict = {
-                        'event_id': event[0],
-                        'event_name': event[1],
-                        'date_and_time': event[2],
-                        'capacity': event[3],
-                        'filled_spots': event[4]
+                    'event_id': events[0],
+                    'event_name': events[1],
+                    'date_and_time': events[2],
+                    'capacity': events[3],
+                    'filled_spots': events[4]
                 }
                 events_list.append(event_dict)
                 
