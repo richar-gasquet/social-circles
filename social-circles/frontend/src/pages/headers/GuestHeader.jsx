@@ -6,7 +6,7 @@ function GuestHeader() {
         <header>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <NavLink to="/" className="navbar-brand">
-                    <img src={logo} alt="Logo" />
+                    <img src={logo} alt="Logo" className="img-fluid"/>
                 </NavLink>
                 <h2>Social Circles</h2>
                 <div className="collapse navbar-collapse">
