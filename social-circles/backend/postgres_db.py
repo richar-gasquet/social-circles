@@ -4,7 +4,8 @@ import json
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_URL = os.environ.get('DATABASE_URL')
+#DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = 'postgres://social_circles_db_user:HMqB9hR2Mc0vuYSE3HXoFomKBq2hYkhq@dpg-cnu7t7vjbltc73dcq1cg-a.ohio-postgres.render.com/social_circles_db'
 
 #----------------------------------------------------------------------
 

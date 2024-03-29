@@ -1,28 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import UserHeader from "../user/UserHeader.jsx";
 import LogoutButton from "../auth/LogoutButton.jsx";
+import UserContext from '/src/contexts/UserContext';
 
 function UserDashboard() {
-  const [userData, setUserData] = useState({ name: "", email: "" });
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await fetch("https://localhost:5000/user-data", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const auth_data = await response.json();
-          setUserData({ name: auth_data.name, email: auth_data.email });
-        } else setError("Server error. Please contact the administrator.");
-      } catch (error) {
-        console.error("Failed to fetch user data: ", error);
-        setError("Server error. Please contact the administrator");
-      }
-    };
-    getUserData();
-  }, []);
+      const { userData } = useContext(UserContext);
 
   return (
     <>
