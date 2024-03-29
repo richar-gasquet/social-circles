@@ -1,7 +1,9 @@
+import GuestHeader from "../guest/GuestHeader";
+
 function Resources() {
   return (
     <>
-      <Navigation />
+      <GuestHeader />
     </>
   );
 }

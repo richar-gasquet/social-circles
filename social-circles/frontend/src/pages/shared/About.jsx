@@ -1,10 +1,10 @@
 import React from "react";
-import Navigation from "./Navigation";
+import GuestHeader from "../guest/GuestHeader";
 
 function About() {
   return (
     <>
-      <Navigation />
+      <GuestHeader />
 
       <div className="row justify-content-center mt-5">
         <div className="col-md-6 text-center">
