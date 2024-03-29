@@ -1,5 +1,9 @@
 function Resources() {
-  return <></>;
+  return (
+    <>
+      <Navigation />
+    </>
+  );
 }
 
 export default Resources;
