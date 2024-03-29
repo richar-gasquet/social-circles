@@ -1,25 +1,25 @@
-import { Navigate } from 'react-router-dom'
-import GuestHeader  from "../guest/GuestHeader" 
-import { useAuth } from './AuthHandler.jsx'
+import { Navigate } from "react-router-dom";
+import GuestHeader from "../guest/GuestHeader";
+import { useAuth } from "./AuthHandler.jsx";
 
 function LoginPage() {
-    // Check if the user is already logged in
-    const { isAuth } = useAuth() 
-    if (isAuth) {
-        return <Navigate to = "/user-dashboard" />
-    }
+  // Check if the user is already logged in
+  const { isAuth } = useAuth();
+  if (isAuth) {
+    return <Navigate to="/user-dashboard" />;
+  }
 
-    const handleLogin = () => {
-        window.location.href = 'https://localhost:5000/login'
-    }
+  const handleLogin = () => {
+    window.location.href = "https://localhost:5000/login";
+  };
 
-    return (
-        <>
-            <GuestHeader />
-            <h2>This is the login page.</h2>
-            <button onClick={handleLogin}>Log In with Google</button>
-        </>
-    )
+  return (
+    <>
+      <GuestHeader />
+      <h2>This is the login page.</h2>
+      <button onClick={handleLogin}>Log In with Google</button>
+    </>
+  );
 }
 
-export default LoginPage
+export default LoginPage;

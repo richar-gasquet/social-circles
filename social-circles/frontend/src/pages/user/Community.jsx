@@ -1,7 +1,5 @@
 function Community() {
-    return <>
-    
-    </>
+  return <></>;
 }
 
-export default Community
+export default Community;

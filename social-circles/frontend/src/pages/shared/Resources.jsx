@@ -1,7 +1,5 @@
 function Resources() {
-    return <>
-    
-    </>
+  return <></>;
 }
 
-export default Resources
+export default Resources;
