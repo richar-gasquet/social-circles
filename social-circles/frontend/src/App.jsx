@@ -4,6 +4,9 @@ import AuthProvider from './pages/auth/AuthHandler.jsx'
 import ProtectedRoute from './pages/auth/ProtectedRoute.jsx'
 import LandingPage from './pages/guest/LandingPage.jsx'
 import LoginPage from './pages/auth/LoginPage.jsx'
+import About from "./pages/shared/About.jsx"
+import Contact from "./pages/shared/Contact.jsx"
+import Resources from "./pages/shared/Resources.jsx"
 import UserDashboard from './pages/user/UserDashboard.jsx'
 import Events from './pages/user/Events.jsx'
 import EventRegistrations from './pages/user/EventRegistrations.jsx'
@@ -13,8 +16,14 @@ function App() {
         <BrowserRouter>
             <AuthProvider>
                 <Routes>
+                    {/* Guest routes */}
                     <Route exact path="/" element={<LandingPage />} />
                     <Route exact path="/login" element={<LoginPage />} />
+                    <Route exact path="/about" element = {<About />} />
+                    <Route exact path="/contact" element = {<Contact />} />
+                    <Route exact path="/resources" element = {<Resources />} />
+
+                    {/* Member routes */}
                     <Route exact path="/user-dashboard" 
                            element={<ProtectedRoute component = {UserDashboard} />} />
                     <Route exact path="/events"
