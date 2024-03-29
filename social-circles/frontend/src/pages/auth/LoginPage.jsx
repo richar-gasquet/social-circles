@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import GuestHeader from "../guest/GuestHeader";
-import { useAuth } from "./AuthHandler.jsx";
+import GuestHeader from "../headers/GuestHeader.jsx";
+import { useAuthContext } from "./AuthHandler.jsx";
 
 function LoginPage() {
   // Check if the user is already logged in
-  const { isAuth } = useAuth();
+  const { isAuth } = useAuthContext();
   if (isAuth) {
     return <Navigate to="/user-dashboard" />;
   }
