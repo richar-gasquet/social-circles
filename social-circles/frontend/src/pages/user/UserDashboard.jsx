@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import UserHeader from "../user/UserHeader.jsx";
 import LogoutButton from "../auth/LogoutButton.jsx";
 import UserContext from '/src/contexts/UserContext';
