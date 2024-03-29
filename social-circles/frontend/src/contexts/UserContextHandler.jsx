@@ -1,5 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
-import UserContext from './UserContext';
+import React, { useState, useEffect, createContext, useContext  } from 'react';
+
+// Allow children components to get user's data and set it
+export const useUserContext = () => useContext(UserContext);
+
+const UserContext = createContext({});
 
 const UserContextProvider = ({ children }) => {
     const [userData, setUserData] = useState({ name: '', email: ''});
