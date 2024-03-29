@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import UserHeader from "../user/UserHeader.jsx";
+import EventCard from "./EventCard.jsx";
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -35,10 +36,11 @@ function Events() {
       <p>Here are all available events: </p>
       <ul>
         {events.map((event) => (
-          <li key={event.event_id}>
-            {event.event_name} - {event.date_and_time} - {event.capacity} -{" "}
-            {event.filled_spots}
-          </li>
+          <EventCard
+            name={event.event_name}
+            date_and_time={event.date_and_time}
+            capacity={event.capacity}
+            filled_spots={event.filled_spots}/>
         ))}
       </ul>
 
