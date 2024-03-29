@@ -1,7 +1,7 @@
 import React from "react";
 import Navigation from "./Navigation";
 
-function SocialCircles() {
+function About() {
   return (
     <>
       <Navigation />
@@ -22,4 +22,4 @@ function SocialCircles() {
   );
 }
 
-export default SocialCircles;
+export default About;
