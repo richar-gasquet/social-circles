@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import UserHeader from "../user/UserHeader.jsx";
+import UserHeader from "../headers/UserHeader";
 import EventCard from "./EventCard.jsx";
 
 function Events() {

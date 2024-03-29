@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import UserHeader from "./UserHeader";
+import UserHeader from "../headers/UserHeader";
 
 function EventRegistrations() {
   const [events, setEvents] = useState([]);

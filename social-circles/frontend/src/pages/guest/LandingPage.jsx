@@ -1,13 +1,7 @@
 import { NavLink } from 'react-router-dom'
-import GuestHeader from './GuestHeader.jsx'
-import { useAuth } from "../auth/AuthHandler.jsx";
+import GuestHeader from '../headers/GuestHeader'
 
 function LandingPage() {
-    const { isAuth } = useAuth()
-    if (isAuth) {
-        return <NavLink to = "/user-dashboard"></NavLink>
-    }
- 
     return (
         <>
             <GuestHeader />

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import UserHeader from "../user/UserHeader.jsx";
-import LogoutButton from "../auth/LogoutButton.jsx";
-import UserContext from '/src/contexts/UserContext';
+import UserHeader from '../headers/UserHeader';
+import LogoutButton from '../auth/LogoutButton';
+import { useUserContext } from '../../contexts/UserContextHandler';
 
 function UserDashboard() {
-      const { userData } = useContext(UserContext);
+  const { userData } = useUserContext();
 
   return (
     <>
