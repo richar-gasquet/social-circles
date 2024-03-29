@@ -1,5 +1,5 @@
 import React from "react";
-import GuestHeader from "../guest/GuestHeader";
+import GuestHeader from "../headers/GuestHeader";
 
 function Contact() {
   return (
