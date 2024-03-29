@@ -10,6 +10,7 @@ import Resources from "./pages/shared/Resources.jsx"
 import UserDashboard from './pages/user/UserDashboard.jsx'
 import Events from './pages/user/Events.jsx'
 import EventRegistrations from './pages/user/EventRegistrations.jsx'
+import UserContextProvider from './contexts/UserContextProvider';
 
 function App() {
     return (
@@ -25,7 +26,7 @@ function App() {
 
                     {/* Member routes */}
                     <Route exact path="/user-dashboard" 
-                           element={<ProtectedRoute component = {UserDashboard} />} />
+                           element={<UserContextProvider><ProtectedRoute component = {UserDashboard} /></UserContextProvider>} />
                     <Route exact path="/events"
                            element={<ProtectedRoute component = {Events} />} />
                     <Route exact path="/event-registrations"
