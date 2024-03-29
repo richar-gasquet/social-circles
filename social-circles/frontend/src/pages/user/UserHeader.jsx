@@ -16,7 +16,9 @@ function UserHeader() {
             <a href="#">Groups</a>
           </li>
           <li>
-            <a href="#">Resources</a>
+            <NavLink to="/resources" href="#">
+              Resources
+            </NavLink>
           </li>
           <li>
             <a href="#">Profile</a>
