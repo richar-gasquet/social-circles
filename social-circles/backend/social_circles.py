@@ -1,10 +1,17 @@
+import os
 import flask
 import flask_cors
+from flask_session import Session
 import auth
 import postgres_db as db
 
 app = flask.Flask(__name__)
-app.secret_key = 'socialcircles'
+app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
+app.config['SESSION_COOKIE_SECURE'] = True  # Using HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Helps mitigate XSS attacks
+Session(app)
 flask_cors.CORS(app, supports_credentials=True, origins=['https://localhost:5173'])
 
 #----------------------------------------------------------------------
