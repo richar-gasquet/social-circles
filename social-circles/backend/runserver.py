@@ -1,8 +1,9 @@
 import sys
+import os
 import argparse
 import social_circles
 
-PORT = 5000
+PORT = int(os.environ.get('PORT', 5000))
 
 def main():
     try:
