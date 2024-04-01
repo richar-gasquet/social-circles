@@ -11,6 +11,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
 app.config['SESSION_COOKIE_SECURE'] = True  # Using HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Helps mitigate XSS attacks
+app.config['SESSION_USE_SIGNER'] = True  # This will sign the session cookie for added security
 Session(app)
 flask_cors.CORS(app, supports_credentials=True, origins=['https://localhost:5173'])
 

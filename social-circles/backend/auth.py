@@ -89,7 +89,8 @@ def logout():
 
 def authenticate():
     if 'email' in flask.session:
-        return {'status' : 'auth'}, 200 # ok
-    return {'status' : 'not auth'}, 401 # unauthorized
+        return flask.jsonify({'status': 'auth'}), 200 # ok
+    else: 
+        return flask.jsonify({'status': 'not auth'}), 401 # unauthorized
 
     
