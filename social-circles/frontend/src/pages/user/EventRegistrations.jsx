@@ -11,7 +11,7 @@ function EventRegistrations() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://localhost:5000/get-registered-events",
+          `${import.meta.env.VITE_BACKEND_URL}/get-registered-events`,
           { credentials: "include" }
         );
         if (response.ok) {

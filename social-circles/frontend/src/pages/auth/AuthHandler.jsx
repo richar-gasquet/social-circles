@@ -1,31 +1,46 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Allow children components to get authentication status
+export const AuthContext = createContext({});
 export const useAuthContext = () => useContext(AuthContext);
 
-const AuthContext = createContext({});
-
 function AuthProvider({ children }) {
-  const [isAuth, setAuth] = useState(false);
-  const [isLoading, setLoading] = useState(true); // Add loading state
+  // isAuth - state variable that contains auth status, set initially to local storage's value
+  const [isAuth, setAuth] = useState(JSON.parse(localStorage.getItem('isAuth')) || false);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const authenticate = async () => {
+      // Each time authenticate is called, set isLoading to true
+      setLoading(true);
       try {
-        // Request from backend: is user authenticated?
-        const response = await fetch("https://localhost:5000/authenticate", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/authenticate`, {
           credentials: "include",
         });
+        // Server issued OK (200)
         if (response.ok) {
           const auth_data = await response.json();
+          // User has been authenticated
           if (auth_data.status === "auth") {
             setAuth(true);
+            localStorage.setItem('isAuth', 'true');
+          // User has NOT been authenticated
+          } else {
+            setAuth(false);
+            localStorage.setItem('isAuth', 'false');
           }
+        // Server issued HTTP error
+        } else {
+          setAuth(false);
+          localStorage.setItem('isAuth', 'false');
         }
+      // Coult not connect to server at all
       } catch (error) {
         console.error("Authentication check failed", error);
+        setAuth(false);
+        localStorage.setItem('isAuth', 'false');
+      // Finished loading
       } finally {
-        setLoading(false); // Set loading to false after the check is complete
+        setLoading(false);
       }
     };
     authenticate();
@@ -36,6 +51,6 @@ function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export default AuthProvider;

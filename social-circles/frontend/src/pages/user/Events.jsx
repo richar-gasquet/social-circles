@@ -11,7 +11,7 @@ function Events() {
     const getAllEvents = async () => {
       try {
         const response = await fetch(
-          "https://localhost:5000/get-available-events",
+          `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
           { credentials: "include" }
         );
         if (response.ok) {

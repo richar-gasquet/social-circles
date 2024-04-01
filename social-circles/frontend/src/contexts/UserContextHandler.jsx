@@ -12,7 +12,8 @@ const UserContextProvider = ({ children }) => {
     useEffect(() => {
         const getUserData = async () => {
             try {
-                const response = await fetch('https://localhost:5000/user-data', {credentials: 'include',});
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user-data`, 
+                                            {credentials: 'include',});
                 if (response.ok) {
                     const auth_data = await response.json();
                     setUserData({ name: auth_data.name, email: auth_data.email });
