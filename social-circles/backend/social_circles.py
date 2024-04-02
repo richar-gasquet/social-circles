@@ -14,7 +14,8 @@ app.config['SESSION_COOKIE_SECURE'] = True  # Ensure cookies are sent in secure 
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent client-side scripts from accessing session cookies
 app.config['SESSION_USE_SIGNER'] = True  # Sign session cookies
 Session(app)
-flask_cors.CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://localhost:5173"}})
+flask_cors.CORS(app, supports_credentials=True, resources={r"/*": 
+    {"origins": "https://social-circles.onrender.com"}})
 
 #----------------------------------------------------------------------
 

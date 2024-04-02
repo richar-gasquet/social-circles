@@ -78,12 +78,12 @@ def callback():
     flask.session['email'] = userinfo_response.get('email')
     flask.session['name'] = userinfo_response.get('name')
     
-    return flask.redirect('https://localhost:5173/user-dashboard')
+    return flask.redirect('https://social-circles.onrender.com/user-dashboard')
 #----------------------------------------------------------------------
 
 def logout():
     flask.session.clear()
-    return flask.redirect('https://localhost:5173/')
+    return flask.redirect('https://social-circles.onrender.com')
 
 #----------------------------------------------------------------------
 
