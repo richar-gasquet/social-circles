@@ -10,7 +10,7 @@ function GuestHeader() {
   return (
     <header>
       <nav className={`navbar navbar-expand-md navbar-light ${styles.nav}`}>
-        <NavLink to="/" className="navbar-brand">
+        <NavLink to="/user-dashboard" className="navbar-brand">
           <img src={logo} alt="Social Circles Logo" className={`img-fluid ${styles.logo}`} />
         </NavLink>
         {/* MUST ADD ANIMATION FOR NAVBAR COLLAPSING */}
