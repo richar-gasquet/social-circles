@@ -22,27 +22,27 @@ function GuestHeader() {
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
           <ul className="navbar-nav ml-auto">
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/about" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/events" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
                 Events
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/contact" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/calendar" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
                 Calendar
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/resources" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/communities" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
                 Communities
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/login" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/resources" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
                 Resources
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/login" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/profile" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
                 Profile
               </NavLink>
             </li>
