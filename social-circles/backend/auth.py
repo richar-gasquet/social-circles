@@ -16,6 +16,8 @@ GOOGLE_DISCOVERY_URL = (
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_ID_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
 
+REACT_FRONTEND = os.environ.get('REACT_FRONTEND')
+
 # Declare and initialize OAuth2 client
 client = oauthlib.oauth2.WebApplicationClient(GOOGLE_CLIENT_ID)
 
@@ -78,12 +80,12 @@ def callback():
     flask.session['email'] = userinfo_response.get('email')
     flask.session['name'] = userinfo_response.get('name')
     
-    return flask.redirect('https://localhost:5173/user-dashboard')
+    return flask.redirect(f'{REACT_FRONTEND}/user-dashboard')
 #----------------------------------------------------------------------
 
 def logout():
     flask.session.clear()
-    return flask.redirect('https://localhost:5173/')
+    return flask.redirect(f'{REACT_FRONTEND}')
 
 #----------------------------------------------------------------------
 
