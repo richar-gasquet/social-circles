@@ -15,7 +15,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent client-side scripts from
 app.config['SESSION_USE_SIGNER'] = True  # Sign session cookies
 Session(app)
 flask_cors.CORS(app, supports_credentials=True, resources={r"/*": 
-    {"origins": "https://social-circles.onrender.com"}})
+    {"origins": ["https://social-circles.onrender.com", "https://localhost:5173"]}})
 
 #----------------------------------------------------------------------
 
