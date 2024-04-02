@@ -38,7 +38,7 @@ function AuthProvider({ children }) {
         console.error("Authentication check failed", error);
         setAuth(false);
         localStorage.setItem('isAuth', 'false');
-      // Finished loading
+      // Finished loading, update components
       } finally {
         setLoading(false);
       }

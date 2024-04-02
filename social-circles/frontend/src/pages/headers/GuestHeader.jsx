@@ -22,22 +22,22 @@ function GuestHeader() {
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
           <ul className="navbar-nav ml-auto">
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/about" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/about" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 About Us
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/contact" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/contact" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Contact
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/resources" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/resources" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Resources
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/login" className={({ isActive }) => isActive ? `nav-link ${styles.navLink} ${styles.activeNavLink}` : `nav-link ${styles.navLink}`}>
+              <NavLink to="/login" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Log In
               </NavLink>
             </li>
