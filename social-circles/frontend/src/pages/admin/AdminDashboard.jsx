@@ -1,4 +1,4 @@
-import AdminHeader from '../admin/AdminHeader';
+import AdminHeader from '../headers/AdminHeader';
 import LogoutButton from '../auth/LogoutButton';
 import { useUserContext } from '../../contexts/UserContextHandler';
 
