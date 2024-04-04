@@ -12,7 +12,7 @@ app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
 app.config["SESSION_COOKIE_SAMESITE"] = "None" # Allow cookies to be sent in cross-site requests
 app.config['SESSION_COOKIE_SECURE'] = True  # Ensure cookies are sent in secure channel (HTTPS)
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent client-side scripts from accessing session cookies
-app.config['SESSION_USE_SIGNER'] = True  # Sign session cookies
+app.config['SESSION_USE_SIGNER'] = True  # Sign session cookies for extra security
 Session(app)
 REACT_FRONTEND = os.environ.get('REACT_FRONTEND')
 flask_cors.CORS(app, supports_credentials=True, resources={r"/*": {"origins": REACT_FRONTEND}})
@@ -64,7 +64,7 @@ def get_available_events():
     if 'email' in flask.session:
         try:
             # Get available events
-            all_events_info = db.get_available_events()
+            all_events_info = db.get_available_events_overviews()
             events_list = []
             
             # Convert each event into a dict
