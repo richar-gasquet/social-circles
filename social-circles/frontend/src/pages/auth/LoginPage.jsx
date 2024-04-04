@@ -4,9 +4,14 @@ import { useAuthContext } from "./AuthHandler.jsx";
 
 function LoginPage() {
   // Check if the user is already logged in
-  const { isAuth } = useAuthContext();
+  const { isAuth, isAdmin, isLoading } = useAuthContext();
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a more sophisticated loader/spinner
+  }
+  
   if (isAuth) {
-    return <Navigate to="/user-dashboard" />;
+    const redirectTo = isAdmin ? "/admin-dashboard" : "/user-dashboard";
+    return <Navigate to={redirectTo} />;
   }
 
   const handleLogin = () => {

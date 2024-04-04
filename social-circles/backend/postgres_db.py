@@ -81,6 +81,28 @@ def get_registered_events(email: str) -> list:
                         + " administrator.")
         
 #----------------------------------------------------------------------
+    
+# Get User Details methods
+def get_user_details(email: str):
+    try:
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT email, is_admin
+                    FROM users
+                    WHERE email = %s
+                ''', (email,))
+                user_row = cursor.fetchone()
+                
+                if user_row:
+                    return {
+                        'email': user_row[0],
+                        'is_admin': user_row[1]
+                    }
+    except Exception as ex:
+        raise Exception("It seems there was an error getting user data."
+                        + " Please contact the administrator.")
+    return None
 
 # Community methods
 
