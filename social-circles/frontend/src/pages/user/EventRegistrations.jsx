@@ -36,16 +36,28 @@ function EventRegistrations() {
     content = <p>Loading your registered events...</p>;
   } else if (events.length > 0) {
     content = (
-        <>
-          <p>Here are the events you registered for: </p>
-          <ul>
+      <>
+        <UserHeader />
+        <h2>This is the Events page.</h2>
+        <p>Here are all available events: </p>
+        <div className="container">
+          <div className="row">
             {events.map((event) => (
-              <li key={event.event_id}>
-                {event.event_name} - {event.date_and_time} - {event.capacity} - {event.filled_spots}
-              </li>
+              <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12">
+                <EventCard
+                  name = {event.name}
+                  desc = {event.desc}
+                  start = {event.start_time}
+                  end = {event.end_time}
+                  capacity = {event.capacity}
+                  filled = {event.filled_spots}
+                  image = {event.image}>
+                </EventCard>
+              </div>
             ))}
-          </ul>
-        </>
+          </div>  
+        </div>
+      </>
       );
   } else {
     content = <p>You have not registered for any events.</p>;

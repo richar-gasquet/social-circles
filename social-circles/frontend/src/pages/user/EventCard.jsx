@@ -1,30 +1,50 @@
 import PropTypes from "prop-types";
+import styles from './EventCard.module.css';
 
 function EventCard(props) {
+  const formattedStart = new Date(props.start).toLocaleString();
+  const formattedEnd = new Date(props.end).toLocaleString();
+
   return (
-    <div className="event-card">
-      <img className="event-image" src="https://via.placeholder.com/200"></img>
-      <h2 className="event-title">{props.name}</h2>
-      <p className="event-text">Date and Time: {props.date_and_time} </p>
-      <p className="event-text">
-        {props.filled_spots} out of {props.capacity} have already registered
-      </p>
+    <div className={`card h-100 ${styles.card}`}>
+      <img className={`card-img-top ${styles.cardImgTop}`} src={props.image} alt="Event" />
+      <div className={`card-body d-flex flex-column`}>
+        <h2 className={`card-title ${styles.cardTitle}`}>
+          {props.name}
+        </h2>
+        <h4 className={`card-subtitle mb-2 ${styles.cardSubtitle}`}>
+          {props.filled}/{props.capacity} registered
+        </h4>
+        <h6 className={`card-text ${styles.cardText}`}>
+          {props.desc}
+        </h6>
+        <h6 className={`${styles.cardTime}`}>
+          <strong>Start: </strong>{formattedStart}<br />
+          <strong>End: </strong>{formattedEnd}
+        </h6>
+      </div>
     </div>
   );
 }
 
 EventCard.propTypes = {
   name: PropTypes.string,
-  date_and_time: PropTypes.string,
+  desc: PropTypes.string,
+  start: PropTypes.string,
+  end: PropTypes.string,
   capacity: PropTypes.number,
-  filled_spots: PropTypes.number,
+  filled: PropTypes.number,
+  image: PropTypes.string
 };
 
 EventCard.defaultProps = {
-  name: "No title",
-  date_and_time: "N/A",
-  capacity: "N/A",
-  filled_spots: "N/A",
+  name: "No Event Name",
+  desc: "No Event Description",
+  start: "N/A",
+  end: "N/A",
+  capacity: 0,
+  filled: 0,
+  image: "https://via.placeholder.com/200"
 };
 
 export default EventCard;

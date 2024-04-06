@@ -34,15 +34,24 @@ function Events() {
       <UserHeader />
       <h2>This is the Events page.</h2>
       <p>Here are all available events: </p>
-      <ul>
-        {events.map((event) => (
-          <EventCard
-            name={event.event_name}
-            date_and_time={event.date_and_time}
-            capacity={event.capacity}
-            filled_spots={event.filled_spots}/>
-        ))}
-      </ul>
+      <div className="container">
+        <div className="row">
+          {events.map((event) => (
+            <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12">
+              <EventCard
+                name = {event.name}
+                desc = {event.desc}
+                start = {event.start_time}
+                end = {event.end_time}
+                capacity = {event.capacity}
+                filled = {event.filled_spots}
+                image = {event.image}>
+              </EventCard>
+            </div>
+          ))}
+        </div>  
+      </div>
+        
 
       <NavLink to="/event-registrations">
         Click here to see the events you're registered for{" "}
