@@ -71,10 +71,13 @@ def get_available_events():
             for event in all_events_info:
                 event_dict = {
                     'event_id': event[0],
-                    'event_name': event[1],
-                    'date_and_time': event[2],
-                    'capacity': event[3],
-                    'filled_spots': event[4]
+                    'name': event[1],
+                    'desc': event[2],
+                    'start_time': event[3],
+                    'end_time': event[4],
+                    'capacity': event[5],
+                    'filled_spots': event[6],
+                    'image': event[7],
                 }
                 events_list.append(event_dict)
                 
@@ -84,6 +87,7 @@ def get_available_events():
             }), 200 # ok
         # Catch database error
         except Exception as ex:
+            print(ex)
             return flask.jsonify({
                 'status': 'error',
                 'message': str(ex)

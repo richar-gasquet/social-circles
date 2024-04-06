@@ -53,9 +53,10 @@ def get_available_events_overviews() -> list:
             with connection.cursor() as cursor: 
                 # Get all available events' info from event table
                 cursor.execute('''
-                    SELECT DISTINCT events.event_id, events.event_name,
-                           events.date_and_time, events.capacity, 
-                           events.filled_spots
+                    SELECT DISTINCT events.event_id, events.event_name, 
+                            events.event_desc, events.start_time, 
+                            events.end_time, events.capacity, 
+                            events.filled_spots, events.image_link
                     FROM events
                 ''')
                 
@@ -91,9 +92,10 @@ def get_registered_events(email: str) -> list:
                 
                 # Get events user has registered for
                 cursor.execute('''
-                    SELECT DISTINCT events.event_name, 
-                           events.date_and_time, events.capacity, 
-                           events.filled_spots
+                    SELECT DISTINCT events.event_id, events.event_name, 
+                            events.event_desc, events.start_time, 
+                            events.end_time, events.capacity, 
+                            events.filled_spots, events.image_link
                     FROM events
                     INNER JOIN event_registrations ON events.event_id = event_registrations.event_id
                     WHERE event_registrations.user_id = %s
