@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserHeader from "../headers/UserHeader";
+import EventCard from "./EventCard.jsx";
 
 function EventRegistrations() {
   const [events, setEvents] = useState([]);
