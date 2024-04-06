@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserHeader from "../headers/UserHeader";
-import EventCard from "./EventCard.jsx";
+import EventCard from "./EventCard"
 
 function EventRegistrations() {
   const [events, setEvents] = useState([]);
@@ -38,9 +38,6 @@ function EventRegistrations() {
   } else if (events.length > 0) {
     content = (
       <>
-        <UserHeader />
-        <h2>This is the Events page.</h2>
-        <p>Here are all available events: </p>
         <div className="container">
           <div className="row">
             {events.map((event) => (
