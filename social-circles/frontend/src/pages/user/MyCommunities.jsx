@@ -55,7 +55,7 @@ function Communities() {
                 </div>
               ) : comms.length > 0 ? (
                 comms.map((comm) => (
-                  <div key={comm.group_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
+                  <div key={comm.group_id} className="col-lg-6 col-md-6 col-sm-12 mt-3">
                     <CommunityCard
                       name={comm.name}
                       desc={comm.desc}
