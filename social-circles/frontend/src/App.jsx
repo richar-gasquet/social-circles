@@ -14,6 +14,7 @@ import Events from './pages/user/Events.jsx'
 import RegisteredEvents from './pages/user/RegisteredEvents.jsx'
 import Calendar from './pages/user/Calendar.jsx'
 import Communities from './pages/user/Communities.jsx'
+import MyCommunities from './pages/user/MyCommunities.jsx'
 import UserContextHandler from './contexts/UserContextHandler.jsx';
 
 function App() {
@@ -22,23 +23,25 @@ function App() {
             <AuthProvider>
                 <Routes>
                     {/* Guest routes */}
-                    <Route exact path="/" element={<LandingPage />} />
-                    <Route exact path="/login" element={<LoginPage />} />
-                    <Route exact path="/about" element = {<About />} />
-                    <Route exact path="/contact" element = {<Contact />} />
-                    <Route exact path="/resources" element = {<Resources />} />
+                     <Route exact path="/" element={<LandingPage />} />
+                     <Route exact path="/login" element={<LoginPage />} />
+                     <Route exact path="/about" element = {<About />} />
+                     <Route exact path="/contact" element = {<Contact />} />
+                     <Route exact path="/resources" element = {<Resources />} />
 
                     {/* Member routes */}
-                    <Route exact path="/user-dashboard" 
+                     <Route exact path="/user-dashboard" 
                            element={<UserContextHandler><ProtectedRoute component = {UserDashboard} /></UserContextHandler>} />
-                    <Route exact path="/events"
+                     <Route exact path="/events"
                            element={<ProtectedRoute component = {Events} />} />
-                    <Route exact path="/registered-events"
+                     <Route exact path="/registered-events"
                            element={<ProtectedRoute component = {RegisteredEvents} />} />
-                    <Route exact path="/calendar"
+                     <Route exact path="/calendar"
                            element={<ProtectedRoute component = {Calendar} />} />
-                    <Route exact path="/communities"
+                     <Route exact path="/communities"
                            element={<ProtectedRoute component = {Communities}/>} />
+                     <Route exact path="/my-communities"
+                           element={<ProtectedRoute component = {MyCommunities}/>} />
 
                     {/* Admin routes */}
                     <Route exact path="/admin-dashboard" 
