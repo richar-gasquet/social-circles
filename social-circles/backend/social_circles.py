@@ -40,6 +40,7 @@ def authenticate():
 #----------------------------------------------------------------------
 
 # Routes for querying USER data from database
+
 @app.route('/user-data', methods = ['GET'])
 def get_user_data():
     # Check if user is logged on server-side
@@ -143,6 +144,7 @@ def get_registered_events():
 #----------------------------------------------------------------------
 
 # Routes for querying COMMUNITIES data from database
+
 @app.route('/get-available-communities', methods = ['GET'])
 def get_available_communities():
     # Check if user is logged in server-side
@@ -157,15 +159,18 @@ def get_available_communities():
                 comm_dict = {
                     'group_id' : comm[0],
                     'name' : comm[1],
-                    'desc' : comm[2]
+                    'desc' : comm[2],
+                    'count' : comm[3],
+                    'image' : comm[4]
                 }
                 comms_list.append(comm_dict)
                 
             return flask.jsonify({
                 'status' : 'success',
-                'results' : events_list
+                'results' : comms_list
             }), 200 # ok    
         except Exception as ex:
+            print(ex)
             return flask.jsonify({
                 'status': 'error',
                 'message': str(ex)
@@ -191,15 +196,18 @@ def get_registered_communities():
                 comm_dict = {
                     'group_id' : comm[0],
                     'name' : comm[1],
-                    'desc' : comm[2]
+                    'desc' : comm[2],
+                    'count' : comm[3],
+                    'image' : comm[4]
                 }
                 comms_list.append(comm_dict)
                 
             return flask.jsonify({
                 'status' : 'success',
-                'results' : events_list
+                'results' : comms_list
             }), 200 # ok
         except Exception as ex:
+            print(ex)
             return flask.jsonify({
                 'status': 'error',
                 'message': str(ex)

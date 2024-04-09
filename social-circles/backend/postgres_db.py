@@ -149,7 +149,9 @@ def get_all_communities() -> list:
             with connection.cursor() as cursor: 
                 # Get all available events' info from event table
                 cursor.execute('''
-                    SELECT communities.group_name
+                    SELECT communities.group_id, communities.group_name,
+                        communities.group_desc, communities.member_count,
+                        communities.image_link
                     FROM communities
                 ''')
                 
@@ -157,6 +159,7 @@ def get_all_communities() -> list:
                 return comms_info
                 
     except Exception as ex:
+        raise ex
         raise Exception("It seems there was an error getting all"
                         + " communities. Please contact the administrator.")
         
@@ -186,17 +189,20 @@ def get_registered_communities(email) -> list:
                 
                 # Get communities user is a part of 
                 cursor.execute('''
-                    SELECT communities.group_name
+                    SELECT communities.group_id, communities.group_name,
+                        communities.group_desc, communities.member_count,
+                        communities.image_link
                     FROM communities
                     INNER JOIN community_registrations 
                         ON community_registrations.group_id = communities.group_id
                     WHERE community_registrations.user_id = %s
-                ''', [])
+                ''', (userId,))
                 
                 events_info = cursor.fetchall()
                 return events_info
                 
     except Exception as ex:
+        raise ex
         raise Exception("It seems there was an error getting the communities"
                         + " you are a part of. Please contact the"
                         + " administrator.")
