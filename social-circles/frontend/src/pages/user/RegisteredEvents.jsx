@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserHeader from "../headers/UserHeader";
 import EventCard from "./EventCard"
 
-function EventRegistrations() {
+function RegisteredEvents() {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
@@ -70,4 +70,4 @@ function EventRegistrations() {
   );
 }
 
-export default EventRegistrations;
+export default RegisteredEvents;

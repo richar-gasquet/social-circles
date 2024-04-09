@@ -53,7 +53,7 @@ function Events() {
       </div>
         
 
-      <NavLink to="/event-registrations">
+      <NavLink to="/registered-events">
         Click here to see the events you're registered for{" "}
       </NavLink>
     </>

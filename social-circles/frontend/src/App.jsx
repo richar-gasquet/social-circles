@@ -11,7 +11,9 @@ import Resources from "./pages/shared/Resources.jsx"
 import UserDashboard from './pages/user/UserDashboard.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import Events from './pages/user/Events.jsx'
-import EventRegistrations from './pages/user/EventRegistrations.jsx'
+import RegisteredEvents from './pages/user/RegisteredEvents.jsx'
+import Calendar from './pages/user/Calendar.jsx'
+import Communities from './pages/user/Communities.jsx'
 import UserContextHandler from './contexts/UserContextHandler.jsx';
 
 function App() {
@@ -31,8 +33,12 @@ function App() {
                            element={<UserContextHandler><ProtectedRoute component = {UserDashboard} /></UserContextHandler>} />
                     <Route exact path="/events"
                            element={<ProtectedRoute component = {Events} />} />
-                    <Route exact path="/event-registrations"
-                           element={<ProtectedRoute component = {EventRegistrations} />} />
+                    <Route exact path="/registered-events"
+                           element={<ProtectedRoute component = {RegisteredEvents} />} />
+                    <Route exact path="/calendar"
+                           element={<ProtectedRoute component = {Calendar} />} />
+                    <Route exact path="/communities"
+                           element={<ProtectedRoute component = {Communities}/>} />
 
                     {/* Admin routes */}
                     <Route exact path="/admin-dashboard" 
