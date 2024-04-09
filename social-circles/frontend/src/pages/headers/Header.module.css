@@ -9,12 +9,12 @@
 
 
 .navItem {
-    padding-right: 1.5rem
+    padding-right: 1.4rem
 }
 
 .navLink {
     color: #000000 !important;
-    font-size: 2.0rem;
+    font-size: 1.5rem;
     text-decoration: none;
     transition: color 0.2s;
 }

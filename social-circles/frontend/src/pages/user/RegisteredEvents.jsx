@@ -38,7 +38,7 @@ function RegisteredEvents() {
       <UserHeader />
       <div className={`container-fluid p-5`}>
         <div className={`row`}>
-          <h1 className={`ml-4`} style={{ fontSize: '4.0rem' }}>Registered Events</h1>
+          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Registered Events</h1>
         </div>
         <hr />
         <div className={`row`}>

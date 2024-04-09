@@ -4,7 +4,7 @@ import styles from "./EventsAside.module.css"
 function EventsAside() {
     return (
         <>
-          <div className={`col-lg-3 mb-3 border-right`}>
+          <div className={`col-lg-2 mb-3 border-right`}>
             <aside className={`mt-3`}>
               <ul className={`nav flex-column`}>
                 <li className={`nav-item`}>

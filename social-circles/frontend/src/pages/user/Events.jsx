@@ -38,12 +38,12 @@ function Events() {
       <UserHeader />
       <div className={`container-fluid p-5`}>
         <div className={`row`}>
-          <h1 className={`ml-4`} style={{ fontSize: '4.0rem' }}>Upcoming Events</h1>
+          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
         </div>
         <hr />
         <div className={`row`}>
           <EventsAside />
-          <div className={`col-lg-9 mt-3`}>
+          <div className={`col-lg-10 mt-3`}>
             <div className={`row`}>
               {isQuerying ? (
                 <div className="col-12 d-flex justify-content-center">
