@@ -43,7 +43,7 @@ function RegisteredEvents() {
         <hr />
         <div className={`row`}>
           <EventsAside />
-          <div className={`col-lg-9 mt-3`}>
+          <div className={`col-lg-10 mt-3`}>
             <div className={`row`}>
               {isQuerying ? (
                 <div className="col-12 d-flex justify-content-center">
