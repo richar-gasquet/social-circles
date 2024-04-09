@@ -109,13 +109,16 @@ def get_registered_events():
             
             # Convert each event into a dict
             events_list = []
-            for events in registered_events_info:
+            for event in reg_events_info:
                 event_dict = {
-                    'event_id': events[0],
-                    'event_name': events[1],
-                    'date_and_time': events[2],
-                    'capacity': events[3],
-                    'filled_spots': events[4]
+                    'event_id': event[0],
+                    'name': event[1],
+                    'desc': event[2],
+                    'start_time': event[3],
+                    'end_time': event[4],
+                    'capacity': event[5],
+                    'filled_spots': event[6],
+                    'image': event[7],
                 }
                 events_list.append(event_dict)
                 
@@ -125,6 +128,7 @@ def get_registered_events():
             }), 200 # ok
         # Catch database error
         except Exception as ex:
+            print(ex)
             return flask.jsonify({
                 'status': 'error',
                 'message': str(ex)
@@ -146,7 +150,21 @@ def get_available_communities():
         try:
             # Get available communities
             all_comms_info = db.get_all_communities()
-            events_list = []
+            comms_list = []
+            
+            # Convert each community into a dict
+            for comm in all_comms_info:
+                comm_dict = {
+                    'group_id' : comm[0],
+                    'name' : comm[1],
+                    'desc' : comm[2]
+                }
+                comms_list.append(comm_dict)
+                
+            return flask.jsonify({
+                'status' : 'success',
+                'results' : events_list
+            }), 200 # ok    
         except Exception as ex:
             return flask.jsonify({
                 'status': 'error',
@@ -160,5 +178,34 @@ def get_available_communities():
 
 @app.route('/get-registered-communities', methods = ['GET'])
 def get_registered_communities():
-    pass
-    
+    # Check if user is logged in server-side
+    if 'email' in flask.session:
+        try:
+            # Get user email and associated registered communities
+            email = flask.session['email']
+            reg_comms_info = db.get_registered_communities(email)
+            
+            # Convert each event into a dict
+            comms_list = []
+            for comm in reg_comms_info:
+                comm_dict = {
+                    'group_id' : comm[0],
+                    'name' : comm[1],
+                    'desc' : comm[2]
+                }
+                comms_list.append(comm_dict)
+                
+            return flask.jsonify({
+                'status' : 'success',
+                'results' : events_list
+            }), 200 # ok
+        except Exception as ex:
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized

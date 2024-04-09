@@ -106,6 +106,7 @@ def get_registered_events_overviews(email: str) -> list:
                 return events_info
                 
     except Exception as ex:
+        raise ex
         raise Exception("It seems there was an error getting the events"
                         + " you registered for. Please contact the"
                         + " administrator.")
@@ -152,8 +153,8 @@ def get_all_communities() -> list:
                     FROM communities
                 ''')
                 
-                events_info = cursor.fetchall()
-                return events_info
+                comms_info = cursor.fetchall()
+                return comms_info
                 
     except Exception as ex:
         raise Exception("It seems there was an error getting all"
