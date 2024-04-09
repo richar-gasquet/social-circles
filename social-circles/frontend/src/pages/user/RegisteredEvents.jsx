@@ -54,7 +54,7 @@ function RegisteredEvents() {
                 </div>
               ) : events.length > 0 ? (
                 events.map((event) => (
-                  <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12">
+                  <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
                     <EventCard
                       name={event.name}
                       desc={event.desc}

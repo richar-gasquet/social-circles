@@ -49,12 +49,12 @@ function Events() {
                 <div className="col-12 d-flex justify-content-center">
                   <div className="spinner-border mt-5" role="status"
                     style={{ width: '10rem', height: '10rem'}}>
-                    <span class="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               ) : events.length > 0 ? (
                 events.map((event) => (
-                  <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12">
+                  <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
                     <EventCard
                       name={event.name}
                       desc={event.desc}

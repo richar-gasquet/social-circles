@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import styles from './EventCard.module.css';
+import styles from './Card.module.css';
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toLocaleString();

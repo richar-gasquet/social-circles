@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import styles from "./EventsAside.module.css"
+import styles from "./Aside.module.css"
 
 function EventsAside() {
     return (
