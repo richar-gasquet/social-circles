@@ -56,7 +56,7 @@ def get_user_data():
         
 #----------------------------------------------------------------------
 
-# Routes for querying EVENT data from database
+# Routes for querying EVENTS data from database
 
 @app.route('/get-available-events', methods = ['GET'])
 def get_available_events():
@@ -87,12 +87,11 @@ def get_available_events():
             }), 200 # ok
         # Catch database error
         except Exception as ex:
-            print(ex)
             return flask.jsonify({
                 'status': 'error',
                 'message': str(ex)
             }), 500 # internal server error
-    # Catch authentication error
+    # Catch unauthenticated user
     else:
         return flask.jsonify({
             'status': 'error',
@@ -106,7 +105,7 @@ def get_registered_events():
         try:
             # Get user email and associated registered events
             email = flask.session['email']
-            registered_events_info = db.get_registered_events(email)
+            reg_events_info = db.get_registered_events_overviews(email)
             
             # Convert each event into a dict
             events_list = []
@@ -130,9 +129,36 @@ def get_registered_events():
                 'status': 'error',
                 'message': str(ex)
             }), 500 # internal server error
-    # Catch authentication error
+    # Catch unauthenticated user
     else:
         return flask.jsonify({
             'status' : 'error',
             'message': 'User not logged in'
         }), 401 # unauthorized
+        
+#----------------------------------------------------------------------
+
+# Routes for querying COMMUNITIES data from database
+@app.route('/get-available-communities', methods = ['GET'])
+def get_available_communities():
+    # Check if user is logged in server-side
+    if 'email' in flask.session:
+        try:
+            # Get available communities
+            all_comms_info = db.get_all_communities()
+            events_list = []
+        except Exception as ex:
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
+
+@app.route('/get-registered-communities', methods = ['GET'])
+def get_registered_communities():
+    pass
+    

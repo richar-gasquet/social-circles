@@ -67,7 +67,7 @@ def get_available_events_overviews() -> list:
         raise Exception("It seems there was an error getting all"
                         + " events. Please contact the administrator.")
         
-def get_registered_events(email: str) -> list:
+def get_registered_events_overviews(email: str) -> list:
     """ Get all events the user has registered for
 
     Args:
@@ -97,7 +97,8 @@ def get_registered_events(email: str) -> list:
                             events.end_time, events.capacity, 
                             events.filled_spots, events.image_link
                     FROM events
-                    INNER JOIN event_registrations ON events.event_id = event_registrations.event_id
+                    INNER JOIN event_registrations 
+                        ON events.event_id = event_registrations.event_id
                     WHERE event_registrations.user_id = %s
                 ''', (userId,))
                 
@@ -186,7 +187,8 @@ def get_registered_communities(email) -> list:
                 cursor.execute('''
                     SELECT communities.group_name
                     FROM communities
-                    INNER JOIN community_registrations ON community_registrations.group_id = communities.group_id
+                    INNER JOIN community_registrations 
+                        ON community_registrations.group_id = communities.group_id
                     WHERE community_registrations.user_id = %s
                 ''', [])
                 
