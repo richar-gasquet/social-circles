@@ -39,7 +39,7 @@ function Communities() {
       <UserHeader />
       <div className={`container-fluid p-5`}>
         <div className={`row`}>
-          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>All Communities</h1>
         </div>
         <hr />
         <div className={`row`}>
@@ -55,7 +55,7 @@ function Communities() {
                 </div>
               ) : comms.length > 0 ? (
                 comms.map((comm) => (
-                  <div key={comm.group_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
+                  <div key={comm.group_id} className="col-lg-6 col-md-6 col-sm-12 mt-3">
                     <CommunityCard
                       name={comm.name}
                       desc={comm.desc}

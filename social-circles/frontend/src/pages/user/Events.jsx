@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useAuthContext } from "../auth/AuthHandler.jsx";
 import UserHeader from "../headers/UserHeader";
+import AdminButton from "../admin/AdminButton.jsx";
 import EventsAside from "./EventsAside.jsx";
 import EventCard from "./EventCard.jsx";
 
@@ -7,6 +9,8 @@ function Events() {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
+
+  const { isAdmin } = useAuthContext();
 
   useEffect(() => {
     const getAllEvents = async () => {
@@ -33,12 +37,21 @@ function Events() {
     getAllEvents();
   }, []);
 
+  function checkClick() {
+    console.log("hello, the button works i think?")
+  }
+
   return (
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-        <div className={`row`}>
+        <div className={`row container-fluid`}>
           <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+          {isAdmin ? (
+            <AdminButton className={``}
+              type="Add Event"
+              action={checkClick}/>
+          ) : ''}
         </div>
         <hr />
         <div className={`row`}>
