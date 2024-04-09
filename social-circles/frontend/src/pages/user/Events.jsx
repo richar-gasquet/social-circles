@@ -45,13 +45,18 @@ function Events() {
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-        <div className={`row container-fluid`}>
-          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
-          {isAdmin ? (
-            <AdminButton className={``}
-              type="Add Event"
-              action={checkClick}/>
-          ) : ''}
+        <div className={`row container-fluid align-items-center`}>
+          <div className="col">
+            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+          </div>
+          {isAdmin && (
+            <div className="col d-flex justify-content-end">
+              <AdminButton
+                type="Add Event"
+                action={checkClick}
+              />
+          </div>
+          )}
         </div>
         <hr />
         <div className={`row`}>
