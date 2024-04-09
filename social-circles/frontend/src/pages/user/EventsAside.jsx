@@ -4,9 +4,9 @@ import styles from "./EventsAside.module.css"
 function EventsAside() {
     return (
         <>
-          <div className={`col-lg-3 mb-3`}>
+          <div className={`col-lg-3 mb-3 border-right`}>
             <aside className={`mt-3`}>
-              <ul className={`nav flex-column text-muted`}>
+              <ul className={`nav flex-column`}>
                 <li className={`nav-item`}>
                   <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 
                     to="/events">Upcoming Events</NavLink>
