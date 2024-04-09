@@ -1,2 +1,4 @@
 .venv
 .env
+flask_session
+runserver.py
