@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState } from 'react'; // Import useState hook
+import { useState } from 'react'; 
 import logo from "../../assets/social-circles-logo.png";
 import styles from './Header.module.css';
 

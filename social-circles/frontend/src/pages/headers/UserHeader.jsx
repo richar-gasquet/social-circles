@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState } from 'react'; // Import useState hook
+import { useState } from 'react'; 
 import logo from "../../assets/social-circles-logo.png";
 import styles from './Header.module.css';
 
@@ -20,24 +20,28 @@ function GuestHeader() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
-          <ul className="navbar-nav ml-auto">
+          <ul className={`navbar-nav ml-auto`}>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/events" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+              <NavLink to="/events" 
+                className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Events
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/calendar" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+              <NavLink to="/calendar" 
+                className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Calendar
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/communities" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+              <NavLink to="/communities" 
+                className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Communities
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/resources" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+              <NavLink to="/resources" 
+                className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Resources
               </NavLink>
             </li>

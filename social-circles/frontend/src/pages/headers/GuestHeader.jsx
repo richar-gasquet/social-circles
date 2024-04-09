@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState } from 'react'; // Import useState hook
+import { useState } from 'react';
 import logo from "../../assets/social-circles-logo.png";
 import styles from './Header.module.css';
 
@@ -20,7 +20,7 @@ function GuestHeader() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
-          <ul className="navbar-nav ml-auto">
+          <ul className={`navbar-nav ml-auto`}>
             <li className={`nav-item ${styles.navItem}`}>
               <NavLink to="/about" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 About Us
