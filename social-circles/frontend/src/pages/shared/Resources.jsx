@@ -5,15 +5,13 @@ import { useAuthContext } from "../auth/AuthHandler";
 function Resources() {
   const { isAuth } = useAuthContext();
 
-  let header = <GuestHeader />
-
-  if (isAuth) {
-    header = <UserHeader />
-  }
-
   return (
     <>
-      {header}
+      {isAuth ? (
+        <UserHeader />
+      ) : (
+        <GuestHeader />
+      )}
     </>
   );
 }
