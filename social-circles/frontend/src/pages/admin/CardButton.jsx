@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import styles from './DeleteButton.module.css';
+import styles from './CardButton.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-function DeleteButton(props) {
+function CardButton(props) {
     return (
         <button type="button" onClick={props.action}
             className={`btn btn-danger ${styles.button} ${props.className}`}>
@@ -11,8 +11,8 @@ function DeleteButton(props) {
     )
 }
 
-export default DeleteButton
+export default CardButton
 
-DeleteButton.propTypes = {
+CardButton.propTypes = {
     action: PropTypes.func
 }

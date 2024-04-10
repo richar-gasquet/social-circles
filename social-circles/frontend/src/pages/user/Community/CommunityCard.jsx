@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import DeleteButton from "../../admin/DeleteButton";
+import CardButton from "../../admin/CardButton";
 import DeleteCommunity from "./DeleteCommunity";
 import styles from '../Card.module.css';
 
@@ -19,9 +19,9 @@ function CommunityCard(props) {
         <div className={styles.cardImgTopContainer}>
           <img className={`card-img-top ${styles.cardImgTop}`} src={props.image} alt="Community" />
           {props.isAdmin && (
-            <DeleteButton className={styles.deleteButton}
+            <CardButton className={styles.deleteButton}
               action={handleShowDeleteComm}>
-            </DeleteButton>
+            </CardButton>
           )}
         </div>
         <div className={`card-body d-flex flex-column`}>
