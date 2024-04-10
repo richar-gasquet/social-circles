@@ -5,7 +5,7 @@ import CommunityCard from "./CommunityCard.jsx"
 import AdminButton from "../../admin/AdminButton.jsx";
 import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
-function Communities() {
+function MyCommunities() {
   const [comms, setComms] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
@@ -91,5 +91,5 @@ function Communities() {
   );
 }
 
-export default Communities;
+export default MyCommunities;
 
