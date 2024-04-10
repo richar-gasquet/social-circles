@@ -262,12 +262,13 @@ def delete_community(comm_id: int) -> None:
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
-                DELETE FROM commmunity
+                DELETE FROM communities
                 WHERE group_id = %s
             ''', (comm_id, ))
             connection.commit()
-    except Exception:
+    except Exception as ex:
         connection.rollback()
+        raise ex
         raise Exception("It seems there was an error updating the"
                         + " community. Please contact the"
                         + " administrator.")

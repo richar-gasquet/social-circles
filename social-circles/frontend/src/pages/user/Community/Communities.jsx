@@ -52,7 +52,7 @@ function Communities() {
       <div className={`container-fluid p-5`}>
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
-            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>All Communities</h1>
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
@@ -79,10 +79,13 @@ function Communities() {
                 comms.map((comm) => (
                   <div key={comm.group_id} className="col-lg-6 col-md-6 col-sm-12 mt-3">
                     <CommunityCard
+                      group_id={comm.group_id}
                       name={comm.name}
                       desc={comm.desc}
                       count={comm.count}
-                      image={comm.image}>
+                      image={comm.image}
+                      isAdmin={isAdmin}
+                      fetchAllCommunities={fetchAllCommunities}>
                     </CommunityCard>
                   </div>
                 ))

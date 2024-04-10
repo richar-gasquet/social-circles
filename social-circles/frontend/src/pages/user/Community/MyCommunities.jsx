@@ -44,7 +44,7 @@ function Communities() {
       <div className={`container-fluid p-5`}>
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
-            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>My Communities</h1>
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
