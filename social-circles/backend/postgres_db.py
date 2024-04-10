@@ -28,7 +28,7 @@ def _put_connection(conn):
 
 # Get user authorization (regular user / admin)
 def get_user_authorization(email: str) -> dict:
-    user_authorization = []
+    is_admin = False
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
@@ -39,11 +39,12 @@ def get_user_authorization(email: str) -> dict:
             ''', (email,))
             authorization_status = cursor.fetchone()
             
-            user_auth = authorization_status[0]
+            if authorization_status:
+                is_admin = authorization_status[0]
     except Exception as ex:
         raise Exception("It seems there was an error getting user data."
                         + " Please contact the administrator.")
-    return user_auth
+    return is_admin
 
 # DB HAS TO BE FIXED BEFORE THIS METHOD IS FINISHED SINCE THERES A TYPO
 
