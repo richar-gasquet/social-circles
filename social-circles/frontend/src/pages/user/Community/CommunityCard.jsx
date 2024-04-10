@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import styles from './Card.module.css';
+import styles from '../Card.module.css';
 
 function CommunityCard(props) {
   return (

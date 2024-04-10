@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react'
-import UserHeader from "../headers/UserHeader";
-import CommunitiesAside from "./CommunitiesAside"
-import CommunityCard from "./CommunityCard"
+import UserHeader from "../../headers/UserHeader.jsx";
+import CommunitiesAside from "./CommunitiesAside.jsx"
+import CommunityCard from "./CommunityCard.jsx"
+import AdminButton from "../../admin/AdminButton.jsx";
+import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
 function Communities() {
   const [comms, setComms] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
 
+  const { isAdmin } = useAuthContext()
+
   useEffect(() => {
     const getAllComms = async () => {
       try {
         setQuerying(true);
         const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/get-registered-communities`,
+          `${import.meta.env.VITE_BACKEND_URL}/get-available-communities`,
           { credentials: "include" }
         )
         if (response.ok) {
@@ -38,8 +42,18 @@ function Communities() {
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-        <div className={`row`}>
-          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+        <div className={`row container-fluid align-items-center`}>
+          <div className="col">
+            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+          </div>
+          {isAdmin && (
+            <div className="col d-flex justify-content-end">
+              <AdminButton
+                type="Add Community"
+                action={() => console.log(hello)}
+              />
+            </div>
+          )}
         </div>
         <hr />
         <div className={`row`}>
