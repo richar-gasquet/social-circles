@@ -9,7 +9,7 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 #----------------------------------------------------------------------
 
-# Allow Connection Pooling Functionality
+# Create Connection Pooling Functionality
 _connection_pool = queue.Queue()
 
 def _get_connection():
@@ -25,6 +25,25 @@ def _put_connection(conn):
 #----------------------------------------------------------------------
 
 # User methods
+
+# Get user authorization (regular user / admin)
+def get_user_authorization(email: str) -> dict:
+    user_authorization = []
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT users.is_admin
+                FROM users
+                WHERE users.email = %s
+            ''', (email,))
+            authorization_status = cursor.fetchone()
+            
+            user_auth = authorization_status[0]
+    except Exception as ex:
+        raise Exception("It seems there was an error getting user data."
+                        + " Please contact the administrator.")
+    return user_auth
 
 # DB HAS TO BE FIXED BEFORE THIS METHOD IS FINISHED SINCE THERES A TYPO
 
@@ -58,11 +77,6 @@ def _put_connection(conn):
 # Event methods
 
 def get_available_events_overviews() -> list:
-    """ Get all events available to user
-
-    Returns:
-        list: list containing all events available to user
-    """
     all_events_info = []
     connection = _get_connection()
     try: 
@@ -86,14 +100,6 @@ def get_available_events_overviews() -> list:
     return all_events_info
         
 def get_registered_events_overviews(email: str) -> list:
-    """ Get all events the user has registered for
-
-    Args:
-        email (str): user's email
-
-    Returns:
-        list: list containing all events the user has registered for
-    """
     registered_events_info = []
     connection = _get_connection()
     try: 
@@ -132,37 +138,10 @@ def get_registered_events_overviews(email: str) -> list:
     return registered_events_info
         
 #----------------------------------------------------------------------
-    
-# Get User Details methods
-def get_user_details(email: str):
-    try:
-        with psycopg2.connect(os.environ.get('DATABASE_URL')) as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('''
-                    SELECT email, is_admin
-                    FROM users
-                    WHERE email = %s
-                ''', (email,))
-                user_row = cursor.fetchone()
-                
-                if user_row:
-                    return {
-                        'email': user_row[0],
-                        'is_admin': user_row[1]
-                    }
-    except Exception as ex:
-        raise Exception("It seems there was an error getting user data."
-                        + " Please contact the administrator.")
-    return None
 
 # Community methods
 
 def get_all_communities() -> list:
-    """ Get all communities in Social Circles
-
-    Returns:
-        list: list containing all communities in Social Circles
-    """
     all_comms_info = []
     connection = _get_connection()
     try: 
@@ -186,14 +165,6 @@ def get_all_communities() -> list:
     return all_comms_info
         
 def get_registered_communities(email) -> list:
-    """ Get communities the user is a part of
-
-    Args:
-        email (str): user's email
-
-    Returns:
-        list: list containing all communities the user is a part of
-    """
     registered_comms_info = []
     connection = _get_connection()
     try: 
@@ -211,9 +182,8 @@ def get_registered_communities(email) -> list:
             
             # Get communities user is a part of 
             cursor.execute('''
-                SELECT comm.group_id, comm.group_name,
-                    comm.group_desc, comm.member_count,
-                    comm.image_link
+                SELECT comm.group_id, comm.group_name, comm.group_desc, 
+                    comm.member_count, comm.image_link
                 FROM communities comm
                 INNER JOIN community_registrations comm_reg
                     ON comm_reg.group_id = comm.group_id
@@ -229,3 +199,80 @@ def get_registered_communities(email) -> list:
         _put_connection(connection)
     
     return registered_comms_info
+
+def add_community(args: dict) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            group_name = args.get('group_name', 'No group name')
+            group_desc = args.get('group_desc', 'No group description')
+            image_link = args.get('image_link')
+            
+            cursor.execute('''
+                INSERT INTO communities (group_id, group_name,
+                    group_desc, member_count, image_link)
+                VALUES (DEFAULT, %s, %s, 0, %s)               
+            ''', (group_name, group_desc, image_link, ))
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error creating the"
+                        + " community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+    
+def update_community(args: dict) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            group_id = args.get('group_id')
+            group_name = args.get('group_name')
+            group_desc = args.get('group_desc')
+            image_link = args.get('image_link')
+            
+            esc_str = 'ESCAPE \'\\\''
+
+            sql_query_base = "UPDATE communities SET "
+            values = []
+            if group_name:
+                sql_query_base += "group_name = %s "
+                values.append(group_name)
+            if group_desc:
+                sql_query_base += "group_desc = %s "
+                vales.append(group_desc)
+            if image_link:
+                sql_query_base += "image_link = %s "
+                values.append(image_link)
+            sql_query_base += "WHERE group_id = %s"
+
+            cursor.execute(sql_query_base, tuple(values))
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error updating the"
+                        + " community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+        
+def delete_community(comm_id: int) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM commmunity
+                WHERE group_id = %s
+            ''', (comm_id, ))
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error updating the"
+                        + " community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)        
+    
+#----------------------------------------------------------------------
+
+# Helper functions

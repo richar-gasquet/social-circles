@@ -80,8 +80,8 @@ def callback():
     flask.session['email'] = userinfo_response.get('email')
     flask.session['name'] = userinfo_response.get('name')
 
-    user_details = db.get_user_details(flask.session['email'])
-    if user_details is not None and user_details['is_admin'] is True:
+    is_admin = db.get_user_authorization(flask.session['email'])
+    if is_admin:
         return flask.redirect(f'{REACT_FRONTEND}/admin-dashboard')
     return flask.redirect(f'{REACT_FRONTEND}/user-dashboard')
 #----------------------------------------------------------------------
@@ -95,17 +95,17 @@ def logout():
 def authenticate():
     if 'email' in flask.session:
         # Function get_user_details(email) that returns user details including is_admin
-        user_details = db.get_user_details(flask.session['email'])
+        is_admin = db.get_user_authorization(flask.session['email'])
         
         # THIS CODE IS GOING TO BE CHANGE
-        if user_details is None:
+        if not is_admin:
             # If there's no such user in the database, consider not authenticated
             return flask.jsonify({'status': 'auth'}), 200 # unauthorized
 
         # Adjusting the response to include is_admin status
         return flask.jsonify({
             'status': 'auth',
-            'isAdmin': user_details['is_admin'] 
+            'isAdmin': is_admin
         }), 200 # ok
     else: 
         return flask.jsonify({'status': 'not auth'}), 401 # unauthorized

@@ -61,6 +61,11 @@ def get_user_data():
 
 @app.route('/get-available-events', methods = ['GET'])
 def get_available_events():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     # Check if user is logged in server-side
     if 'email' in flask.session:
         try:
@@ -101,6 +106,11 @@ def get_available_events():
         
 @app.route('/get-registered-events', methods = ['GET'])
 def get_registered_events():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     # Check if user is logged in server-side
     if 'email' in flask.session:
         try:
@@ -147,6 +157,11 @@ def get_registered_events():
 
 @app.route('/get-available-communities', methods = ['GET'])
 def get_available_communities():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     # Check if user is logged in server-side
     if 'email' in flask.session:
         try:
@@ -183,6 +198,11 @@ def get_available_communities():
 
 @app.route('/get-registered-communities', methods = ['GET'])
 def get_registered_communities():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     # Check if user is logged in server-side
     if 'email' in flask.session:
         try:
@@ -206,6 +226,38 @@ def get_registered_communities():
                 'status' : 'success',
                 'results' : comms_list
             }), 200 # ok
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
+        
+@app.route('/add-community', methods = ['POST'])
+def add_community_route():
+    if 'email' in flask.session:
+        try:
+            is_admin = db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("You are not authorized!")
+            
+            comm_data = flask.request.json
+            comm_dict = {
+                'group_name' : comm_data['group_name'],
+                'group_desc' : comm_data['group_desc'],
+                'image_link' : comm_data['image_link'] 
+            }
+            
+            db.add_community(comm_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            })
+        
         except Exception as ex:
             print(ex)
             return flask.jsonify({

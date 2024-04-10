@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import UserHeader from "../../headers/UserHeader.jsx";
 import CommunitiesAside from "./CommunitiesAside.jsx"
 import CommunityCard from "./CommunityCard.jsx"
+import AddCommunity from './AddCommunity.jsx';
 import AdminButton from "../../admin/AdminButton.jsx";
 import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
@@ -9,34 +10,41 @@ function Communities() {
   const [comms, setComms] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
+  const [showAddComm, setShowAddComm] = useState(false)
 
   const { isAdmin } = useAuthContext()
 
   useEffect(() => {
-    const getAllComms = async () => {
-      try {
-        setQuerying(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/get-available-communities`,
-          { credentials: "include" }
-        )
-        if (response.ok) {
-          const data = await response.json();
-          setComms(data.results);
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch community data: ", error);
-        setError("Server error. Please contact the administrator.")
-      } finally {
-        setQuerying(false);
-      }
-    }
-    getAllComms()
+    fetchAllCommunities()
   }, []);
 
+  const fetchAllCommunities = async () => {
+    try {
+      setQuerying(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/get-available-communities`,
+        { credentials: "include" }
+      )
+      if (response.ok) {
+        const data = await response.json();
+        setComms(data.results);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message);
+      }
+    } catch (error) {
+      console.error("Failed to fetch community data: ", error);
+      setError("Server error. Please contact the administrator.")
+    } finally {
+      setQuerying(false);
+    }
+  };
+
+  const handleShowAddComm = () => setShowAddComm(true)
+  const handleCloseAddComm = () => {
+    setShowAddComm(false);
+    fetchAllCommunities();
+  };
 
   return (
     <>
@@ -50,8 +58,8 @@ function Communities() {
             <div className="col d-flex justify-content-end">
               <AdminButton
                 type="Add Community"
-                action={() => console.log(hello)}
-              />
+                action={handleShowAddComm}>
+              </AdminButton>
             </div>
           )}
         </div>
@@ -87,6 +95,12 @@ function Communities() {
           </div>
         </div>
       </div>
+      {showAddComm && isAdmin && (
+        <AddCommunity
+          isShown={showAddComm}
+          handleClose={handleCloseAddComm}>
+        </AddCommunity>
+      )}
     </>
   );
 }
