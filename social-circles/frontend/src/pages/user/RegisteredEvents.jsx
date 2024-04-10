@@ -37,8 +37,18 @@ function RegisteredEvents() {
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-        <div className={`row`}>
-          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Registered Events</h1>
+        <div className={`row container-fluid align-items-center`}>
+          <div className="col">
+            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Registered Events</h1>
+          </div>
+          {isAdmin && (
+            <div className="col d-flex justify-content-end">
+              <AdminButton
+                type="Add Event"
+                action={() => console.log(hello)}
+              />
+            </div>
+          )}
         </div>
         <hr />
         <div className={`row`}>

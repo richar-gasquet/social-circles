@@ -37,10 +37,6 @@ function Events() {
     getAllEvents();
   }, []);
 
-  function checkClick() {
-    console.log("hello, the button works i think?")
-  }
-
   return (
     <>
       <UserHeader />
@@ -53,9 +49,9 @@ function Events() {
             <div className="col d-flex justify-content-end">
               <AdminButton
                 type="Add Event"
-                action={checkClick}
+                action={() => console.log(hello)}
               />
-          </div>
+            </div>
           )}
         </div>
         <hr />

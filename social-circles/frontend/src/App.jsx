@@ -13,8 +13,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import Events from "./pages/user/Events.jsx";
 import RegisteredEvents from "./pages/user/RegisteredEvents.jsx";
 import Calendar from "./pages/user/Calendar.jsx";
-import Communities from "./pages/user/Communities.jsx";
-import MyCommunities from "./pages/user/MyCommunities.jsx";
+import Communities from "./pages/user/Community/Communities.jsx";
+import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import UserContextHandler from "./contexts/UserContextHandler.jsx";
 
 function App() {
