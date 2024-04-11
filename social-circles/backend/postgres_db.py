@@ -241,16 +241,18 @@ def update_community(args: dict) -> None:
                 values.append(group_name)
             if group_desc:
                 sql_query_base += "group_desc = %s "
-                vales.append(group_desc)
+                values.append(group_desc)
             if image_link:
                 sql_query_base += "image_link = %s "
                 values.append(image_link)
             sql_query_base += "WHERE group_id = %s"
+            values.append(group_id)
 
             cursor.execute(sql_query_base, tuple(values))
             connection.commit()
-    except Exception:
+    except Exception as ex:
         connection.rollback()
+        raise ex
         raise Exception("It seems there was an error updating the"
                         + " community. Please contact the"
                         + " administrator.")

@@ -2,14 +2,23 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 
 function AddCommunity(props) {
   const [groupName, setGroupName] = useState("");
   const [groupDesc, setGroupDesc] = useState("");
   const [imageLink, setImageLink] = useState("");
+  const [emptyAlert, setEmptyAlert] = useState(false);
+  const [successAlert, setSuccessAlert] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!groupName && !groupDesc && !imageLink) {
+      setEmptyAlert(true); 
+      return; 
+    }
+
     const communityData = {
       group_name: groupName,
       group_desc: groupDesc,
@@ -28,18 +37,17 @@ function AddCommunity(props) {
         }
       );
       if (request.ok) {
-        /* Add extra checks based on status to call either success function or not fulfilled*/
-        console.log("Data added succesfully");
+        setSuccessAlert(true);
+        setErrorAlert(false);
         setGroupName("");
         setGroupDesc("");
         setImageLink("");
       } else {
-        console.error("Failed to add the community");
+        setErrorAlert(true);
       }
     } catch (error) {
-      console.error("Could not connect to backend:", error);
+      setErrorAlert(true);
     }
-    props.handleClose();
   };
 
   return (
@@ -48,6 +56,22 @@ function AddCommunity(props) {
         <Modal.Title>Add Community</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {successAlert && (
+          <Alert variant="success">
+            Success! The community was successfully added!
+          </Alert>
+        )}
+        {errorAlert && (
+          <Alert variant="danger">
+            Error! The community could not be added. Try again or 
+            contact technical support. 
+          </Alert>
+        )}
+        {emptyAlert && (
+          <Alert variant="warning">
+            All fields must be filled.
+          </Alert>
+        )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="groupName">
             <Form.Label>Group Name</Form.Label>

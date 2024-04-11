@@ -1,6 +1,9 @@
+.card {
+    transition: transform 0.15s;
+}
+
 .card:hover {
     transform: scale(1.03);
-    transition: transform 0.15s
 }
 
 .cardImgTopContainer {
@@ -13,7 +16,7 @@
     object-fit: cover;
 }
 
-.deleteButton {  
+.cardButtons {  
     position: absolute;
     margin: 10px;
     top: 0;

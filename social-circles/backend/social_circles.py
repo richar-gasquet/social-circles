@@ -270,6 +270,39 @@ def add_community_route():
             'message': 'User not logged in'
         }), 401 # unauthorized
         
+@app.route('/edit-community', methods = ['POST'])
+def edit_community_route():
+    if 'email' in flask.session:
+        try:
+            is_admin = db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("You are not authorized!")
+            
+            comm_data = flask.request.json
+            comm_dict = {
+                'group_id' : comm_data.get('group_id', ''),
+                'group_name' : comm_data.get('group_name', ''),
+                'group_desc' : comm_data.get('group_desc', ''),
+                'image_link' : comm_data.get('image_link', '')
+            }
+            print(comm_dict)
+            
+            db.update_community(comm_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            })
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
+        
 @app.route('/delete-community', methods = ['POST'])
 def delete_community_route():
     if 'email' in flask.session:

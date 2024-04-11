@@ -5,8 +5,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 function CardButton(props) {
     return (
         <button type="button" onClick={props.action}
-            className={`btn btn-danger ${styles.button} ${props.className}`}>
-            <i className="fas fa-trash"></i>
+            className={`btn btn-danger ${styles.button} ${props.className}`}
+            title={props.message}>
+            <i className={props.icon}></i>
         </button>
     )
 }
