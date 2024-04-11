@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../auth/AuthHandler.jsx";
 import UserHeader from "../headers/UserHeader";
-import AdminButton from "../admin/AdminButton.jsx";
+import AddButton from "../admin/AddButton.jsx";
 import EventsAside from "./EventsAside.jsx";
 import EventCard from "./EventCard.jsx";
 import AddEvent from "./AddEvent.jsx";
@@ -13,7 +13,7 @@ function Events() {
   const [showAddEvent, setShowAddEvent] = useState(false);
 
   const { isAdmin } = useAuthContext();
-
+d
   useEffect(() => {
     fetchAllEvents()
   }, []);
@@ -56,10 +56,10 @@ function Events() {
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
-              <AdminButton
+              <AddButton
                 type="Add Event"
                 action={handleShowAddEvent}>
-              </AdminButton>
+              </AddButton>
             </div>
           )}
         </div>

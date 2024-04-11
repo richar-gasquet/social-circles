@@ -3,7 +3,7 @@ import { useAuthContext } from "../auth/AuthHandler.jsx";
 import UserHeader from "../headers/UserHeader";
 import EventsAside from "./EventsAside.jsx";
 import EventCard from "./EventCard"
-import AdminButton from "../admin/AdminButton.jsx";
+import AddButton from "../admin/AddButton.jsx";
 
 function RegisteredEvents() {
   const [events, setEvents] = useState([]);
@@ -47,7 +47,7 @@ function RegisteredEvents() {
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
-              <AdminButton
+              <AddButton
                 type="Add Event"
                 action={() => console.log(hello)}
               />

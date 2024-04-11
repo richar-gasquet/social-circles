@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-import styles from './AdminButton.module.css'
+import styles from './AddButton.module.css'
 
-function AdminButton(props) {
+function AddButton(props) {
     return (
         <button type="button" onClick={props.action}
             className={`btn btn-primary ${styles.button}`}>
@@ -10,9 +10,9 @@ function AdminButton(props) {
     )
 }
 
-export default AdminButton
+export default AddButton
 
-AdminButton.propTypes = {
+addButton.propTypes = {
     type: PropTypes.string,
     action: PropTypes.func
 }

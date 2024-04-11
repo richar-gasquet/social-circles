@@ -1,7 +1,6 @@
-import PropTypes from "prop-types";
-import styles from './Card.module.css';
-import RegistrationModal from "./EventRegistrationModal";
 import { useState } from 'react';
+import PropTypes from "prop-types";
+import styles from './Card.module.css'; 
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toLocaleString();
@@ -31,18 +30,6 @@ function EventCard(props) {
         </h6>
       </div>
       <div className={`card-body d-flex flex-column`}>
-        <RegistrationModal
-          show={show}
-          toggleShow={toggleShow}
-          id={props.id}
-          name={props.name}
-          desc={props.desc}
-          start={props.start}
-          end={props.end}
-          capacity={props.capacity}
-          filled={props.filled}
-          image={props.image}>
-        </RegistrationModal>
       </div>
     </div>
   );
