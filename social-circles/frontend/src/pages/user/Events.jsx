@@ -79,6 +79,7 @@ function Events() {
                 events.map((event) => (
                   <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
                     <EventCard
+                      id={event.event_id}
                       name={event.name}
                       desc={event.desc}
                       start={event.start_time}

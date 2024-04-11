@@ -186,6 +186,35 @@ def add_event_data():
             'status' : 'error',
             'message': 'User not logged in'
         }), 401 # unauthorized
+    
+@app.route('/add-event-registration', methods = ['POST'])
+def add_event_registration():
+    # Check if user is logged in server-side
+    # change this later for admin perms
+    if 'email' in flask.session:
+        try:
+            data = flask.request.json
+            # Get user email and associated registered events
+            event_id = int(data)
+            email = flask.session['email']
+            user_id = db.get_user_id(email)
+            db.add_event_registration(user_id, event_id)
+
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200 # ok
+        # Catch database error
+        except Exception as ex:
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    # Catch authentication error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
 #----------------------------------------------------------------------
 
 # Routes for querying COMMUNITIES data from database

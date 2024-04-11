@@ -163,7 +163,66 @@ def add_event_data(args: dict) -> None:
                         + " administrator.")
     finally:
         _put_connection(connection)
-        
+
+def add_event_registration(user_id, event_id):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                INSERT INTO event_registrations(registr_id, user_id, event_id)
+                VALUES (DEFAULT, %s, %s);
+            ''', (int(user_id), int(event_id)))
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error in registering the"
+                        + " user to this event. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+
+def delete_event_registration(user_id, event_id):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM event_registrations
+                WHERE user_id = %s
+                AND event_id = %s
+            ''', (user_id, event_id))
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error in registering the"
+                        + " user to this event. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+#----------------------------------------------------------------------
+# Get UserId method
+def get_user_id(email: str):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Get user results based on their email
+            cursor.execute('''
+                SELECT user_id
+                FROM users
+                WHERE users.email = %s
+            ''', (email,))    
+            user_results = cursor.fetchone()
+                                
+            # Get userId (index 0 for user's row)
+            userId = user_results[0]
+            connection.commit()
+            return userId
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error in registering the"
+                        + " user to this event. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
 #----------------------------------------------------------------------
 
 # Community methods
