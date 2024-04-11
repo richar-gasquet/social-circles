@@ -368,23 +368,24 @@ def get_community_emails(group_id: int) -> list:
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
-                SELECT *
-                FROM community_registrations
-                WHERE group_id = %s
+                SELECT u.email
+                FROM users u
+                JOIN event_registrations er ON u.user_id = er.user_id
+                WHERE er.group_id = %s;
             ''', (group_id, ))
-            connection.commit()
             email_results = cursor.fetchall()
 
     except Exception as ex:
         connection.rollback()
-        raise Exception("It seems there was an error updating the"
-                        + " community. Please contact the"
+        raise Exception("It seems there was an error getting the"
+                        + " community emails. Please contact the"
                         + " administrator.")
     finally:
         _put_connection(connection)
 
     return email_results        
-    
+
+
 #----------------------------------------------------------------------
 
 # Helper functions

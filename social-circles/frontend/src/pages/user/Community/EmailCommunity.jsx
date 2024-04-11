@@ -5,78 +5,55 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
 function EmailCommunity(props) {
-    const [message, setMessage] = useState("");
-    const [noChangeAlert, setNoChangeAlert] = useState(false);
-    const [successAlert, setSuccessAlert] = useState(false);
-    const [errorAlert, setErrorAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [noChangeAlert, setNoChangeAlert] = useState(false);
+  const [successAlert, setSuccessAlert] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(false);
 
-    const getEmails = async (e) => {
-        try {
-            const request = await fetch(
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (message.trim().length > 0) {
+      setNoChangeAlert(false);
+      try {
+          const request = await fetch(
             `${import.meta.env.VITE_BACKEND_URL}/get-community-emails`,
             {
                 credentials: "include",
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(props.id)
+                body: JSON.stringify(props.group_id)
             }
-            );
-            if (request.ok) {
-                encoded_msg = encodeURIComponent(message)
-                email_href_str = "mailto:" + request.results + "?subject=" + encoded_msg;
-            } else {
-            setSuccessAlert(false);
-            setErrorAlert(true);
-            }
+          );
+          if (request.ok) {
+              setSuccessAlert(true);
+              setErrorAlert(false);
+              console.log(request.results);
+              console.log(message);
+              encoded_msg = encodeURIComponent(message);
+              mailToLink = "mailto:" + request.results + "?subject=" + encoded_msg;
+              console.log(mailToLink);
+              window.open(mailToLink);
+          } else {
+          setSuccessAlert(false);
+          setErrorAlert(true);
+          }
         } catch (error) {
             setSuccessAlert(false);
             setErrorAlert(true);
         }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (message.trim().length > 0) {
-            setNoChangeAlert(false)
-            try {
-                const request = await fetch(
-                `${import.meta.env.VITE_BACKEND_URL}/get-community-emails`,
-                {
-                    credentials: "include",
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(props.id)
-                }
-                );
-                if (request.ok) {
-                    setSuccessAlert(true);
-                    setErrorAlert(false);
-                    encoded_msg = encodeURIComponent(message)
-                    email_href_str = "mailto:" + request.results + "?subject=" + encoded_msg;
-                } else {
-                setSuccessAlert(false);
-                setErrorAlert(true);
-                }
-            } catch (error) {
-                setSuccessAlert(false);
-                setErrorAlert(true);
-            }
-        } else {
-            setNoChangeAlert(true);
-            setSuccessAlert(false);
-            setErrorAlert(false);
-        }
+    } else {
+        setNoChangeAlert(true);
+        setSuccessAlert(false);
+        setErrorAlert(false);
+    }
   };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header>
-        <Modal.Title>Email Community: {props.name} </Modal.Title>
+        <Modal.Title>Email Community: {props.groupName} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {successAlert && (
@@ -109,7 +86,7 @@ function EmailCommunity(props) {
             Cancel
           </Button>
           <Button variant="primary" type="submit">
-            <a href="{{ email_href_str }}">Send Email</a>
+            Submit
           </Button>
         </Form>
       </Modal.Body>
