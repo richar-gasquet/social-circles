@@ -24,7 +24,7 @@ def _put_connection(conn):
 
 #----------------------------------------------------------------------
 
-# User methods
+# SQL queries for USERS
 
 # Get user authorization (regular user / admin)
 def get_user_authorization(email: str) -> dict:
@@ -46,36 +46,9 @@ def get_user_authorization(email: str) -> dict:
                         + " Please contact the administrator.")
     return is_admin
 
-# DB HAS TO BE FIXED BEFORE THIS METHOD IS FINISHED SINCE THERES A TYPO
-
-# def get_profile_info(email) -> list:
-    # """ Get all information pertaining to user
-
-    # Returns:
-    #     list: list containing all events information about the user
-    # """
-    
-    # try: 
-    #     with psycopg2.connect(DATABASE_URL) as connection:
-    #         with connection.cursor() as cursor: 
-    #             # Get all available events' info from event table
-    #             cursor.execute('''
-    #                 SELECT users.first_name, users.last_name, users.preferred_name
-    #                     users.pronouns, users.email, users.phone_num,
-    #                     users.address, users.marital_status
-    #             ''')
-                
-    #             events_info = cursor.fetchall()
-    #             return events_info
-                
-    # except Exception as ex:
-    #     raise Exception("It seems there was an error getting all"
-    #                     + " events. Please contact the administrator.")
-
-
 #----------------------------------------------------------------------
 
-# Event methods
+# SQL queries for events CRUD
 
 def get_available_events_overviews() -> list:
     all_events_info = []
@@ -138,23 +111,26 @@ def get_registered_events_overviews(email: str) -> list:
         
     return registered_events_info
 
-def add_event_data(args: dict) -> None:
+def add_event(args: dict) -> None:
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
             event_name = args.get('event_name')
-            capacity = args.get('capacity')
+            capacity = int(args.get('capacity'))
             event_desc = args.get('event_desc')
             image_link = args.get('image_link')
-            start_time = args.get('start_time')
-            end_time = args.get('end_time')
+            start_time = args.get('start_time').isoformat()
+            end_time = args.get('end_time').isoformat()
+            
+            values = (event_name, capacity, event_desc, image_link,
+                      start_time, end_time)
             
             cursor.execute('''
                 INSERT INTO events(event_id, event_name,
                     capacity, filled_spots, event_desc,
                     image_link, start_time, end_time)
-                    VALUES (DEFAULT, %s, %s, 0, %s, %s, %s, %s);               
-            ''', (event_name, int(capacity), event_desc, image_link, start_time.isoformat(), end_time.isoformat()))
+                VALUES (DEFAULT, %s, %s, 0, %s, %s, %s, %s);               
+            ''', values)
             connection.commit()
     except Exception:
         connection.rollback()
@@ -191,31 +167,6 @@ def delete_event_registration(user_id, event_id):
                 AND event_id = %s
             ''', (user_id, event_id))
             connection.commit()
-    except Exception:
-        connection.rollback()
-        raise Exception("It seems there was an error in registering the"
-                        + " user to this event. Please contact the"
-                        + " administrator.")
-    finally:
-        _put_connection(connection)
-#----------------------------------------------------------------------
-# Get UserId method
-def get_user_id(email: str):
-    connection = _get_connection()
-    try:
-        with connection.cursor() as cursor:
-            # Get user results based on their email
-            cursor.execute('''
-                SELECT user_id
-                FROM users
-                WHERE users.email = %s
-            ''', (email,))    
-            user_results = cursor.fetchone()
-                                
-            # Get userId (index 0 for user's row)
-            userId = user_results[0]
-            connection.commit()
-            return userId
     except Exception:
         connection.rollback()
         raise Exception("It seems there was an error in registering the"
@@ -294,11 +245,13 @@ def add_community(args: dict) -> None:
             group_desc = args.get('group_desc')
             image_link = args.get('image_link')
             
+            values = (group_name, group_desc, image_link)
+            
             cursor.execute('''
                 INSERT INTO communities (group_id, group_name,
                     group_desc, member_count, image_link)
                 VALUES (DEFAULT, %s, %s, 0, %s)               
-            ''', (group_name, group_desc, image_link, ))
+            ''', values)
             connection.commit()
     except Exception:
         connection.rollback()

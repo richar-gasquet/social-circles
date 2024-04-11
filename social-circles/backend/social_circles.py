@@ -20,22 +20,22 @@ flask_cors.CORS(app, supports_credentials=True, resources={r"/*": {"origins": RE
 
 #----------------------------------------------------------------------
 
-# Routes for authentication
+# Routes for authentication and authorization
 
 @app.route('/login', methods = ['GET'])
-def login():
+def login_route():
     return auth.login()
 
 @app.route('/login/callback', methods = ['GET'])
-def callback():
+def callback_route():
     return auth.callback()
 
 @app.route('/logout', methods = ['GET'])
-def logout():
+def logout_route():
     return auth.logout()
 
 @app.route('/authenticate', methods = ['GET'])
-def authenticate():
+def authenticate_route():
     return auth.authenticate()
 
 #----------------------------------------------------------------------
@@ -58,10 +58,10 @@ def get_user_data():
         
 #----------------------------------------------------------------------
 
-# Routes for querying EVENTS data from database
+# Routes for requesting EVENTS data from database
 
 @app.route('/get-available-events', methods = ['GET'])
-def get_available_events():
+def get_available_events_route():
     """_summary_
 
     Returns:
@@ -106,7 +106,7 @@ def get_available_events():
         }), 401 # unauthorized
         
 @app.route('/get-registered-events', methods = ['GET'])
-def get_registered_events():
+def get_registered_events_route():
     """_summary_
 
     Returns:
@@ -152,8 +152,8 @@ def get_registered_events():
             'message': 'User not logged in'
         }), 401 # unauthorized
 
-@app.route('/add-event-data', methods = ['POST'])
-def add_event_data():
+@app.route('/add-event', methods = ['POST'])
+def add_event_route():
     if 'email' in flask.session:
         try:
             is_admin = db.get_user_authorization(flask.session['email'])
@@ -163,18 +163,17 @@ def add_event_data():
             event_data = flask.request.json
             event_dict = {
                 'event_name' : event_data['event_name'],
-                'capacity' : int(event_data['capacity']),
+                'capacity' : event_data['capacity'],
                 'event_desc' : event_data['event_desc'],
                 'image_link' : event_data['image_link'],
                 'start_time' : parser.parse(event_data['start_time']),
                 'end_time' : parser.parse(event_data['end_time'])
             }
             
-            db.add_event_data(event_dict)
+            db.add_event(event_dict)
             return flask.jsonify({
                 'status' : 'success'
-            })
-        
+            }), 200 # ok
         except Exception as ex:
             print(ex)
             return flask.jsonify({
@@ -188,18 +187,11 @@ def add_event_data():
         }), 401 # unauthorized
     
 @app.route('/add-event-registration', methods = ['POST'])
-def add_event_registration():
+def add_event_registration_route():
     # Check if user is logged in server-side
     # change this later for admin perms
     if 'email' in flask.session:
         try:
-            data = flask.request.json
-            # Get user email and associated registered events
-            event_id = int(data)
-            email = flask.session['email']
-            user_id = db.get_user_id(email)
-            db.add_event_registration(user_id, event_id)
-
             return flask.jsonify({
                 'status' : 'success'
             }), 200 # ok
@@ -220,7 +212,7 @@ def add_event_registration():
 # Routes for querying COMMUNITIES data from database
 
 @app.route('/get-available-communities', methods = ['GET'])
-def get_available_communities():
+def get_available_communities_route():
     """_summary_
 
     Returns:
@@ -261,7 +253,7 @@ def get_available_communities():
         }), 401 # unauthorized
 
 @app.route('/get-registered-communities', methods = ['GET'])
-def get_registered_communities():
+def get_registered_communities_route():
     """_summary_
 
     Returns:
@@ -320,8 +312,7 @@ def add_community_route():
             db.add_community(comm_dict)
             return flask.jsonify({
                 'status' : 'success'
-            })
-        
+            }), 200 # ok
         except Exception as ex:
             print(ex)
             return flask.jsonify({

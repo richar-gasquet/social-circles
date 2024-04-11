@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useAuthContext } from "../auth/AuthHandler.jsx";
 import UserHeader from "../headers/UserHeader";
 import EventsAside from "./EventsAside.jsx";
 import EventCard from "./EventCard"
+import AdminButton from "../admin/AdminButton.jsx";
 
 function RegisteredEvents() {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
+
+  const { isAdmin } = useAuthContext();
 
   useEffect(() => {
     const getRegisteredEvents = async () => {

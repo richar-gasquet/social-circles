@@ -33,7 +33,7 @@ function AddEvent(props) {
 
     try {
       const request = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/add-event-data`,
+        `${import.meta.env.VITE_BACKEND_URL}/add-event`,
         {
           credentials: "include",
           method: "POST",
