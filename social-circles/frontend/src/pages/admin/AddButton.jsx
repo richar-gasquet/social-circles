@@ -12,7 +12,7 @@ function AddButton(props) {
 
 export default AddButton
 
-addButton.propTypes = {
+AddButton.propTypes = {
     type: PropTypes.string,
     action: PropTypes.func
 }

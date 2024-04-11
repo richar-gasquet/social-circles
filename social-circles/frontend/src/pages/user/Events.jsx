@@ -13,7 +13,7 @@ function Events() {
   const [showAddEvent, setShowAddEvent] = useState(false);
 
   const { isAdmin } = useAuthContext();
-d
+
   useEffect(() => {
     fetchAllEvents()
   }, []);

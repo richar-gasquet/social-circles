@@ -3,7 +3,7 @@ import UserHeader from "../../headers/UserHeader.jsx";
 import CommunitiesAside from "./CommunitiesAside.jsx"
 import CommunityCard from "./CommunityCard.jsx"
 import AddCommunity from './AddCommunity.jsx';
-import AdminButton from "../../admin/AdminButton.jsx";
+import AddButton from "../../admin/AddButton.jsx";
 import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
 function Communities() {
@@ -56,10 +56,10 @@ function Communities() {
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
-              <AdminButton
+              <AddButton
                 type="Add Community"
                 action={handleShowAddComm}>
-              </AdminButton>
+              </AddButton>
             </div>
           )}
         </div>

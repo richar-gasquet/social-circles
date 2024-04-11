@@ -24,7 +24,7 @@ def _put_connection(conn):
 
 #----------------------------------------------------------------------
 
-# SQL queries for USERS
+# Users CRUD
 
 # Get user authorization (regular user / admin)
 def get_user_authorization(email: str) -> dict:
@@ -48,7 +48,7 @@ def get_user_authorization(email: str) -> dict:
 
 #----------------------------------------------------------------------
 
-# SQL queries for events CRUD
+# Events CRUD
 
 def get_available_events_overviews() -> list:
     all_events_info = []
@@ -140,15 +140,12 @@ def add_event(args: dict) -> None:
     finally:
         _put_connection(connection)
 
-def add_event_registration(user_id, event_id):
+
+def register_for_event():
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
-            cursor.execute('''
-                INSERT INTO event_registrations(registr_id, user_id, event_id)
-                VALUES (DEFAULT, %s, %s);
-            ''', (int(user_id), int(event_id)))
-            connection.commit()
+            pass
     except Exception:
         connection.rollback()
         raise Exception("It seems there was an error in registering the"
@@ -176,7 +173,7 @@ def delete_event_registration(user_id, event_id):
         _put_connection(connection)
 #----------------------------------------------------------------------
 
-# Community methods
+# Communities CRUD
 
 def get_all_communities() -> list:
     all_comms_info = []

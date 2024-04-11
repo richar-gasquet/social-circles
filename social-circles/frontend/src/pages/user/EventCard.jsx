@@ -3,13 +3,16 @@ import PropTypes from "prop-types";
 import styles from './Card.module.css'; 
 
 function EventCard(props) {
+  const [showRegisterEvent, setShowRegisterEvent] = useState(false);
+
+  const handleShowRegisterEvent = () => setShowRegisterEvent(true);
+  const handleCloseRegisterEvent = () => {
+    setShowRegisterEvent(false);
+    props.fetchAllEvents()
+  }
+
   const formattedStart = new Date(props.start).toLocaleString();
   const formattedEnd = new Date(props.end).toLocaleString();
-  const [show, setShow] = useState(false);
-
-  function toggleShow() {
-    setShow(!show);
-  }
 
   return (
     <div className={`card h-100 ${styles.card}`}>
@@ -28,8 +31,6 @@ function EventCard(props) {
           <strong>Start: </strong>{formattedStart}<br />
           <strong>End: </strong>{formattedEnd}
         </h6>
-      </div>
-      <div className={`card-body d-flex flex-column`}>
       </div>
     </div>
   );
