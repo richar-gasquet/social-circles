@@ -360,7 +360,30 @@ def delete_community(comm_id: int) -> None:
                         + " community. Please contact the"
                         + " administrator.")
     finally:
-        _put_connection(connection)        
+        _put_connection(connection)
+
+def get_community_emails(group_id: int) -> list:
+    email_results = []
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT *
+                FROM community_registrations
+                WHERE group_id = %s
+            ''', (group_id, ))
+            connection.commit()
+            email_results = cursor.fetchall()
+
+    except Exception as ex:
+        connection.rollback()
+        raise Exception("It seems there was an error updating the"
+                        + " community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+
+    return email_results        
     
 #----------------------------------------------------------------------
 
