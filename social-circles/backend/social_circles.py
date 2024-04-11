@@ -2,13 +2,20 @@ import os
 import flask
 import flask_cors
 from flask_session import Session
+import flask_wtf.csrf
 import auth
 import postgres_db as db
 from dateutil import parser
+from datetime import timedelta
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+
+flask_wtf.csrf.CSRFProtect(app)
+
 app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
 app.config["SESSION_COOKIE_SAMESITE"] = "None" # Allow cookies to be sent in cross-site requests
 app.config['SESSION_COOKIE_SECURE'] = True  # Ensure cookies are sent in secure channel (HTTPS)
@@ -222,7 +229,8 @@ def get_available_communities_route():
     if 'email' in flask.session:
         try:
             # Get available communities
-            all_comms_info = db.get_all_communities()
+            email = flask.session['email']
+            all_comms_info = db.get_all_communities(email)
             comms_list = []
             
             # Convert each community into a dict
@@ -232,7 +240,8 @@ def get_available_communities_route():
                     'name' : comm[1],
                     'desc' : comm[2],
                     'count' : comm[3],
-                    'image' : comm[4]
+                    'image' : comm[4],
+                    'isRegistered' : comm[5]
                 }
                 comms_list.append(comm_dict)
                 
@@ -384,3 +393,7 @@ def delete_community_route():
             'status' : 'error',
             'message': 'User not logged in'
         }), 401 # unauthorized
+        
+@app.route('/add-community-registration', methods = ['POST'])
+def add_community_registration_route():
+    pass
