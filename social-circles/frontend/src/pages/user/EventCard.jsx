@@ -3,14 +3,6 @@ import PropTypes from "prop-types";
 import styles from './Card.module.css'; 
 
 function EventCard(props) {
-  const [showRegisterEvent, setShowRegisterEvent] = useState(false);
-
-  const handleShowRegisterEvent = () => setShowRegisterEvent(true);
-  const handleCloseRegisterEvent = () => {
-    setShowRegisterEvent(false);
-    props.fetchAllEvents()
-  }
-
   const formattedStart = new Date(props.start).toLocaleString();
   const formattedEnd = new Date(props.end).toLocaleString();
 
