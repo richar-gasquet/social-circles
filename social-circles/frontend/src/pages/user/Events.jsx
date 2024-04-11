@@ -4,38 +4,47 @@ import UserHeader from "../headers/UserHeader";
 import AdminButton from "../admin/AdminButton.jsx";
 import EventsAside from "./EventsAside.jsx";
 import EventCard from "./EventCard.jsx";
+import AddEvent from "./AddEvent.jsx";
 
 function Events() {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
+  const [showAddEvent, setShowAddEvent] = useState(false);
 
   const { isAdmin } = useAuthContext();
 
   useEffect(() => {
-    const getAllEvents = async () => {
-      try {
-        setQuerying(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
-          { credentials: "include" }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setEvents(data.results);
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch event data: ", error);
-        setError("Server error. Please contact the administrator");
-      } finally {
-        setQuerying(false);
-      }
-    };
-    getAllEvents();
+    fetchAllEvents()
   }, []);
+
+  const fetchAllEvents = async () => {
+    try {
+      setQuerying(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
+        { credentials: "include" }
+      )
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data.results);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message);
+      }
+    } catch (error) {
+      console.error("Failed to fetch event data: ", error);
+      setError("Server error. Please contact the administrator.")
+    } finally {
+      setQuerying(false);
+    }
+  };
+
+  const handleShowAddEvent = () => setShowAddEvent(true)
+  const handleCloseAddEvent = () => {
+    setShowAddEvent(false);
+    fetchAllEvents();
+  };
 
   return (
     <>
@@ -49,8 +58,8 @@ function Events() {
             <div className="col d-flex justify-content-end">
               <AdminButton
                 type="Add Event"
-                action={() => console.log(hello)}
-              />
+                action={handleShowAddEvent}>
+              </AdminButton>
             </div>
           )}
         </div>
@@ -76,7 +85,9 @@ function Events() {
                       end={event.end_time}
                       capacity={event.capacity}
                       filled={event.filled_spots}
-                      image={event.image}>
+                      image={event.image}
+                      isAdmin={isAdmin}
+                      fetchAllEvents={fetchAllEvents}>
                     </EventCard>
                   </div>
                 ))
@@ -89,6 +100,12 @@ function Events() {
           </div>
         </div>
       </div>
+      {showAddEvent && isAdmin && (
+        <AddEvent
+          isShown={showAddEvent}
+          handleClose={handleCloseAddEvent}>
+        </AddEvent>
+      )}
     </>
   );
 }

@@ -137,6 +137,32 @@ def get_registered_events_overviews(email: str) -> list:
         _put_connection(connection)
         
     return registered_events_info
+
+def add_event_data(args: dict) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            event_name = args.get('event_name')
+            capacity = args.get('capacity')
+            event_desc = args.get('event_desc')
+            image_link = args.get('image_link')
+            start_time = args.get('start_time')
+            end_time = args.get('end_time')
+            
+            cursor.execute('''
+                INSERT INTO events(event_id, event_name,
+                    capacity, filled_spots, event_desc,
+                    image_link, start_time, end_time)
+                    VALUES (DEFAULT, %s, %s, 0, %s, %s, %s, %s);               
+            ''', (event_name, int(capacity), event_desc, image_link, start_time.isoformat(), end_time.isoformat()))
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error creating the"
+                        + " community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
         
 #----------------------------------------------------------------------
 
@@ -205,8 +231,8 @@ def add_community(args: dict) -> None:
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
-            group_name = args.get('group_name', 'No group name')
-            group_desc = args.get('group_desc', 'No group description')
+            group_name = args.get('group_name')
+            group_desc = args.get('group_desc')
             image_link = args.get('image_link')
             
             cursor.execute('''

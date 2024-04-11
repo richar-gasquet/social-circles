@@ -4,6 +4,7 @@ import flask_cors
 from flask_session import Session
 import auth
 import postgres_db as db
+from dateutil import parser
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
@@ -150,7 +151,41 @@ def get_registered_events():
             'status' : 'error',
             'message': 'User not logged in'
         }), 401 # unauthorized
+
+@app.route('/add-event-data', methods = ['POST'])
+def add_event_data():
+    if 'email' in flask.session:
+        try:
+            is_admin = db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("You are not authorized!")
+            
+            event_data = flask.request.json
+            event_dict = {
+                'event_name' : event_data['event_name'],
+                'capacity' : int(event_data['capacity']),
+                'event_desc' : event_data['event_desc'],
+                'image_link' : event_data['image_link'],
+                'start_time' : parser.parse(event_data['start_time']),
+                'end_time' : parser.parse(event_data['end_time'])
+            }
+            
+            db.add_event_data(event_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            })
         
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
 #----------------------------------------------------------------------
 
 # Routes for querying COMMUNITIES data from database
