@@ -4,11 +4,13 @@ import CardButton from "../../admin/CardButton";
 import RegisterButton from "../RegisterButton";
 import EditCommunity from "./EditCommunity";
 import DeleteCommunity from "./DeleteCommunity";
+import EmailCommunity from "./EmailCommunity";
 import styles from '../Card.module.css';
 
 function CommunityCard(props) {
   const [showDeleteComm, setShowDeleteComm] = useState(false)
   const [showEditComm, setShowEditComm] = useState(false)
+  const [showEmail, setShowEmail] = useState(false)
 
   const handleShowDeleteComm = () => setShowDeleteComm(true)
   const handleCloseDeleteComm = () => {
@@ -19,6 +21,12 @@ function CommunityCard(props) {
   const handleShowEditComm = () => setShowEditComm(true)
   const handleCloseEditComm = () => {
     setShowEditComm(false)
+    props.fetchCommunities()
+  }
+
+  const handleShowEmail = () => setShowEmail(true)
+  const handleCloseEmail = () => {
+    setShowEmail(false)
     props.fetchCommunities()
   }
 
@@ -86,10 +94,15 @@ function CommunityCard(props) {
                 message="Edit Community"
                 icon="fas fa-edit">
               </CardButton>              
-              <CardButton 
+              <CardButton className={`mb-2`}
                 action={handleShowDeleteComm}
                 message="Delete Community"
                 icon="fas fa-trash">
+              </CardButton>
+              <CardButton 
+                action={handleShowEmail}
+                message="Email this Community"
+                icon="fas fa-envelope">
               </CardButton>
             </div>
           )}
@@ -130,6 +143,14 @@ function CommunityCard(props) {
           groupDesc={props.desc}
           imageLink={props.image}>
         </EditCommunity>
+      )}
+      {showEmail && props.isAdmin && (
+      <EmailCommunity
+        isShown={showEmail}
+        handleClose={handleCloseEmail}
+        group_id={props.group_id}
+        groupName={props.name}>
+      </EmailCommunity>
       )}
     </>
   );

@@ -408,6 +408,29 @@ def delete_community_registration(email: str, group_id: int) -> None:
                         + " administrator.")
     finally:
         _put_connection(connection)
+
+def get_community_emails(group_id: int) -> list:
+    email_results = []
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT users.email
+                FROM users
+                JOIN community_registrations ON users.user_id = community_registrations.user_id
+                WHERE community_registrations.group_id = %s;
+            ''', (group_id, ))
+            email_results = cursor.fetchall()
+
+    except Exception:
+        connection.rollback()
+        raise Exception("It seems there was an error getting the"
+                        + " community emails. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+
+    return email_results   
 #----------------------------------------------------------------------
 
 # Helper functions
