@@ -43,16 +43,13 @@ function CommunityCard(props) {
         }
       );
       if (request.ok) {
-        props.setSuccessRegistrAlert(true);
-        props.setErrorRegistrAlert(false);
+        props.addAlert("success", "Registration successful!", `You have registered for ${props.name}.`);
         props.updateCommunities(props.group_id, true);
       } else {
-        props.setSuccessRegistrAlert(false);
-        props.setErrorRegistrAlert(true);
+        props.addAlert("danger", "Registration failed!", `We couldn't register you for ${props.name}.`);
       }
     } catch (error) {
-      props.setSuccessRegistrAlert(false);
-      props.setErrorRegistrAlert(true);
+      props.addAlert("danger", "Registration error!", `An error occurred while registering for ${props.name}.`);
     }
   }
 
@@ -69,16 +66,13 @@ function CommunityCard(props) {
         }
       )
       if (request.ok) {
-        props.setSuccessCancelAlert(true);
-        props.setErrorCancelAlert(false);
+        props.addAlert("success", "Cancellation successful!", `You have canceled your registration for ${props.name}.`);
         props.updateCommunities(props.group_id, false);
       } else {
-        props.setSuccessCancelAlert(false);
-        props.setErrorCancelAlert(true);
+        props.addAlert("danger", "Cancellation failed!", `We couldn't cancel your registration for ${props.name}.`);
       }
     } catch (error) {
-      props.setSuccessCancelAlert(false);
-      props.setErrorCancelAlert(true);
+      props.addAlert("danger", "Cancellation error!", `An error occurred while canceling your registration for ${props.name}.`);
     }
   }
 

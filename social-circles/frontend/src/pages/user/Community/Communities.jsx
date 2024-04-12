@@ -9,15 +9,9 @@ import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
 function Communities() {
   const [communities, setCommunities] = useState([]);
-  const [error, setError] = useState("");
+  const [alerts, setAlerts] = useState([])
   const [isQuerying, setQuerying] = useState(true);
   const [showAddCommunity, setShowAddCommunity] = useState(false);
-
-  /* Stateful variables for handling alerts for registering/cancelling */
-  const [successRegistrAlert, setSuccessRegistrAlert] = useState(false);
-  const [errorRegistrAlert, setErrorRegistrAlert] = useState(false);
-  const [successCancelAlert, setSuccessCancelAlert] = useState(false);
-  const [errorCancelAlert, setErrorCancelAlert] = useState(false);
 
   const { isAdmin } = useAuthContext()
 
@@ -57,6 +51,14 @@ function Communities() {
     }))
   }
 
+  const addAlert = (type, header, text) => {
+    setAlerts(prevAlerts => [...prevAlerts, {id: Date.now(), type, header, text }]);
+  }
+
+  const removeAlert= (id) => {
+    setAlerts(prevAlerts => prevAlerts.filter(alert => alert.id !== id));
+  }
+
   const handleShowAddCommunity = () => setShowAddCommunity(true)
   const handleCloseAddCommunity = () => {
     setShowAddComm(false);
@@ -67,44 +69,15 @@ function Communities() {
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-        {successRegistrAlert && (
-          <AlertBox
-            type="success"
-            header="Success!"
-            text="You have registered for the event!"
-            show={successRegistrAlert}
-            handleClose={setSuccessRegistrAlert}>
+        {alerts.map((alert) => (
+          <AlertBox 
+            key={alert.id} 
+            type={alert.type} 
+            header={alert.header} 
+            text={alert.text} 
+            handleClose={() => removeAlert(alert.id)}>
           </AlertBox>
-        )}
-        {errorRegistrAlert && (
-          <AlertBox
-            type="danger"
-            header="Error!"
-            text="We couldn't register you for the event!
-                  Please try again later or contact the administrator."
-            show={errorRegistrAlert}
-            handleClose={setErrorRegistrAlert}>
-          </AlertBox>
-        )}
-        {successCancelAlert && (
-          <AlertBox
-            type="success"
-            header="Success!"
-            text="You have canceled your registration for the event!"
-            show={successCancelAlert}
-            handleClose={setSuccessCancelAlert}>
-          </AlertBox>
-        )}
-        {errorCancelAlert && (
-          <AlertBox
-            type="danger"
-            header="Error!"
-            text="We couldn't cancel your registration you for the event!
-                  Please try again later or contact the administrator."
-            show={errorCancelAlert}
-            handleClose={setErrorCancelAlert}>
-          </AlertBox>
-        )}
+        ))}
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>All Communities</h1>
@@ -142,10 +115,7 @@ function Communities() {
                       isRegistered={comm.isRegistered}
                       isAdmin={isAdmin}
                       updateCommunities={updateCommunities}
-                      setSuccessRegistrAlert={setSuccessRegistrAlert}
-                      setErrorRegistrAlert={setErrorRegistrAlert}
-                      setSuccessCancelAlert={setSuccessCancelAlert}
-                      setErrorCancelAlert={setErrorCancelAlert}>
+                      addAlert={addAlert}>
                     </CommunityCard>
                   </div>
                 ))
@@ -169,4 +139,3 @@ function Communities() {
 }
 
 export default Communities;
-
