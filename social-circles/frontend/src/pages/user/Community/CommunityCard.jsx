@@ -41,7 +41,7 @@ function CommunityCard(props) {
                 message="Edit Community"
                 icon="fas fa-edit">
               </CardButton>              
-              <CardButton 
+              <CardButton className={`mb-2`}
                 action={handleShowDeleteComm}
                 message="Delete Community"
                 icon="fas fa-trash">
