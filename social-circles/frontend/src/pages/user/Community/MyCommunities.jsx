@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import UserHeader from "../../headers/UserHeader.jsx";
 import CommunitiesAside from "./CommunitiesAside.jsx"
 import CommunityCard from "./CommunityCard.jsx"
-import AdminButton from "../../admin/AdminButton.jsx";
+import AddButton from "../../admin/AddButton.jsx";
 import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
 function MyCommunities() {
@@ -48,7 +48,7 @@ function MyCommunities() {
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
-              <AdminButton
+              <AddButton
                 type="Add Community"
                 action={() => console.log(hello)}
               />

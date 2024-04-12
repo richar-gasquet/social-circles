@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react'
+import AlertBox from '../AlertBox.jsx';
 import UserHeader from "../../headers/UserHeader.jsx";
 import CommunitiesAside from "./CommunitiesAside.jsx"
 import CommunityCard from "./CommunityCard.jsx"
 import AddCommunity from './AddCommunity.jsx';
-import AdminButton from "../../admin/AdminButton.jsx";
+import AddButton from "../../admin/AddButton.jsx";
 import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
 function Communities() {
-  const [comms, setComms] = useState([]);
+  const [communities, setCommunities] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
-  const [showAddComm, setShowAddComm] = useState(false)
+  const [showAddCommunity, setShowAddCommunity] = useState(false);
+
+  /* Stateful variables for handling alerts for registering/cancelling */
+  const [successRegistrAlert, setSuccessRegistrAlert] = useState(false);
+  const [errorRegistrAlert, setErrorRegistrAlert] = useState(false);
+  const [successCancelAlert, setSuccessCancelAlert] = useState(false);
+  const [errorCancelAlert, setErrorCancelAlert] = useState(false);
 
   const { isAdmin } = useAuthContext()
 
@@ -27,7 +34,7 @@ function Communities() {
       )
       if (response.ok) {
         const data = await response.json();
-        setComms(data.results);
+        setCommunities(data.results);
       } else {
         const errorData = await response.json();
         setError(errorData.message);
@@ -40,8 +47,18 @@ function Communities() {
     }
   };
 
-  const handleShowAddComm = () => setShowAddComm(true)
-  const handleCloseAddComm = () => {
+  const updateCommunities = (group_id, registration) => {
+    setCommunities(communities.map(community => {
+      if (community.group_id === group_id) {
+        return {...community, isRegistered: registration};
+      } else {
+        return community;
+      }
+    }))
+  }
+
+  const handleShowAddCommunity = () => setShowAddCommunity(true)
+  const handleCloseAddCommunity = () => {
     setShowAddComm(false);
     fetchAllCommunities();
   };
@@ -50,16 +67,54 @@ function Communities() {
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
+        {successRegistrAlert && (
+          <AlertBox
+            type="success"
+            header="Success!"
+            text="You have registered for the event!"
+            show={successRegistrAlert}
+            handleClose={setSuccessRegistrAlert}>
+          </AlertBox>
+        )}
+        {errorRegistrAlert && (
+          <AlertBox
+            type="danger"
+            header="Error!"
+            text="We couldn't register you for the event!
+                  Please try again later or contact the administrator."
+            show={errorRegistrAlert}
+            handleClose={setErrorRegistrAlert}>
+          </AlertBox>
+        )}
+        {successCancelAlert && (
+          <AlertBox
+            type="success"
+            header="Success!"
+            text="You have canceled your registration for the event!"
+            show={successCancelAlert}
+            handleClose={setSuccessCancelAlert}>
+          </AlertBox>
+        )}
+        {errorCancelAlert && (
+          <AlertBox
+            type="danger"
+            header="Error!"
+            text="We couldn't cancel your registration you for the event!
+                  Please try again later or contact the administrator."
+            show={errorCancelAlert}
+            handleClose={setErrorCancelAlert}>
+          </AlertBox>
+        )}
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>All Communities</h1>
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
-              <AdminButton
+              <AddButton
                 type="Add Community"
-                action={handleShowAddComm}>
-              </AdminButton>
+                action={handleShowAddCommunity}>
+              </AddButton>
             </div>
           )}
         </div>
@@ -75,8 +130,8 @@ function Communities() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : comms.length > 0 ? (
-                comms.map((comm) => (
+              ) : communities.length > 0 ? (
+                communities.map((comm) => (
                   <div key={comm.group_id} className="col-lg-6 col-md-6 col-sm-12 mt-3">
                     <CommunityCard
                       group_id={comm.group_id}
@@ -84,8 +139,13 @@ function Communities() {
                       desc={comm.desc}
                       count={comm.count}
                       image={comm.image}
+                      isRegistered={comm.isRegistered}
                       isAdmin={isAdmin}
-                      fetchAllCommunities={fetchAllCommunities}>
+                      updateCommunities={updateCommunities}
+                      setSuccessRegistrAlert={setSuccessRegistrAlert}
+                      setErrorRegistrAlert={setErrorRegistrAlert}
+                      setSuccessCancelAlert={setSuccessCancelAlert}
+                      setErrorCancelAlert={setErrorCancelAlert}>
                     </CommunityCard>
                   </div>
                 ))
@@ -98,10 +158,10 @@ function Communities() {
           </div>
         </div>
       </div>
-      {showAddComm && isAdmin && (
+      {showAddCommunity && isAdmin && (
         <AddCommunity
-          isShown={showAddComm}
-          handleClose={handleCloseAddComm}>
+          isShown={showAddCommunity}
+          handleClose={handleCloseAddCommunity}>
         </AddCommunity>
       )}
     </>

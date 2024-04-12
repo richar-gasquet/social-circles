@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useAuthContext } from "../auth/AuthHandler.jsx";
 import UserHeader from "../headers/UserHeader";
 import EventsAside from "./EventsAside.jsx";
 import EventCard from "./EventCard"
+import AddButton from "../admin/AddButton.jsx";
 
 function RegisteredEvents() {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
+
+  const { isAdmin } = useAuthContext();
 
   useEffect(() => {
     const getRegisteredEvents = async () => {
@@ -43,7 +47,7 @@ function RegisteredEvents() {
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
-              <AdminButton
+              <AddButton
                 type="Add Event"
                 action={() => console.log(hello)}
               />
@@ -59,7 +63,7 @@ function RegisteredEvents() {
                 <div className="col-12 d-flex justify-content-center">
                   <div className="spinner-border mt-5" role="status"
                     style={{ width: '10rem', height: '10rem'}}>
-                    <span class="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               ) : events.length > 0 ? (
