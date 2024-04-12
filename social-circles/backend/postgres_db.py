@@ -26,6 +26,38 @@ def _put_connection(conn):
 
 # Users CRUD
 
+def get_user_details(email: str):
+    try:
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT *
+                    FROM users
+                    WHERE email = %s
+                ''', (email,))
+                user_row = cursor.fetchone()
+                
+                if user_row:
+                    return {
+                        'first_name' : user_row[1],
+                        'last_name' : user_row[2],
+                        'email': user_row[3],
+                        'is_admin': user_row[4],  
+                        'address' : user_row[5],
+                        'preferred_name' : user_row[6],
+                        'pronouns' : user_row[7],
+                        'phone_number' : user_row[8],
+                        'marital_status' : user_row[9],
+                        'family_circumstance' : user_row[10],
+                        'community_status' : user_row[11],
+                        'interests' : user_row[12],
+                        'personal_identity' : user_row[13]
+                    }
+    except Exception as ex:
+        raise Exception("It seems there was an error getting user data."
+                        + " Please contact the administrator.")
+    return None
+
 # Get user authorization (regular user / admin)
 def get_user_authorization(email: str) -> dict:
     is_admin = False
@@ -45,6 +77,100 @@ def get_user_authorization(email: str) -> dict:
         raise Exception("It seems there was an error getting user data."
                         + " Please contact the administrator.")
     return is_admin
+
+def add_user(args: dict):
+    try:
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as connection:
+            with connection.cursor() as cursor:
+                first_name = args.get('first_name')
+                last_name = args.get('last_name')
+                email = args.get('email')
+                address = args.get('address')
+                preferred_name = args.get('preferred_name')
+                pronouns = args.get('pronouns')
+                phone_number = args.get('phone_number')
+                marital_status = args.get('marital_status')
+                family_circumstance = args.get('family_circumstance')
+                community_status = args.get('community_status')
+                interests = args.get('interests')
+                personal_identity = args.get('personal_identity')
+                cursor.execute('''
+                    INSERT INTO users (first_name, last_name, email, address, preferred_name, pronouns, phone_number, marital_status, family_circumstance, community_status, interests, personal_identity)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ''', (first_name, last_name, email, address, preferred_name, pronouns, phone_number, marital_status, family_circumstance, community_status, interests, personal_identity))
+            connection.commit()
+    except Exception as ex:
+        raise Exception(f"Error adding user: {ex}. Please contact the administrator.")
+    
+def update_user(args: dict):
+    try:
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as connection:
+            with connection.cursor() as cursor:
+                first_name = args.get('first_name')
+                last_name = args.get('last_name')
+                email = args.get('email')
+                address = args.get('address')
+                preferred_name = args.get('preferred_name')
+                pronouns = args.get('pronouns')
+                phone_number = args.get('phone_number')
+                marital_status = args.get('marital_status')
+                family_circumstance = args.get('family_circumstance')
+                community_status = args.get('community_status')
+                interests = args.get('interests')
+                personal_identity = args.get('personal_identity')
+                
+                # Update SQL query
+                cursor.execute('''
+                    UPDATE users
+                    SET first_name = %s, last_name = %s, address = %s, preferred_name = %s, pronouns = %s, 
+                        phone_number = %s, marital_status = %s, family_circumstance = %s, community_status = %s, 
+                        interests = %s, personal_identity = %s
+                    WHERE email = %s
+                ''', (first_name, last_name, address, preferred_name, pronouns, phone_number, marital_status, 
+                     family_circumstance, community_status, interests, personal_identity, email))
+            connection.commit()
+    except Exception as ex:
+        raise Exception(f"Error updating user: {ex}. Please contact the administrator.")
+
+def delete_user(email: str):
+    try:
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as connection:
+            with connection.cursor() as cursor:
+                # Execute the DELETE statement to remove the user
+                cursor.execute('''
+                    DELETE FROM users
+                    WHERE email = %s
+                ''', (email,))
+            connection.commit()
+    except Exception as ex:
+        raise Exception(f"Error deleting user: {ex}. Please contact the administrator.")
+    
+# DB HAS TO BE FIXED BEFORE THIS METHOD IS FINISHED SINCE THERES A TYPO
+
+# def get_profile_info(email) -> list:
+    # """ Get all information pertaining to user
+
+    # Returns:
+    #     list: list containing all events information about the user
+    # """
+    
+    # try: 
+    #     with psycopg2.connect(DATABASE_URL) as connection:
+    #         with connection.cursor() as cursor: 
+    #             # Get all available events' info from event table
+    #             cursor.execute('''
+    #                 SELECT users.first_name, users.last_name, users.preferred_name
+    #                     users.pronouns, users.email, users.phone_num,
+    #                     users.address, users.marital_status
+    #             ''')
+                
+    #             events_info = cursor.fetchall()
+    #             return events_info
+                
+    # except Exception as ex:
+    #     raise Exception("It seems there was an error getting all"
+    #                     + " events. Please contact the administrator.")
+
 
 #----------------------------------------------------------------------
 

@@ -1,10 +1,16 @@
 import UserHeader from '../headers/UserHeader';
 import LogoutButton from '../auth/LogoutButton';
 import { useUserContext } from '../../contexts/UserContextHandler';
+import { Navigate } from "react-router-dom";
 
 function UserDashboard() {
-  const { userData } = useUserContext();
-
+  const { userData, isLoading } = useUserContext();
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a more sophisticated loader/spinner
+  }
+  if (userData.is_admin == undefined){
+    return <Navigate to={"/profile"} />;
+  }
   return (
     <>
       <UserHeader />
@@ -15,7 +21,7 @@ function UserDashboard() {
       </p>
       <p>Here's some info about you!</p>
       <div>
-        <p>Name: {userData.name} </p>
+        <p>Name: {userData.first_name} {userData.last_name} </p>
         <p>Email: {userData.email} </p>
       </div>
       <LogoutButton />

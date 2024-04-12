@@ -16,6 +16,7 @@ import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import UserContextHandler from "./contexts/UserContextHandler.jsx";
+import Profile from "./pages/user/Profile/Profile.jsx";
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
           <Route exact path="/resources" element={<Resources />} />
 
           {/* Member routes */}
+          <Route
+            exact path="/profile" 
+            element={
+                <UserContextHandler>
+                    <ProtectedRoute component = {Profile} />
+                </UserContextHandler>
+            } 
+          />
           <Route
             exact path="/user-dashboard"
             element={

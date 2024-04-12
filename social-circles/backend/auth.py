@@ -76,14 +76,21 @@ def callback():
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers = headers, 
                                      data = body).json()
-    
     flask.session['email'] = userinfo_response.get('email')
     flask.session['name'] = userinfo_response.get('name')
+    flask.session['picture'] = userinfo_response.get('picture')
 
-    is_admin = db.get_user_authorization(flask.session['email'])
-    if is_admin:
-        return flask.redirect(f'{REACT_FRONTEND}/admin-dashboard')
-    return flask.redirect(f'{REACT_FRONTEND}/user-dashboard')
+    user_details = db.get_user_details(flask.session['email'])
+    if user_details is not None:
+        # If user exists, direct them to the appropriate dashboard
+        if user_details['is_admin']:
+            return flask.redirect(f'{REACT_FRONTEND}/admin-dashboard')
+        elif user_details['is_admin'] is False:
+            return flask.redirect(f'{REACT_FRONTEND}/user-dashboard')
+    else:
+        # If user does not exists, direct them to the profile to create the account
+        return flask.redirect(f'{REACT_FRONTEND}/profile')
+        
 #----------------------------------------------------------------------
 
 def logout():
@@ -105,7 +112,7 @@ def authenticate():
         # Adjusting the response to include is_admin status
         return flask.jsonify({
             'status': 'auth',
-            'isAdmin': is_admin
+            'is_admin': is_admin
         }), 200 # ok
     else: 
         return flask.jsonify({'status': 'not auth'}), 401 # unauthorized

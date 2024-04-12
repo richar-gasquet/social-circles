@@ -49,16 +49,129 @@ def authenticate_route():
 def get_user_data():
     # Check if user is logged on server-side
     if 'email' in flask.session:
+        user_details = db.get_user_details(flask.session['email'])
+        if user_details:
+            return flask.jsonify({
+                'first_name' : user_details['first_name'],
+                'last_name' : user_details['last_name'],
+                'email': user_details['email'],
+                'is_admin': user_details['is_admin'],  
+                'address' : user_details['address'],
+                'preferred_name' : user_details['preferred_name'],
+                'pronouns' : user_details['pronouns'],
+                'phone_number' : user_details['phone_number'],
+                'marital_status' : user_details['marital_status'],
+                'family_circumstance' : user_details['family_circumstance'],
+                'community_status' : user_details['community_status'],
+                'interests' : user_details['interests'],
+                'personal_identity' : user_details['personal_identity'],
+                'picture' : flask.session['picture']
+            }), 200  # OK
+        else:
+            return flask.jsonify({
+                'name': flask.session['name'],
+                'email': flask.session['email']
+            }), 200  # OK
+    else:
         return flask.jsonify({
-            'email' : flask.session['email'],
-            'name' : flask.session['name']
-        }), 200 # ok
+            'status': 'error',
+            'message': 'User not logged in'
+        }), 401  # Unauthorized
+
+@app.route('/add-user', methods = ['POST'])
+def add_user_data():
+    if 'email' in flask.session:
+        try:
+
+            user_data = flask.request.json
+            user_dict = {
+                'first_name' : user_data['first_name'],
+                'last_name' : user_data['last_name'],
+                'email' : user_data['email'],
+                'address' : user_data['address'],
+                'preferred_name' : user_data['preferred_name'],
+                'pronouns' : user_data['pronouns'],
+                'phone_number' : user_data['phone_number'],
+                'marital_status' : user_data['marital_status'],
+                'family_circumstance' : user_data['family_circumstance'],
+                'community_status' : user_data['community_status'],
+                'interests' : user_data['interests'],
+                'personal_identity' : user_data['personal_identity']
+            }
+            db.add_user(user_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
     else:
         return flask.jsonify({
             'status' : 'error',
-            'message': 'User not logged in'
+            'message': 'User not Auth'
         }), 401 # unauthorized
-        
+    
+
+@app.route('/update-user', methods = ['POST'])
+def update_user_data():
+    if 'email' in flask.session:
+        try:
+
+            user_data = flask.request.json
+            user_dict = {
+                'first_name' : user_data['first_name'],
+                'last_name' : user_data['last_name'],
+                'email' : user_data['email'],
+                'address' : user_data['address'],
+                'preferred_name' : user_data['preferred_name'],
+                'pronouns' : user_data['pronouns'],
+                'phone_number' : user_data['phone_number'],
+                'marital_status' : user_data['marital_status'],
+                'family_circumstance' : user_data['family_circumstance'],
+                'community_status' : user_data['community_status'],
+                'interests' : user_data['interests'],
+                'personal_identity' : user_data['personal_identity']
+            }
+            db.update_user(user_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not Auth'
+        }), 401 # unauthorized
+    
+@app.route('/delete-user', methods = ['DELETE'])
+def delete_user_data():
+    if 'email' in flask.session:
+        try:
+
+            user_data = flask.request.json
+            db.delete_user(user_data['email'])
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not Auth'
+        }), 401 # unauthorized
 #----------------------------------------------------------------------
 
 # Routes for requesting EVENTS data from database

@@ -17,7 +17,7 @@ function LoginPage() {
   const handleLogin = () => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`;
   };
-
+  
   return (
     <>
       <GuestHeader />

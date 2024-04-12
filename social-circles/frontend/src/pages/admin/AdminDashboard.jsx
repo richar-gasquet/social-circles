@@ -15,7 +15,7 @@ function AdminDashboard() {
       </p>
       <p>Here's some info about you!</p>
       <div>
-        <p>Name: {userData.name} </p>
+        <p>Name: {userData.first_name} {userData.last_name}</p>
         <p>Email: {userData.email} </p>
       </div>
       <LogoutButton />

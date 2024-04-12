@@ -1,9 +1,9 @@
 function Logout() {
-  const handleLogin = (e) => {
+  const handleLogout = (e) => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
   };
 
-  return <button onClick={handleLogin}>Log Out</button>;
+  return <button onClick={handleLogout}>Log Out</button>;
 }
 
 export default Logout;

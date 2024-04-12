@@ -24,9 +24,9 @@ function AuthProvider({ children }) {
           // User has been authenticated
           if (auth_data.status === "auth") {
             setAuth(true);
-            setAdmin(auth_data.isAdmin || false);
+            setAdmin(auth_data.is_admin || false);
             localStorage.setItem('isAuth', 'true');
-            localStorage.setItem('isAdmin', JSON.stringify(auth_data.isAdmin || false));
+            localStorage.setItem('isAdmin', JSON.stringify(auth_data.is_admin || false));
           // User has NOT been authenticated
           } else {
             setAuth(false);
