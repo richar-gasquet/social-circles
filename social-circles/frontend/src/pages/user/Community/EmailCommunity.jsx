@@ -3,9 +3,12 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
+import styles from '../Modal.module.css';
 
 function EmailCommunity(props) {
+  const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [result, setResult] = useState(null);
   const [noChangeAlert, setNoChangeAlert] = useState(false);
   const [successAlert, setSuccessAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
@@ -19,7 +22,7 @@ function EmailCommunity(props) {
             `${import.meta.env.VITE_BACKEND_URL}/get-community-emails`,
             {
                 credentials: "include",
-                method: "GET",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -29,11 +32,10 @@ function EmailCommunity(props) {
           if (request.ok) {
               setSuccessAlert(true);
               setErrorAlert(false);
-              console.log(request.results);
-              console.log(message);
-              encoded_msg = encodeURIComponent(message);
-              mailToLink = "mailto:" + request.results + "?subject=" + encoded_msg;
-              console.log(mailToLink);
+              const data = await request.json();
+              const encoded_subject = encodeURIComponent(String(subject));
+              const encoded_msg = encodeURIComponent(String(message));
+              const mailToLink = "mailto:" + String(data.results) + "?subject=" + encoded_subject + "&body=" + encoded_msg;
               window.open(mailToLink);
           } else {
           setSuccessAlert(false);
@@ -52,8 +54,8 @@ function EmailCommunity(props) {
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Email Community: {props.groupName} </Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>Email Community: {props.groupName} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {successAlert && (
@@ -73,19 +75,30 @@ function EmailCommunity(props) {
           </Alert>
         )}
         <Form onSubmit={handleSubmit}>
+        <Form.Group className={`mb-2`} controlId="subject">
+            <Form.Label>Subject</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder={"Input the subject of the email here!"}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
           <Form.Group className={`mb-2`} controlId="message">
             <Form.Label>Message</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
               placeholder={"Input your message here!"}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              style={{ height: "300px", resize: "vertical" }}
+              rows={5}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
             Submit
           </Button>
         </Form>

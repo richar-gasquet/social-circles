@@ -355,7 +355,6 @@ def delete_community(comm_id: int) -> None:
             connection.commit()
     except Exception as ex:
         connection.rollback()
-        raise ex
         raise Exception("It seems there was an error updating the"
                         + " community. Please contact the"
                         + " administrator.")
@@ -368,14 +367,14 @@ def get_community_emails(group_id: int) -> list:
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
-                SELECT u.email
-                FROM users u
-                JOIN event_registrations er ON u.user_id = er.user_id
-                WHERE er.group_id = %s;
+                SELECT users.email
+                FROM users
+                JOIN community_registrations ON users.user_id = community_registrations.user_id
+                WHERE community_registrations.group_id = %s;
             ''', (group_id, ))
             email_results = cursor.fetchall()
 
-    except Exception as ex:
+    except Exception:
         connection.rollback()
         raise Exception("It seems there was an error getting the"
                         + " community emails. Please contact the"
