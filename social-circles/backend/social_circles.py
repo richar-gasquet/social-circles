@@ -188,7 +188,77 @@ def add_event_route():
             'status' : 'error',
             'message': 'User not logged in'
         }), 401 # unauthorized
-    
+
+@app.route('/edit-event', methods = ['POST'])
+def edit_event_route():
+    if 'email' in flask.session:
+        try:
+            is_admin = db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("You are not authorized!")
+            
+            event_data = flask.request.json
+            event_dict = {
+                'event_id' : event_data.get('event_id', ''),
+                'event_name' : event_data.get('event_name', ''),
+                'event_desc' : event_data.get('event_desc', ''),
+                'image_link' : event_data.get('image_link', ''),
+                'event_capacity' : event_data.get('capacity', ''),
+                'start_time' : parser.parse(event_data['start_time']),
+                'end_time' : parser.parse(event_data['end_time'])
+            }
+            
+            db.update_event(event_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            })
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
+
+# Route for deleting an event
+@app.route('/delete-event', methods = ['POST'])
+def delete_event():
+    # Check if user is logged in server-side
+    if 'email' in flask.session:
+        # Check if user is admin (change to not hard-coded email)
+        try:
+            is_admin = db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("You are not authorized!")
+            
+            event_data = flask.request.json
+            event_id = event_data['event_id']
+
+            print("Data:",event_data)
+            print("id:",event_id,"type:",type(event_id))
+
+            db.delete_event(event_id)
+            # more code
+            return flask.jsonify({
+            'status' : 'success'
+            }), 200 # ok
+        # Catch database error
+        except Exception as ex:
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    # Catch authentication error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
+
 @app.route('/add-event-registration', methods = ['POST'])
 def add_event_registration_route():
     # Check if user is logged in server-side

@@ -1,14 +1,51 @@
 import { useState } from 'react';
 import PropTypes from "prop-types";
 import styles from './Card.module.css'; 
+import CardButton from "../admin/CardButton";
+import EditEvent from "./EditEvent";
+import DeleteEvent from "./DeleteEvent";
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toLocaleString();
   const formattedEnd = new Date(props.end).toLocaleString();
+  const [showDeleteEvent, setShowDeleteEvent] = useState(false);
+  const [showEditEvent, setShowEditEvent] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleShowDeleteEvent = () => setShowDeleteEvent(true);
+  const handleCloseDeleteEvent = () => {
+    setShowDeleteEvent(false);
+    props.fetchAllEvents();
+  };
+
+  const handleShowEditEvent = () => setShowEditEvent(true);
+  const handleCloseEditEvent = () => {
+    setShowEditEvent(false);
+    props.fetchAllEvents();
+  };
+
+  function toggleShow() {
+    setShow(!show);
+  }
 
   return (
     <div className={`card h-100 ${styles.card}`}>
       <img className={`card-img-top ${styles.cardImgTop}`} src={props.image} alt="Event" />
+      {props.isAdmin && (
+        <div className={`${styles.cardButtons}`}>
+          <CardButton
+            className="mb-2"
+            action={handleShowEditEvent}
+            message="Edit Event"
+            icon="fas fa-edit"
+          ></CardButton>
+          <CardButton
+            action={handleShowDeleteEvent}
+            message="Delete Event"
+            icon="fas fa-trash"
+          ></CardButton>
+        </div>
+      )}
       <div className={`card-body d-flex flex-column`}>
         <h2 className={`card-title ${styles.cardTitle}`}>
           {props.name}
@@ -24,6 +61,30 @@ function EventCard(props) {
           <strong>End: </strong>{formattedEnd}
         </h6>
       </div>
+
+      {showDeleteEvent && props.isAdmin && (
+        <DeleteEvent
+          isShown={showDeleteEvent}
+          handleClose={handleCloseDeleteEvent}
+          event_id={props.id}
+          name={props.name}
+        ></DeleteEvent>
+      )}
+
+      {showEditEvent && props.isAdmin && (
+        <EditEvent
+          isShown={showEditEvent}
+          handleClose={handleCloseEditEvent}
+          event_id={props.id}
+          eventName={props.name}
+          eventDesc={props.desc}
+          imageLink={props.image}
+          capacity={props.capacity}
+          filled={props.filled}
+          start={formattedStart}
+          end={formattedEnd}
+        ></EditEvent>
+      )}
     </div>
   );
 }

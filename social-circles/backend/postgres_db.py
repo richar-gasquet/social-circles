@@ -140,6 +140,70 @@ def add_event(args: dict) -> None:
     finally:
         _put_connection(connection)
 
+def update_event(args: dict) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            event_id = args.get('event_id')
+            event_name = args.get('event_name')
+            event_desc = args.get('event_desc')
+            image_link = args.get('image_link')
+            event_capacity = args.get('event_capacity')
+            start_time = args.get('start_time')
+            end_time = args.get('end_time')
+            
+            esc_str = 'ESCAPE \'\\\''
+
+            sql_query_base = "UPDATE events SET "
+            values = []
+            if event_name:
+                sql_query_base += "event_name = %s, "
+                values.append(event_name)
+            if event_desc:
+                sql_query_base += "event_desc = %s, "
+                values.append(event_desc)
+            if image_link:
+                sql_query_base += "image_link = %s, "
+                values.append(image_link)
+            if event_capacity:
+                sql_query_base += "capacity = %s, "
+                values.append(event_capacity)
+            if start_time:
+                sql_query_base += "start_time = %s, "
+                values.append(start_time.isoformat())
+            if end_time:
+                sql_query_base += "end_time = %s "
+                values.append(end_time.isoformat())
+            sql_query_base += "WHERE event_id = %s"
+            values.append(event_id)
+
+            cursor.execute(sql_query_base, tuple(values))
+            connection.commit()
+    except Exception as ex:
+        connection.rollback()
+        raise ex
+        raise Exception("It seems there was an error updating the"
+                        + " event. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+
+def delete_event(event_id: int) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM events 
+                WHERE event_id = %s
+                ''', (event_id, ))
+            connection.commit()
+    except Exception as ex:
+        connection.rollback()
+        raise Exception("It seems there was an error deleting the"
+                        + " event. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
 
 def add_event_registration(email: str):
     connection = _get_connection()
