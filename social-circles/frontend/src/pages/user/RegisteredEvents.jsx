@@ -63,7 +63,7 @@ function RegisteredEvents() {
                 <div className="col-12 d-flex justify-content-center">
                   <div className="spinner-border mt-5" role="status"
                     style={{ width: '10rem', height: '10rem'}}>
-                    <span class="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               ) : events.length > 0 ? (

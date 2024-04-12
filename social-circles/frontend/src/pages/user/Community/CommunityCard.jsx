@@ -22,7 +22,7 @@ function CommunityCard(props) {
     props.fetchCommunities()
   }
 
-  const handleRegistration = async (e) => {
+  const handleRegistration = async () => {
     try {
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/add-community-registration`, {
@@ -37,7 +37,7 @@ function CommunityCard(props) {
       if (request.ok) {
         props.setSuccessRegistrAlert(true);
         props.setErrorRegistrAlert(false);
-        props.fetchCommunities();
+        props.updateCommunities(props.group_id, true);
       } else {
         props.setSuccessRegistrAlert(false);
         props.setErrorRegistrAlert(true);
@@ -48,7 +48,7 @@ function CommunityCard(props) {
     }
   }
 
-  const handleCancelRegistration = async (e) => {
+  const handleCancelRegistration = async () => {
     try {
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/delete-community-registration`, {
@@ -63,7 +63,7 @@ function CommunityCard(props) {
       if (request.ok) {
         props.setSuccessCancelAlert(true);
         props.setErrorCancelAlert(false);
-        props.fetchCommunities();
+        props.updateCommunities(props.group_id, false);
       } else {
         props.setSuccessCancelAlert(false);
         props.setErrorCancelAlert(true);

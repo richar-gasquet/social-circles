@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button"
 function AlertBox(props) {
   useEffect(() => {
     if (props.show) {
-        const timer = setTimeout(() => props.handleClose(false), 5000);
+        const timer = setTimeout(() => props.handleClose, 5000);
         return () => clearTimeout(timer);
     }
   }, [props.show, props.handleClose]);

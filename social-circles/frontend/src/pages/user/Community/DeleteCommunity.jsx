@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Alert from "react-bootstrap/Alert"
 
 function DeleteCommunity(props) {
   const [successAlert, setSuccessAlert] = useState(false);

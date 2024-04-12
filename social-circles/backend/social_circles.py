@@ -2,7 +2,6 @@ import os
 import flask
 import flask_cors
 from flask_session import Session
-import flask_wtf.csrf
 import auth
 import postgres_db as db
 from dateutil import parser

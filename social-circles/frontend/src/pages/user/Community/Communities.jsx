@@ -8,7 +8,7 @@ import AddButton from "../../admin/AddButton.jsx";
 import { useAuthContext } from '../../auth/AuthHandler.jsx';
 
 function Communities() {
-  const [comms, setComms] = useState([]);
+  const [communities, setCommunities] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
   const [showAddCommunity, setShowAddCommunity] = useState(false);
@@ -18,12 +18,6 @@ function Communities() {
   const [errorRegistrAlert, setErrorRegistrAlert] = useState(false);
   const [successCancelAlert, setSuccessCancelAlert] = useState(false);
   const [errorCancelAlert, setErrorCancelAlert] = useState(false);
-
-  /* Arrow functions to reset the alert states */
-  const resetSuccessRegistrAlert = () => setSuccessRegistrAlert(false);
-  const resetErrorRegistrAlert = () => setErrorRegistrAlert(false);
-  const resetSuccessCancelAlert = () => setSuccessCancelAlert(false);
-  const resetErrorCancelAlert = () => setErrorCancelAlert(false);
 
   const { isAdmin } = useAuthContext()
 
@@ -40,7 +34,7 @@ function Communities() {
       )
       if (response.ok) {
         const data = await response.json();
-        setComms(data.results);
+        setCommunities(data.results);
       } else {
         const errorData = await response.json();
         setError(errorData.message);
@@ -52,6 +46,16 @@ function Communities() {
       setQuerying(false);
     }
   };
+
+  const updateCommunities = (group_id, registration) => {
+    setCommunities(communities.map(community => {
+      if (community.group_id === group_id) {
+        return {...community, isRegistered: registration};
+      } else {
+        return community;
+      }
+    }))
+  }
 
   const handleShowAddCommunity = () => setShowAddCommunity(true)
   const handleCloseAddCommunity = () => {
@@ -126,8 +130,8 @@ function Communities() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : comms.length > 0 ? (
-                comms.map((comm) => (
+              ) : communities.length > 0 ? (
+                communities.map((comm) => (
                   <div key={comm.group_id} className="col-lg-6 col-md-6 col-sm-12 mt-3">
                     <CommunityCard
                       group_id={comm.group_id}
@@ -137,7 +141,7 @@ function Communities() {
                       image={comm.image}
                       isRegistered={comm.isRegistered}
                       isAdmin={isAdmin}
-                      fetchCommunities={fetchAllCommunities}
+                      updateCommunities={updateCommunities}
                       setSuccessRegistrAlert={setSuccessRegistrAlert}
                       setErrorRegistrAlert={setErrorRegistrAlert}
                       setSuccessCancelAlert={setSuccessCancelAlert}
