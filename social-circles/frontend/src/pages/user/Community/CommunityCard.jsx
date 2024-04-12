@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import CardButton from "../../admin/CardButton";
+import RegisterButton from "../RegisterButton";
 import EditCommunity from "./EditCommunity";
 import DeleteCommunity from "./DeleteCommunity";
 import styles from '../Card.module.css';
@@ -12,13 +13,65 @@ function CommunityCard(props) {
   const handleShowDeleteComm = () => setShowDeleteComm(true)
   const handleCloseDeleteComm = () => {
     setShowDeleteComm(false)
-    props.fetchAllCommunities()
+    props.fetchCommunities()
   }
   
   const handleShowEditComm = () => setShowEditComm(true)
   const handleCloseEditComm = () => {
     setShowEditComm(false)
-    props.fetchAllCommunities()
+    props.fetchCommunities()
+  }
+
+  const handleRegistration = async (e) => {
+    try {
+      const request = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/add-community-registration`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({group_id : props.group_id})
+        }
+      );
+      if (request.ok) {
+        props.setSuccessRegistrAlert(true);
+        props.setErrorRegistrAlert(false);
+        props.fetchCommunities();
+      } else {
+        props.setSuccessRegistrAlert(false);
+        props.setErrorRegistrAlert(true);
+      }
+    } catch (error) {
+      props.setSuccessRegistrAlert(false);
+      props.setErrorRegistrAlert(true);
+    }
+  }
+
+  const handleCancelRegistration = async (e) => {
+    try {
+      const request = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/delete-community-registration`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({group_id : props.group_id})
+        }
+      )
+      if (request.ok) {
+        props.setSuccessCancelAlert(true);
+        props.setErrorCancelAlert(false);
+        props.fetchCommunities();
+      } else {
+        props.setSuccessCancelAlert(false);
+        props.setErrorCancelAlert(true);
+      }
+    } catch (error) {
+      props.setSuccessCancelAlert(false);
+      props.setErrorCancelAlert(true);
+    }
   }
 
   return (
@@ -51,6 +104,13 @@ function CommunityCard(props) {
           <h6 className={`card-text ${styles.cardText}`}>
             {props.desc}
           </h6>
+          <div className={``}>
+            <RegisterButton
+              isRegistered={props.isRegistered}
+              handleRegister={handleRegistration}
+              handleCancel={handleCancelRegistration}>
+            </RegisterButton>
+          </div>
         </div>
       </div>
       {showDeleteComm && props.isAdmin && (

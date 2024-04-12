@@ -13,9 +13,6 @@ app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
-
-flask_wtf.csrf.CSRFProtect(app)
-
 app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
 app.config["SESSION_COOKIE_SAMESITE"] = "None" # Allow cookies to be sent in cross-site requests
 app.config['SESSION_COOKIE_SECURE'] = True  # Ensure cookies are sent in secure channel (HTTPS)
@@ -196,9 +193,12 @@ def add_event_route():
 @app.route('/add-event-registration', methods = ['POST'])
 def add_event_registration_route():
     # Check if user is logged in server-side
-    # change this later for admin perms
     if 'email' in flask.session:
         try:
+            is_admin = db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("You are not authorized!")
+            
             return flask.jsonify({
                 'status' : 'success'
             }), 200 # ok
@@ -214,6 +214,11 @@ def add_event_registration_route():
             'status' : 'error',
             'message': 'User not logged in'
         }), 401 # unauthorized
+    
+@app.route('/delete-event-registration', methods = ['POST'])    
+def delete_event_registration_route():
+    pass
+    
 #----------------------------------------------------------------------
 
 # Routes for querying COMMUNITIES data from database
@@ -396,4 +401,58 @@ def delete_community_route():
         
 @app.route('/add-community-registration', methods = ['POST'])
 def add_community_registration_route():
-    pass
+    # Check if user is logged in server-side
+    if 'email' in flask.session:
+        try:
+            comm_data = flask.request.json
+            group_id = comm_data['group_id']
+            
+            email = flask.session['email']
+            db.add_community_registration(email, group_id)
+            
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200 # ok
+        # Catch database error
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    # Catch authentication error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized
+        
+@app.route('/delete-community-registration', methods = ['POST'])
+def delete_community_registration_route():
+    # Check if user is logged in server-side
+    if 'email' in flask.session:
+        try:
+            comm_data = flask.request.json
+            group_id = comm_data['group_id']
+            
+            print(group_id)
+            email = flask.session['email']
+            print(email)
+            db.delete_community_registration(email, group_id)
+            
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200 # ok
+        # Catch database error
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    # Catch authentication error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not logged in'
+        }), 401 # unauthorized

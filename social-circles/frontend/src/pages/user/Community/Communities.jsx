@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import AlertBox from '../AlertBox.jsx';
 import UserHeader from "../../headers/UserHeader.jsx";
 import CommunitiesAside from "./CommunitiesAside.jsx"
 import CommunityCard from "./CommunityCard.jsx"
@@ -10,7 +11,19 @@ function Communities() {
   const [comms, setComms] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
-  const [showAddComm, setShowAddComm] = useState(false)
+  const [showAddCommunity, setShowAddCommunity] = useState(false);
+
+  /* Stateful variables for handling alerts for registering/cancelling */
+  const [successRegistrAlert, setSuccessRegistrAlert] = useState(false);
+  const [errorRegistrAlert, setErrorRegistrAlert] = useState(false);
+  const [successCancelAlert, setSuccessCancelAlert] = useState(false);
+  const [errorCancelAlert, setErrorCancelAlert] = useState(false);
+
+  /* Arrow functions to reset the alert states */
+  const resetSuccessRegistrAlert = () => setSuccessRegistrAlert(false);
+  const resetErrorRegistrAlert = () => setErrorRegistrAlert(false);
+  const resetSuccessCancelAlert = () => setSuccessCancelAlert(false);
+  const resetErrorCancelAlert = () => setErrorCancelAlert(false);
 
   const { isAdmin } = useAuthContext()
 
@@ -40,8 +53,8 @@ function Communities() {
     }
   };
 
-  const handleShowAddComm = () => setShowAddComm(true)
-  const handleCloseAddComm = () => {
+  const handleShowAddCommunity = () => setShowAddCommunity(true)
+  const handleCloseAddCommunity = () => {
     setShowAddComm(false);
     fetchAllCommunities();
   };
@@ -50,6 +63,44 @@ function Communities() {
     <>
       <UserHeader />
       <div className={`container-fluid p-5`}>
+        {successRegistrAlert && (
+          <AlertBox
+            type="success"
+            header="Success!"
+            text="You have registered for the event!"
+            show={successRegistrAlert}
+            handleClose={setSuccessRegistrAlert}>
+          </AlertBox>
+        )}
+        {errorRegistrAlert && (
+          <AlertBox
+            type="danger"
+            header="Error!"
+            text="We couldn't register you for the event!
+                  Please try again later or contact the administrator."
+            show={errorRegistrAlert}
+            handleClose={setErrorRegistrAlert}>
+          </AlertBox>
+        )}
+        {successCancelAlert && (
+          <AlertBox
+            type="success"
+            header="Success!"
+            text="You have canceled your registration for the event!"
+            show={successCancelAlert}
+            handleClose={setSuccessCancelAlert}>
+          </AlertBox>
+        )}
+        {errorCancelAlert && (
+          <AlertBox
+            type="danger"
+            header="Error!"
+            text="We couldn't cancel your registration you for the event!
+                  Please try again later or contact the administrator."
+            show={errorCancelAlert}
+            handleClose={setErrorCancelAlert}>
+          </AlertBox>
+        )}
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>All Communities</h1>
@@ -58,7 +109,7 @@ function Communities() {
             <div className="col d-flex justify-content-end">
               <AddButton
                 type="Add Community"
-                action={handleShowAddComm}>
+                action={handleShowAddCommunity}>
               </AddButton>
             </div>
           )}
@@ -84,8 +135,13 @@ function Communities() {
                       desc={comm.desc}
                       count={comm.count}
                       image={comm.image}
+                      isRegistered={comm.isRegistered}
                       isAdmin={isAdmin}
-                      fetchAllCommunities={fetchAllCommunities}>
+                      fetchCommunities={fetchAllCommunities}
+                      setSuccessRegistrAlert={setSuccessRegistrAlert}
+                      setErrorRegistrAlert={setErrorRegistrAlert}
+                      setSuccessCancelAlert={setSuccessCancelAlert}
+                      setErrorCancelAlert={setErrorCancelAlert}>
                     </CommunityCard>
                   </div>
                 ))
@@ -98,10 +154,10 @@ function Communities() {
           </div>
         </div>
       </div>
-      {showAddComm && isAdmin && (
+      {showAddCommunity && isAdmin && (
         <AddCommunity
-          isShown={showAddComm}
-          handleClose={handleCloseAddComm}>
+          isShown={showAddCommunity}
+          handleClose={handleCloseAddCommunity}>
         </AddCommunity>
       )}
     </>

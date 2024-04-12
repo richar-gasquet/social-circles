@@ -141,7 +141,7 @@ def add_event(args: dict) -> None:
         _put_connection(connection)
 
 
-def register_for_event():
+def add_event_registration(email: str):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
@@ -175,18 +175,36 @@ def delete_event_registration(user_id, event_id):
 
 # Communities CRUD
 
-def get_all_communities() -> list:
+def get_all_communities(email) -> list:
     all_comms_info = []
     connection = _get_connection()
     try: 
-    
         with connection.cursor() as cursor: 
-            # Get all available events' info from event table
+            # Get user results based on their email
             cursor.execute('''
-                SELECT comm.group_id, comm.group_name, comm.group_desc, 
-                    comm.member_count, comm.image_link
-                FROM communities comm
-            ''')
+                SELECT user_id
+                FROM users
+                WHERE users.email = %s
+            ''', (email,))    
+            user_results = cursor.fetchone()
+                                
+            # Get userId (index 0 for user's row)
+            userId = user_results[0]
+            
+            # Get all communities info from communities table
+            cursor.execute('''
+                SELECT 
+                    comm.group_id, comm.group_name, comm.group_desc, 
+                    comm.member_count, comm.image_link, 
+                    (comm_reg.user_id IS NOT NULL) as is_registered
+                FROM 
+                    communities comm
+                LEFT JOIN 
+                    community_registrations comm_reg
+                ON 
+                    comm.group_id = comm_reg.group_id 
+                    AND comm_reg.user_id = %s
+            ''', (userId, ))
             
             all_comms_info = cursor.fetchall()
     except Exception:
@@ -245,8 +263,9 @@ def add_community(args: dict) -> None:
             values = (group_name, group_desc, image_link)
             
             cursor.execute('''
-                INSERT INTO communities (group_id, group_name,
-                    group_desc, member_count, image_link)
+                INSERT INTO 
+                    communities (group_id, group_name, group_desc, 
+                    member_count, image_link)
                 VALUES (DEFAULT, %s, %s, 0, %s)               
             ''', values)
             connection.commit()
@@ -294,14 +313,14 @@ def update_community(args: dict) -> None:
     finally:
         _put_connection(connection)
         
-def delete_community(comm_id: int) -> None:
+def delete_community(group_id: int) -> None:
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
                 DELETE FROM communities
                 WHERE group_id = %s
-            ''', (comm_id, ))
+            ''', (group_id, ))
             connection.commit()
     except Exception as ex:
         connection.rollback()
@@ -312,6 +331,83 @@ def delete_community(comm_id: int) -> None:
     finally:
         _put_connection(connection)        
     
+def add_community_registration(email: str, group_id: int) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Get user results based on their email
+            cursor.execute('''
+                SELECT user_id
+                FROM users
+                WHERE users.email = %s
+            ''', (email,))    
+            user_results = cursor.fetchone()
+                                
+            # Get userId (index 0 for user's row)
+            userId = user_results[0]
+            
+            # Add community registration:
+            cursor.execute('''
+                INSERT INTO
+                    community_registrations(unique_id, user_id, 
+                    group_id)
+                VALUES (DEFAULT, %s, %s)              
+            ''', (userId, group_id, ))
+            
+            cursor.execute('''
+                UPDATE communities
+                SET member_count = member_count + 1
+                WHERE group_id = %s
+            ''', (group_id, ))
+            
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise ex
+        raise Exception("It seems there was an error registering the"
+                        + " user to this community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
+        
+def delete_community_registration(email: str, group_id: int) -> None:
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Get user results based on their email
+            cursor.execute('''
+                SELECT user_id
+                FROM users
+                WHERE users.email = %s
+            ''', (email,))    
+            user_results = cursor.fetchone()
+                                
+            # Get userId (index 0 for user's row)
+            userId = user_results[0]
+            
+            # Add community registration:
+            cursor.execute('''
+                DELETE FROM 
+                    community_registrations
+                WHERE 
+                    user_id = %s AND group_id = %s             
+            ''', (userId, group_id, ))
+            
+            cursor.execute('''
+                UPDATE communities
+                SET member_count = GREATEST(0, member_count - 1)
+                WHERE group_id = %s
+            ''', (group_id, ))
+            
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise ex
+        raise Exception("It seems there was an error registering the"
+                        + " user to this community. Please contact the"
+                        + " administrator.")
+    finally:
+        _put_connection(connection)
 #----------------------------------------------------------------------
 
 # Helper functions

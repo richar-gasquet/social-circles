@@ -1,15 +1,13 @@
-import PropTypes from "prop-types";
+import Button from "react-bootstrap/Button";
 
-function RegisterButton() {
+function RegisterButton(props) {
+  const buttonText = props.isRegistered ? "Cancel Registration" : "Register"
+  const handleOnClick = props.isRegistered ? props.handleCancel : props.handleRegister;
   return (
-    <button
-      type="button"
-      onClick={props.action}
-      className={`btn btn-success`}
-      title={props.message}
-    >
-      {props.text}
-    </button>
+    <Button variant = {props.isRegistered ? "danger" : "success"}
+      onClick = {handleOnClick}>
+      {buttonText}
+    </Button>
   );
 }
 
