@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
-import GuestHeader from "../headers/GuestHeader.jsx";
-import { useAuthContext } from "./AuthHandler.jsx";
+import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
+import GuestHeader from "../../components/headers/GuestHeader.jsx";
+
 
 function LoginPage() {
   // Check if the user is already logged in

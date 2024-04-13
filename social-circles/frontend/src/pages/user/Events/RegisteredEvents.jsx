@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useAuthContext } from "../auth/AuthHandler.jsx";
-import UserHeader from "../headers/UserHeader";
-import EventsAside from "./EventsAside.jsx";
-import EventCard from "./EventCard"
-import AddButton from "../admin/AddButton.jsx";
+import { useState, useEffect } from "react";
+import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import AlertBox from "../../../components/shared-components/AlertBox.jsx";
+import UserHeader from "../../../components/headers/UserHeader.jsx"
+import EventsAside from "../../../components/event-functions/EventsAside.jsx";
+import EventCard from "../../../components/card-components/EventCard.jsx";
+import AddEvent from "../../../components/event-functions/AddEvent.jsx";
+import AddButton from "../../../components/admin-functions/AddButton.jsx";
 
 function RegisteredEvents() {
   const [events, setEvents] = useState([]);

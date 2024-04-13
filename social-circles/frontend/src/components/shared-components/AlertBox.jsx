@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Alert from "react-bootstrap/Alert";
+import Alert from "react-bootstrap/Alert"
 import Button from "react-bootstrap/Button"
 
 function AlertBox(props) {

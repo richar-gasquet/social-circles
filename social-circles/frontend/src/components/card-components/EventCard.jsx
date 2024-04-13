@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import PropTypes from "prop-types";
-import styles from './Card.module.css'; 
-import CardButton from "../admin/CardButton";
-import EditEvent from "./EditEvent";
-import DeleteEvent from "./DeleteEvent";
+import CardButton from './CardButton';
+import EditEvent from '../event-functions/EditEvent';
+import DeleteEvent from '../event-functions/DeleteEvent';
+import styles from '../../css/Card.module.css'; 
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toLocaleString();

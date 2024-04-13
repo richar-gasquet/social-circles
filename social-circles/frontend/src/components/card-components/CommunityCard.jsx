@@ -1,39 +1,21 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import CardButton from "../../admin/CardButton";
-import RegisterButton from "../RegisterButton";
-import EditCommunity from "./EditCommunity";
-import DeleteCommunity from "./DeleteCommunity";
-import EmailCommunity from "./EmailCommunity";
-import styles from '../Card.module.css';
+import CardButton from "./CardButton";
+import RegisterButton from "../user-functions/RegisterButton";
+import EditCommunity from "../community-functions/EditCommunity";
+import DeleteCommunity from "../community-functions/DeleteCommunity";
+import EmailCommunity from "../community-functions/EmailCommunity";
+import styles from '../../css/Card.module.css';
 
 function CommunityCard(props) {
   const [showDeleteComm, setShowDeleteComm] = useState(false)
   const [showEditComm, setShowEditComm] = useState(false)
-  const [showEmail, setShowEmail] = useState(false)
-
-  const handleShowDeleteComm = () => setShowDeleteComm(true)
-  const handleCloseDeleteComm = () => {
-    setShowDeleteComm(false)
-    props.fetchCommunities()
-  }
-  
-  const handleShowEditComm = () => setShowEditComm(true)
-  const handleCloseEditComm = () => {
-    setShowEditComm(false)
-    props.fetchCommunities()
-  }
-
-  const handleShowEmail = () => setShowEmail(true)
-  const handleCloseEmail = () => {
-    setShowEmail(false)
-    props.fetchCommunities()
-  }
+  const [showEmailComm, setShowEmailComm] = useState(false)
 
   const handleRegistration = async () => {
     try {
       const request = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/add-community-registration`, {
+        `${import.meta.env.VITE_BACKEND_URL}/api/add-community-registration`, {
           credentials: "include",
           method: "POST",
           headers: {
@@ -43,20 +25,26 @@ function CommunityCard(props) {
         }
       );
       if (request.ok) {
-        props.addAlert("success", "Registration successful!", `You have registered for ${props.name}.`);
-        props.updateCommunities(props.group_id, true);
+        props.addRegistrationAlert("success", "Registration successful!", 
+                      `You have registered for ${props.name}.`);
+        props.updateCommunities('register', props.group_id, {
+          isRegistered: true,
+          count: props.count + 1
+        });
       } else {
-        props.addAlert("danger", "Registration failed!", `We couldn't register you for ${props.name}.`);
+        props.addRegistrationAlert("danger", "Registration failed!", 
+                      `We couldn't register you for ${props.name}.`);
       }
     } catch (error) {
-      props.addAlert("danger", "Registration error!", `An error occurred while registering for ${props.name}.`);
+      props.addRegistrationAlert("danger", "Registration error!", 
+                    `We could not connect to the server while registering you for ${props.name}.`);
     }
   }
 
   const handleCancelRegistration = async () => {
     try {
       const request = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/delete-community-registration`, {
+        `${import.meta.env.VITE_BACKEND_URL}/api/delete-community-registration`, {
           credentials: "include",
           method: "POST",
           headers: {
@@ -66,13 +54,19 @@ function CommunityCard(props) {
         }
       )
       if (request.ok) {
-        props.addAlert("success", "Cancellation successful!", `You have canceled your registration for ${props.name}.`);
-        props.updateCommunities(props.group_id, false);
+        props.addRegistrationAlert("success", "Cancellation successful!", 
+                      `You have canceled your registration for ${props.name}.`);
+        props.updateCommunities('register', props.group_id, {
+          isRegistered: false,
+          count: props.count - 1
+        });
       } else {
-        props.addAlert("danger", "Cancellation failed!", `We couldn't cancel your registration for ${props.name}.`);
+        props.addRegistrationAlert("danger", "Cancellation failed!", 
+                      `We couldn't cancel your registration for ${props.name}.`);
       }
     } catch (error) {
-      props.addAlert("danger", "Cancellation error!", `An error occurred while canceling your registration for ${props.name}.`);
+      props.addRegistrationAlert("danger", "Cancellation error!", 
+                    `We could not connect to the server while cancelling your registration for ${props.name}.`);
     }
   }
 
@@ -84,18 +78,18 @@ function CommunityCard(props) {
           {props.isAdmin && (
             <div className={`${styles.cardButtons}`}>
               <CardButton className="mb-2"
-                action={handleShowEditComm}
+                action={() => setShowEditComm(true)}
                 message="Edit Community"
                 icon="fas fa-edit">
               </CardButton>              
               <CardButton className={`mb-2`}
-                action={handleShowDeleteComm}
+                action={() => setShowDeleteComm(true)}
                 message="Delete Community"
                 icon="fas fa-trash">
               </CardButton>
               <CardButton 
-                action={handleShowEmail}
-                message="Email this Community"
+                action={() => setShowEmailComm(true)}
+                message="Email Community"
                 icon="fas fa-envelope">
               </CardButton>
             </div>
@@ -120,30 +114,33 @@ function CommunityCard(props) {
           </div>
         </div>
       </div>
-      {showDeleteComm && props.isAdmin && (
-        <DeleteCommunity
-          isShown={showDeleteComm}
-          handleClose={handleCloseDeleteComm}
-          group_id={props.group_id}
-          name={props.name}>
-        </DeleteCommunity>
-      )}
       {showEditComm && props.isAdmin && (
         <EditCommunity
           isShown={showEditComm}
-          handleClose={handleCloseEditComm}
+          handleClose={() => setShowEditComm(false)}
           group_id={props.group_id}
           groupName={props.name}
           groupDesc={props.desc}
-          imageLink={props.image}>
+          imageLink={props.image}
+          updateCommunities={props.updateCommunities}>
         </EditCommunity>
+      )}
+      {showDeleteComm && props.isAdmin && (
+        <DeleteCommunity
+          isShown={showDeleteComm}
+          handleClose={() => setShowDeleteComm(false)}
+          group_id={props.group_id}
+          name={props.name}
+          updateCommunities={props.updateCommunities}>
+        </DeleteCommunity>
       )}
       {showEmail && props.isAdmin && (
       <EmailCommunity
-        isShown={showEmail}
-        handleClose={handleCloseEmail}
+        isShown={showEmailComm}
+        handleClose={() => setShowEmailComm(false)}
         group_id={props.group_id}
-        groupName={props.name}>
+        groupName={props.name}
+        updateCommunities={props.updateCommunities}>
       </EmailCommunity>
       )}
     </>

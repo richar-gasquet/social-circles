@@ -1,8 +1,9 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AuthProvider from "./pages/auth/AuthHandler.jsx";
-import ProtectedRoute from "./pages/auth/ProtectedRoute.jsx";
-import ProtectedAdminRoute from "./pages/auth/ProtectedAdminRoute.jsx";
+import AuthProvider from "./contexts/AuthContextHandler.jsx";
+import UserContextProvider from "./contexts/UserContextHandler.jsx";
+import ProtectedAdminRoute from "./components/auth-components/ProtectedAdminRoute.jsx";
+import ProtectedRoute from "./components/auth-components/ProtectedRoute.jsx";
 import LandingPage from "./pages/guest/LandingPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import About from "./pages/shared/About.jsx";
@@ -10,12 +11,11 @@ import Contact from "./pages/shared/Contact.jsx";
 import Resources from "./pages/shared/Resources.jsx";
 import UserDashboard from "./pages/user/UserDashboard.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import Events from "./pages/user/Events.jsx";
-import RegisteredEvents from "./pages/user/RegisteredEvents.jsx";
+import Events from "./pages/user/Events/Events.jsx";
+import RegisteredEvents from "./pages/user/Events/RegisteredEvents.jsx";
 import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
-import UserContextHandler from "./contexts/UserContextHandler.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
 
 function App() {
@@ -34,17 +34,17 @@ function App() {
           <Route
             exact path="/profile" 
             element={
-                <UserContextHandler>
+                <UserContextProvider>
                     <ProtectedRoute component = {Profile} />
-                </UserContextHandler>
+                </UserContextProvider>
             } 
           />
           <Route
             exact path="/user-dashboard"
             element={
-              <UserContextHandler>
+              <UserContextProvider>
                 <ProtectedRoute component={UserDashboard} />
-              </UserContextHandler>
+              </UserContextProvider>
             }
           />
           <Route
@@ -72,9 +72,9 @@ function App() {
           <Route
             exact path="/admin-dashboard"
             element={
-              <UserContextHandler>
+              <UserContextProvider>
                 <ProtectedAdminRoute component={AdminDashboard} />
-              </UserContextHandler>
+              </UserContextProvider>
             }
           />
         </Routes>

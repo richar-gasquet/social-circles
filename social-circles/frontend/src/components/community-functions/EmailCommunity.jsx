@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
-import styles from '../Modal.module.css';
+import styles from '../../css/Modal.module.css';
 
 function EmailCommunity(props) {
   const [subject, setSubject] = useState("");
@@ -26,7 +26,7 @@ function EmailCommunity(props) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(props.group_id)
+                body: JSON.stringify({group_id : props.group_id})
             }
           );
           if (request.ok) {

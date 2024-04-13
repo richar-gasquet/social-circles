@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuthContext } from "./AuthHandler.jsx";
+import { useAuthContext } from "../../contexts/AuthContextHandler";
 
 function ProtectedAdminRoute({ component: Component, ...rest }) {
   const { isAuth, isAdmin, isLoading } = useAuthContext();

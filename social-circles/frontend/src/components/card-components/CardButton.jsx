@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import styles from "./CardButton.module.css";
+import styles from "../../css/CardButton.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function CardButton(props) {

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import GuestHeader from "../headers/GuestHeader";
+import GuestHeader from "../../components/headers/GuestHeader";
 
 function LandingPage() {
   return (

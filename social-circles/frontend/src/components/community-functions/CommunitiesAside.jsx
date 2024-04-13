@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import styles from "../Aside.module.css"
+import styles from "../../css/Aside.module.css"
 
 function CommunitiesAside() {
     return (

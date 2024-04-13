@@ -1,9 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { useState } from 'react'; 
 import logo from "../../assets/social-circles-logo.png";
-import styles from './Header.module.css';
+import styles from '../../css/Header.module.css';
 
-function GuestHeader() {
+function UserHeader() {
   // State to handle the collapse
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
@@ -57,4 +57,4 @@ function GuestHeader() {
   );
 }
 
-export default GuestHeader;
+export default UserHeader;

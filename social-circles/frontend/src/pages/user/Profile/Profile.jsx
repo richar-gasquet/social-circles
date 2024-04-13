@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import UserHeader from '../../headers/UserHeader';
-import GuestHeader from '../../headers/GuestHeader';
-import LogoutButton from '../../auth/LogoutButton';
+import { useState, useEffect } from 'react';
 import { useUserContext } from '../../../contexts/UserContextHandler';
-import { Navigate } from "react-router-dom";
-import styles from './ProfileForm.module.css'; // Note the .module.css extension
+import UserHeader from '../../../components/headers/UserHeader';
+import GuestHeader from '../../../components/headers/GuestHeader';
+import styles from '../../../css/ProfileForm.module.css';
 
 
 function Profile() {

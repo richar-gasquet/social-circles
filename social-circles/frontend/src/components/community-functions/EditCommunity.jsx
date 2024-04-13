@@ -15,15 +15,18 @@ function EditCommunity(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const communityData = { group_id: props.group_id };
-    if (groupName !== props.groupName && groupName.trim() !== "") communityData.group_name = groupName;
-    if (groupDesc !== props.groupDesc && groupDesc.trim() !== "") communityData.group_desc = groupDesc;
-    if (imageLink !== props.imageLink && imageLink.trim() !== "") communityData.image_link = imageLink;
+    if (groupName !== props.groupName && groupName.trim() !== "") 
+      communityData.group_name = groupName;
+    if (groupDesc !== props.groupDesc && groupDesc.trim() !== "") 
+      communityData.group_desc = groupDesc;
+    if (imageLink !== props.imageLink && imageLink.trim() !== "") 
+      communityData.image_link = imageLink;
 
     if (Object.keys(communityData).length > 1) {
         setNoChangeAlert(false)
         try {
             const request = await fetch(
-              `${import.meta.env.VITE_BACKEND_URL}/edit-community`,
+              `${import.meta.env.VITE_BACKEND_URL}/api/edit-community`,
               {
                   credentials: "include",
                   method: "POST",
@@ -49,6 +52,7 @@ function EditCommunity(props) {
         setSuccessAlert(false);
         setErrorAlert(false);
     }
+    props.updateCommunities()
   };
 
   return (

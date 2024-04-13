@@ -1,7 +1,8 @@
-import UserHeader from '../headers/UserHeader';
-import LogoutButton from '../auth/LogoutButton';
-import { useUserContext } from '../../contexts/UserContextHandler';
 import { Navigate } from "react-router-dom";
+import { useUserContext } from '../../contexts/UserContextHandler';
+import UserHeader from "../../components/headers/UserHeader";
+import LogoutButton from '../../components/auth-components/LogoutButton';
+
 
 function UserDashboard() {
   const { userData, isLoading } = useUserContext();

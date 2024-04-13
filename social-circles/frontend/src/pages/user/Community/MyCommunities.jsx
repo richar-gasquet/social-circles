@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
-import UserHeader from "../../headers/UserHeader.jsx";
-import CommunitiesAside from "./CommunitiesAside.jsx"
-import CommunityCard from "./CommunityCard.jsx"
-import AddButton from "../../admin/AddButton.jsx";
-import { useAuthContext } from '../../auth/AuthHandler.jsx';
+import { useState, useEffect } from "react";
+import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import AlertBox from "../../../components/shared-components/AlertBox.jsx";
+import UserHeader from "../../../components/headers/UserHeader.jsx"
+import CommunitiesAside from "../../../components/community-functions/CommunitiesAside.jsx";
+import CommunityCard from "../../../components/card-components/CommunityCard.jsx";
+import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
+import AddButton from "../../../components/admin-functions/AddButton.jsx";
 
 function MyCommunities() {
   const [comms, setComms] = useState([]);
@@ -17,7 +19,7 @@ function MyCommunities() {
       try {
         setQuerying(true);
         const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/get-registered-communities`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/get-registered-communities`,
           { credentials: "include" }
         )
         if (response.ok) {

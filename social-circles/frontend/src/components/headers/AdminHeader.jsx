@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState } from 'react'; 
 import logo from "../../assets/social-circles-logo.png";
-import styles from './Header.module.css';
+import styles from '../../css/Header.module.css';
 
 function AdminHeader() {
   // State to handle the collapse

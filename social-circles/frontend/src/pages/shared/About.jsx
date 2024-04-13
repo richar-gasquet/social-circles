@@ -1,5 +1,5 @@
 import React from "react";
-import GuestHeader from "../headers/GuestHeader";
+import GuestHeader from "../../components/headers/GuestHeader";
 
 function About() {
   return (

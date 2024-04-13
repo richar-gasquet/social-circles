@@ -2,20 +2,20 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
+import AlertBox from "../shared-components/AlertBox";
 
 function AddCommunity(props) {
   const [groupName, setGroupName] = useState("");
   const [groupDesc, setGroupDesc] = useState("");
   const [imageLink, setImageLink] = useState("");
-  const [emptyAlert, setEmptyAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+  const [alert, setAlert] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!groupName && !groupDesc && !imageLink) {
-      setEmptyAlert(true); 
+    if (!groupName || !groupDesc) {
+      setAlert({type: "warning", 
+                header: "Missing fields!", 
+                text: "All fields must be filled." }); 
       return; 
     }
 
@@ -26,7 +26,7 @@ function AddCommunity(props) {
     };
     try {
       const request = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/add-community`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/add-community`,
         {
           credentials: "include",
           method: "POST",
@@ -37,16 +37,23 @@ function AddCommunity(props) {
         }
       );
       if (request.ok) {
-        setSuccessAlert(true);
-        setErrorAlert(false);
+        const addedCommunity = await request.json()
+        setAlert({type: "success", 
+                  header: "Addition successful!",
+                  text: "The community was successfully added." })
+        props.updateCommunities('add', addedCommunity);
         setGroupName("");
         setGroupDesc("");
         setImageLink("");
       } else {
-        setErrorAlert(true);
+        setAlert({type: "danger", 
+                  header: "Addition failed!",
+                  text: "The community could not be added." });
       }
     } catch (error) {
-      setErrorAlert(true);
+      setAlert({type: "danger", 
+                header: "Addition error!",
+                text: "We could not connect to the server while adding the community." })
     }
   };
 
@@ -56,21 +63,13 @@ function AddCommunity(props) {
         <Modal.Title>Add Community</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The community was successfully added!
-          </Alert>
-        )}
-        {errorAlert && (
-          <Alert variant="danger">
-            Error! The community could not be added. Try again or 
-            contact technical support. 
-          </Alert>
-        )}
-        {emptyAlert && (
-          <Alert variant="warning">
-            All fields must be filled.
-          </Alert>
+        {alert && (
+          <AlertBox
+            type={alert.type}
+            header={alert.header}
+            text={alert.text}
+            handleClose={() => setAlert(null)}>
+          </AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="groupName">

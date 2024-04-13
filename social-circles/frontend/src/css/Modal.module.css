@@ -1,4 +1,4 @@
-@import url('../colors.css');
+@import url('../index.css');
 
 .modalHeader {
     background-color: var(--primary-color) !important;

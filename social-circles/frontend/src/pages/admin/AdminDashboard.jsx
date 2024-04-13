@@ -1,5 +1,5 @@
-import AdminHeader from '../headers/AdminHeader';
-import LogoutButton from '../auth/LogoutButton';
+import AdminHeader from '../../components/headers/AdminHeader';
+import LogoutButton from '../../components/auth-components/LogoutButton';
 import { useUserContext } from '../../contexts/UserContextHandler';
 
 function AdminDashboard() {
