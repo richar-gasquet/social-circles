@@ -26,10 +26,7 @@ function DeleteCommunity(props) {
           header: "Deletion successful!",
           text: "The community was successfully deleted.",
         });
-        setTimeout(() => {
-          props.updateCommunities('delete', props.group_id, null);
-          props.handleClose();
-        }, 2000);
+        props.fetchCommunities()
       } else {
         setAlert({
           type: "danger",

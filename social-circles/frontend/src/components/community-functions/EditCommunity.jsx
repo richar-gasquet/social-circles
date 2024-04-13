@@ -31,13 +31,13 @@ function EditCommunity(props) {
                     }
                 );
                 if (request.ok) {
-                  const updatedCommunity = await response.json();
-                  props.updateCommunities('update', props.group_id, {...updatedCommunity.results, isRegistered: props.isRegistered});
                   setAlert({
                       type: "success",
                       header: "Edit successful!",
                       text: "The community was successfully updated."
+
                   });
+                  props.fetchCommunities()
                 } else {
                   setAlert({
                       type: "danger",

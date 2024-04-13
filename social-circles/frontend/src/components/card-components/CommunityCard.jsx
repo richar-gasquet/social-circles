@@ -123,7 +123,7 @@ function CommunityCard(props) {
           groupDesc={props.desc}
           imageLink={props.image}
           isRegistered={props.isRegistered}
-          updateCommunities={props.updateCommunities}>
+          fetchCommunities={props.fetchCommunities}>
         </EditCommunity>
       )}
       {showDeleteComm && props.isAdmin && (
@@ -132,7 +132,7 @@ function CommunityCard(props) {
           handleClose={() => setShowDeleteComm(false)}
           group_id={props.group_id}
           name={props.name}
-          updateCommunities={props.updateCommunities}>
+          fetchCommunities={props.fetchCommunities}>
         </DeleteCommunity>
       )}
       {showEmailComm && props.isAdmin && (
@@ -140,8 +140,7 @@ function CommunityCard(props) {
         isShown={showEmailComm}
         handleClose={() => setShowEmailComm(false)}
         group_id={props.group_id}
-        groupName={props.name}
-        updateCommunities={props.updateCommunities}>
+        groupName={props.name}>
       </EmailCommunity>
       )}
     </>
@@ -155,15 +154,6 @@ CommunityCard.propTypes = {
   count: PropTypes.number,
   image: PropTypes.string,
   isAdmin: PropTypes.bool
-};
-
-CommunityCard.defaultProps = {
-  group_id: 0,
-  name: "No Community Name",
-  desc: "No Community Description", 
-  count: 0,
-  image: "https://via.placeholder.com/200",
-  isAdmin: false
 };
 
 export default CommunityCard;

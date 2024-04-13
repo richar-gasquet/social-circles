@@ -43,30 +43,8 @@ function Communities() {
     }
   };
 
-  const updateCommunities = (action, group_id, changes) => {
-    setCommunities((prevCommunities) => {
-      if (action === 'add') {
-        return [changes, ...prevCommunities];
-      } else if (action === 'delete') {
-        return prevCommunities.filter((community) => community.group_id !== group_id);
-      } else if (action === 'update') {
-        return prevCommunities.map((community) => {
-          if (community.group_id === group_id) {
-            return changes;
-          } else {
-            return community;
-          }
-        })
-      } else if (action === 'register') {
-        return prevCommunities.map((community) => {
-          if (community.group_id === group_id) {
-            return {...community, ...changes};
-          } else {
-            return community;
-          }
-        })
-      }
-    })
+  const updateCommunitiesOnRegistration = (group_id, registered, count) => {
+    
   };
 
   const addRegistrationAlert = (type, header, text) => {
@@ -106,7 +84,6 @@ function Communities() {
   const handleShowAddCommunity = () => setShowAddCommunity(true);
   const handleCloseAddCommunity = () => {
     setShowAddCommunity(false);
-    fetchAllCommunities();
   };
 
   return (
@@ -159,7 +136,8 @@ function Communities() {
                     image={comm.image}
                     isRegistered={comm.isRegistered}
                     isAdmin={isAdmin}
-                    updateCommunities={updateCommunities}
+                    fetchCommunities={fetchAllCommunities}
+                    updateCommunities={updateCommunitiesOnRegistration}
                     addRegistrationAlert={addRegistrationAlert}
                   />
                 </div>
@@ -187,7 +165,7 @@ function Communities() {
         <AddCommunity
           isShown={showAddCommunity}
           handleClose={handleCloseAddCommunity}
-          updateCommunities={updateCommunities}
+          fetchCommunities={fetchAllCommunities}
         ></AddCommunity>
       )}
     </>

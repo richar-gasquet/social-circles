@@ -37,12 +37,10 @@ function AddCommunity(props) {
         }
       );
       if (request.ok) {
-        const addedCommunity = await request.json()
         setAlert({type: "success", 
                   header: "Addition successful!",
                   text: "The community was successfully added." })
-        props.updateCommunities('add', null, addedCommunity.results);
-        console.log(addedCommunity.results)
+        props.fetchCommunities()
         setGroupName("");
         setGroupDesc("");
         setImageLink("");
