@@ -79,11 +79,10 @@ def add_community():
                 'image_link' : community_data.get('image_link') 
             }
             
-            new_community = comm_db.add_community(community_dict)
+            comm_db.add_community(community_dict)
             return flask.jsonify({
-                    'status' : 'success',
-                    'results' : new_community
-                }), 200 # OK
+                'status' : 'success',
+            }), 200 # OK
         except Exception as ex:
             print(f'{sys.argv[0]}: {str(ex)}')
             return flask.jsonify({
@@ -109,14 +108,10 @@ def edit_community():
                 'image_link' : community_data.get('image_link', '')
             }
             
-            updated_community = comm_db.update_community(community_dict)
-            if updated_community:
-                return flask.jsonify({
-                    'status' : 'success',
-                    'results' : updated_community
-                }), 200 # OK
-            else:
-                raise Exception("Could not update community.")
+            comm_db.update_community(community_dict)
+            return flask.jsonify({
+                'status' : 'success',
+            }), 200 # OK
         except Exception as ex:
             print(f'{sys.argv[0]}: {str(ex)}')
             return flask.jsonify({

@@ -114,8 +114,7 @@ def get_registered_communities(email) -> list:
     
     return registered_communities
 
-def add_community(args: dict) -> dict:
-    new_commmunity_dict = {}
+def add_community(args: dict) -> None:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -130,31 +129,17 @@ def add_community(args: dict) -> dict:
                     communities (group_id, group_name, group_desc,
                                 member_count, image_link)
                 VALUES
-                    (DEFAULT, %s, %s, 0, %s)     
-                RETURNING 
-                    group_id, group_name, group_desc, member_count, 
-                    image_link          
+                    (DEFAULT, %s, %s, 0, %s)              
             ''', values)
             
-            new_commmunity = cursor.fetchone()
-            new_commmunity_dict = {
-                'group_id': new_commmunity[0],
-                'group_name': new_commmunity[1],
-                'group_desc': new_commmunity[2],
-                'member_count': new_commmunity[3],
-                'image_link': new_commmunity[4]
-            }
             connection.commit()
     except Exception:
         connection.rollback()
         raise
     finally:
         put_connection(connection)
-    
-    return new_commmunity_dict
         
-def update_community(args: dict) -> dict:
-    updated_community_dict = {}
+def update_community(args: dict) -> None:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -176,28 +161,15 @@ def update_community(args: dict) -> dict:
                 values.append(image_link)
             sql_query_base += "WHERE group_id = %s "
             values.append(group_id)
-            
-            sql_query_base += "RETURNING group_id, group_name, "
-            sql_query_base += "group_desc, member_count, image_link"
 
             cursor.execute(sql_query_base, tuple(values))
-            
-            updated_community = cursor.fetchone()
-            updated_community_dict = {
-                'group_id': updated_community[0],
-                'group_name': updated_community[1],
-                'group_desc': updated_community[2],
-                'member_count': updated_community[3],
-                'image_link': updated_community[4]
-            }
+
             connection.commit()
     except Exception:
         connection.rollback()
         raise
     finally:
         put_connection(connection)
-        
-    return updated_community_dict
         
 def delete_community(group_id: int) -> None:
     """_summary_
