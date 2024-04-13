@@ -41,12 +41,13 @@ function AddCommunity(props) {
         setAlert({type: "success", 
                   header: "Addition successful!",
                   text: "The community was successfully added." })
-        props.updateCommunities('add', addedCommunity);
+        props.updateCommunities('add', null, addedCommunity.results);
+        console.log(addedCommunity.results)
         setGroupName("");
         setGroupDesc("");
         setImageLink("");
       } else {
-        setAlert({type: "danger", 
+        setAlert({type: "danger",  
                   header: "Addition failed!",
                   text: "The community could not be added." });
       }

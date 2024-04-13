@@ -46,10 +46,18 @@ function Communities() {
   const updateCommunities = (action, group_id, changes) => {
     setCommunities((prevCommunities) => {
       if (action === 'add') {
-        return [...prevCommunities, changes];
+        return [changes, ...prevCommunities];
       } else if (action === 'delete') {
         return prevCommunities.filter((community) => community.group_id !== group_id);
-      } else if (action === 'update' || action === 'register') {
+      } else if (action === 'update') {
+        return prevCommunities.map((community) => {
+          if (community.group_id === group_id) {
+            return changes;
+          } else {
+            return community;
+          }
+        })
+      } else if (action === 'register') {
         return prevCommunities.map((community) => {
           if (community.group_id === group_id) {
             return {...community, ...changes};
@@ -65,9 +73,9 @@ function Communities() {
     setRegistrationAlerts((prevRegistrationAlerts) => {
       const newRegistrationAlert = { id: Date.now(), type, header, text};
       if (prevRegistrationAlerts.length >= 3) {
-        return [...prevRegistrationAlerts.slice(1), newRegistrationAlert];
+        return [newRegistrationAlert, ...prevRegistrationAlerts.slice(1)];
       } else {
-        return [...prevRegistrationAlerts, newRegistrationAlert];
+        return [newRegistrationAlert, ...prevRegistrationAlerts];
       }
     })
   }
@@ -179,6 +187,7 @@ function Communities() {
         <AddCommunity
           isShown={showAddCommunity}
           handleClose={handleCloseAddCommunity}
+          updateCommunities={updateCommunities}
         ></AddCommunity>
       )}
     </>

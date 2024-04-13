@@ -122,6 +122,7 @@ function CommunityCard(props) {
           groupName={props.name}
           groupDesc={props.desc}
           imageLink={props.image}
+          isRegistered={props.isRegistered}
           updateCommunities={props.updateCommunities}>
         </EditCommunity>
       )}
@@ -134,7 +135,7 @@ function CommunityCard(props) {
           updateCommunities={props.updateCommunities}>
         </DeleteCommunity>
       )}
-      {showEmail && props.isAdmin && (
+      {showEmailComm && props.isAdmin && (
       <EmailCommunity
         isShown={showEmailComm}
         handleClose={() => setShowEmailComm(false)}
