@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthProvider from "./contexts/AuthContextHandler.jsx";
 import UserContextProvider from "./contexts/UserContextHandler.jsx";
+import CommunityContextProvider from "./contexts/CommunityContextHandler.jsx";
 import ProtectedAdminRoute from "./components/auth-components/ProtectedAdminRoute.jsx";
 import ProtectedRoute from "./components/auth-components/ProtectedRoute.jsx";
 import LandingPage from "./pages/guest/LandingPage.jsx";
@@ -61,11 +62,19 @@ function App() {
           />
           <Route
             exact path="/communities"
-            element={<ProtectedRoute component={Communities} />}
+            element={
+              <CommunityContextProvider>
+                  <ProtectedRoute component={Communities} />
+              </CommunityContextProvider>
+            }
           />
           <Route
             exact path="/my-communities"
-            element={<ProtectedRoute component={MyCommunities} />}
+            element={
+              <CommunityContextProvider>
+                  <ProtectedRoute component={MyCommunities} />
+              </CommunityContextProvider>
+            }
           />
 
           {/* Admin routes */}

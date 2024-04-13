@@ -1,5 +1,7 @@
 .button {
     background-color: #E1525F !important;
+    height: 50px;
+    width: 150px;
     border: none;
 }
 
