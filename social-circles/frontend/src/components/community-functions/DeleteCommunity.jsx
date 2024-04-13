@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function DeleteCommunity(props) {
   const [alert, setAlert] = useState(null);
@@ -26,7 +27,9 @@ function DeleteCommunity(props) {
           header: "Deletion successful!",
           text: "The community was successfully deleted.",
         });
-        props.fetchCommunities()
+        setTimeout(() => {
+          props.fetchCommunities()
+        }, 1500)
       } else {
         setAlert({
           type: "danger",
@@ -45,8 +48,8 @@ function DeleteCommunity(props) {
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Delete Community</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>Delete Community</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
@@ -54,6 +57,7 @@ function DeleteCommunity(props) {
             type={alert.type}
             header={alert.header}
             text={alert.text}
+            wantTimer={false}
             handleClose={() => setAlert(null)}
           ></AlertBox>
         )}
@@ -61,10 +65,10 @@ function DeleteCommunity(props) {
           Are you sure you want to delete the community{" "}
           <strong>{props.name}</strong>? This action will be irreversible.
         </p>
-        <Button variant="secondary" onClick={props.handleClose}>
+        <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
           Close
         </Button>
-        <Button variant="danger" onClick={handleSubmit}>
+        <Button variant="danger" className={`${styles.modalBtn} ${styles.modalSubmit}`} onClick={handleSubmit}>
           Delete
         </Button>
       </Modal.Body>

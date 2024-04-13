@@ -70,6 +70,7 @@ function EmailCommunity(props) {
             type={alert.type}
             header={alert.header}
             text={alert.text}
+            wantTimer={false}
             handleClose={() => setAlert(null)}>
           </AlertBox>
         )}
@@ -87,11 +88,10 @@ function EmailCommunity(props) {
             <Form.Label>Message</Form.Label>
             <Form.Control
               as="textarea"
+              rows={5}
               placeholder={"Input your message here!"}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              style={{ height: "300px", resize: "vertical" }}
-              rows={5}
             ></Form.Control>
           </Form.Group>
           <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>

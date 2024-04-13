@@ -27,10 +27,7 @@ function CommunityCard(props) {
       if (request.ok) {
         props.addRegistrationAlert("success", "Registration successful!", 
                       `You have registered for ${props.name}.`);
-        props.updateCommunities('register', props.group_id, {
-          isRegistered: true,
-          count: props.count + 1
-        });
+                      props.updateCommunities(props.group_id, true, props.count + 1);
       } else {
         props.addRegistrationAlert("danger", "Registration failed!", 
                       `We couldn't register you for ${props.name}.`);
@@ -56,10 +53,7 @@ function CommunityCard(props) {
       if (request.ok) {
         props.addRegistrationAlert("success", "Cancellation successful!", 
                       `You have canceled your registration for ${props.name}.`);
-        props.updateCommunities('register', props.group_id, {
-          isRegistered: false,
-          count: props.count - 1
-        });
+        props.updateCommunities(props.group_id, false, props.count - 1);
       } else {
         props.addRegistrationAlert("danger", "Cancellation failed!", 
                       `We couldn't cancel your registration for ${props.name}.`);

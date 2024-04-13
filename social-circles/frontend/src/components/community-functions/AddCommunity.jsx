@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function AddCommunity(props) {
   const [groupName, setGroupName] = useState("");
@@ -58,8 +59,8 @@ function AddCommunity(props) {
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Add Community</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>Add Community</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
@@ -67,6 +68,7 @@ function AddCommunity(props) {
             type={alert.type}
             header={alert.header}
             text={alert.text}
+            wantTimer={false}
             handleClose={() => setAlert(null)}>
           </AlertBox>
         )}
@@ -83,7 +85,8 @@ function AddCommunity(props) {
           <Form.Group className={`mb-2`} controlId="groupDesc">
             <Form.Label>Group Description</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={5}
               placeholder="Enter group description"
               value={groupDesc}
               onChange={(e) => setGroupDesc(e.target.value)}
@@ -92,16 +95,16 @@ function AddCommunity(props) {
           <Form.Group className={`mb-2`} controlId="imageLink">
             <Form.Label>Image Link</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
               placeholder="Enter image URL"
               value={imageLink}
               onChange={(e) => setImageLink(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
             Close
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
             Submit
           </Button>
         </Form>

@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function EditCommunity(props) {
     const [groupName, setGroupName] = useState(props.groupName);
@@ -35,9 +36,10 @@ function EditCommunity(props) {
                       type: "success",
                       header: "Edit successful!",
                       text: "The community was successfully updated."
-
                   });
-                  props.fetchCommunities()
+                  setTimeout(() => {
+                    props.fetchCommunities()
+                  }, 1500)
                 } else {
                   setAlert({
                       type: "danger",
@@ -55,7 +57,7 @@ function EditCommunity(props) {
         } else {
             setAlert({
                 type: "warning",
-                header: "No Changes Detected",
+                header: "Missing changes!",
                 text: "Please update one or more fields."
             });
         }
@@ -64,8 +66,8 @@ function EditCommunity(props) {
 
     return (
       <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-        <Modal.Header>
-          <Modal.Title>Add Community</Modal.Title>
+        <Modal.Header className={`${styles.modalHeader}`}>
+          <Modal.Title className={`${styles.modalTitle}`}>Edit Community</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {alert && (
@@ -73,6 +75,7 @@ function EditCommunity(props) {
               type={alert.type}
               header={alert.header}
               text={alert.text}
+              wantTimer={false}
               handleClose={() => setAlert(null)}>
             </AlertBox>
           )}
@@ -89,7 +92,8 @@ function EditCommunity(props) {
             <Form.Group className={`mb-2`} controlId="groupDesc">
               <Form.Label>Group Description</Form.Label>
               <Form.Control
-                type="text"
+                as="textarea"
+                rows={5}
                 placeholder={props.groupDesc}
                 value={groupDesc}
                 onChange={(e) => setGroupDesc(e.target.value)}
@@ -98,16 +102,16 @@ function EditCommunity(props) {
             <Form.Group className={`mb-2`} controlId="imageLink">
               <Form.Label>Image Link</Form.Label>
               <Form.Control
-                type="text"
+                as="textarea"
                 placeholder={props.imageLink}
                 value={imageLink}
                 onChange={(e) => setImageLink(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Button variant="secondary" onClick={props.handleClose}>
+            <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
               Submit
             </Button>
           </Form>
