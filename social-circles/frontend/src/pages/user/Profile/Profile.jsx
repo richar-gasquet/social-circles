@@ -113,74 +113,65 @@ function Profile() {
 
   if (!userData || userData.email === undefined || userData.is_admin === undefined || editMode === true) {
     return (
-        <>
+      <>
         <Header />
-        <div>
-            <h2 className={styles.h2Profile}>Profile</h2>
-            <p className={styles.pProfile}>Please fill in the information to complete your account</p>
+        <div className="container mt-4">
+          <h2>Profile</h2>
+          <p>Please fill in the information to complete your account</p>
+          <form onSubmit={handleSubmit} className="mb-3">
+            {Object.keys(formData).map(key => {
+              if (['is_admin', 'picture'].includes(key)) return null;
+              const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter
+              return (
+                <div className="mb-3" key={key} hidden={key === 'email'}>
+                  <label className="form-label">{label}</label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </div>
+              );
+            })}
+            <button type="submit" className={styles.submitButton}>Submit</button>
+          <button type="button" onClick={handleCancel} className={styles.handleCancel}>Cancel</button>
+          </form>
         </div>
-        <form onSubmit={handleSubmit} className={styles.formContainer}>
-        {/* Iterate over form fields to create form elements, excluding specified fields */}
-        {Object.keys(formData).map((key) => {
-            // Skip fields we don't want to include in the form
-            if (['is_admin', 'picture'].includes(key)) return null;
-
-            // Function to capitalize the first letter of each word in the label
-            const capitalizeLabel = (label) => {
-            return label.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            };
-
-            return (
-            <div key={key} className={styles.formGroup} hidden={key === 'email' ? true : false}>
-                <label className={styles.labelProfile}>{capitalizeLabel(key)}:</label>
-                <input
-                type="text"
-                name={key}
-                value={formData[key]}
-                onChange={handleChange}
-                className={styles.inputProfile}/>
-            </div>
-            );
-        })}
-        <button className={styles.submitButton} type="submit">Submit</button>
-        <button className={styles.handleCancel} type="button" onClick={handleCancel}>Cancel</button>
-        </form>
       </>
     );
   } else {
     return (
       <>
         <Header />
-        {/* Display user information */}
-        <div className={styles.userProfile}>
-          <div className={styles.userProfileLeft}>
-            <img className={styles.profilePic} src={userData.picture}/>
-            <h3 className={styles.name}>{userData.first_name} {userData.last_name}</h3>
-            <button className={styles.toggleEdit} onClick={toggleEdit}>Update Information</button>
-            <button className={styles.handleLogout} onClick={handleLogout}>Log Out</button>
-            <button className={styles.handleDelete} onClick={handleDelete}>Delete Account</button>
-          </div>
-          <div className={styles.userProfileRight}>
-            <h3>Your Information</h3>
-            {Object.keys(formData).map((key) => {
-              // Skip fields we don't want to include in the form
-              if (['is_admin', 'picture'].includes(key)) return null;
-
-              // Function to capitalize the first letter of each word in the label
-              const capitalizeLabel = (label) => {
-              return label.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-              };
-
-              return (
-                <>
-                <p>{capitalizeLabel(key)}: {formData[key]}</p>
-                </>
-              );
-            })}
+        <div className="container mt-4">
+          <div className={styles.profileRow} >
+            <div className="col-md-6">
+              <div className={styles.profilePicWrap}>
+                <img src={userData.picture} alt="Profile" className={styles.profilePic}/>
+              </div>
+              <h3 className={styles.name}>{userData.first_name} {userData.last_name}</h3>
+              <div className={styles.buttonWrap}>
+                <button onClick={toggleEdit} className={styles.toggleEdit}>Update Information</button>
+              </div>
+              <div className={styles.buttonWrap}>
+                <button onClick={handleLogout} className={styles.handleLogout}>Log Out</button>
+              </div>
+              <div className={styles.buttonWrap}>
+                <button onClick={handleDelete} className={styles.handleDelete}>Delete Account</button>
+              </div>
+            </div>
+            <div className={`col-md-6 ${styles.userInfo}`}>
+              <h3 className={styles.infoH3}>Your Information</h3>
+              {Object.keys(formData).map(key => {
+                if (['is_admin', 'picture'].includes(key)) return null;
+                const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter
+                return <p key={key}><strong>{label}:</strong> {formData[key]}</p>;
+              })}
+            </div>
           </div>
         </div>
-        {/* Add more fields as needed */}
-        
       </>
     );
   }

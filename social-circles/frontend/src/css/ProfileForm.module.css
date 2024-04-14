@@ -1,78 +1,38 @@
 /* ProfileForm.css */
-
-.userProfile{
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: auto;
+.profileRow{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+  position: relative;
+  right: 15%;
   
 }
-.userProfileLeft{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 200px 75px 75px 75px 75px;
-  width: 50%;
-  margin-top: 5%;
-  margin-left: 10%;
-  padding-bottom: 1%;
-  border-bottom: 2px solid #F5EDED;
-  z-index: 9;
+
+.userInfo{
+  position: relative;
+  left: 15%;
+  margin-top: 2%
 }
 
-.userProfileRight{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 50px;
-  margin-top: 5%;
+.infoH3{
+  margin-bottom: 5%;
 }
 
-
-.form-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-  
-.form-group {
-  padding-top: 15px;
-  margin-bottom: 15px;
+.profilePicWrap{
+  display: flex;
+  justify-content: center;
 }
 .profilePic{
   border-radius: 50%;
-  margin: auto;
   width: 200px;
 }
 .name{
-  margin: auto;
-}
-.h2Profile, .pProfile{
-  margin-top: 20px;
-  padding-left: 10%;
-}
-  
-.labelProfile {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 16px;
-  color: #333;
-  margin-top: 20px;
-  padding-left: 10%;
-}
-
-.inputProfile {
-  width: 50%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  margin-left: 10%;
-}
-
-.inputProfile:focus {
-  border-color: #007bff;
-  outline: none;
+  margin: 2%;
+  display: flex;
+  justify-content: center;
 }
 
 .submitButton {
@@ -84,11 +44,26 @@
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  margin: 2%;
-  margin-left: 10%;
 }
 
-.toggleEdit, .toggleEdit, .handleCancel, .handleDelete, .handleLogout {
+.handleCancel{
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #6c757d !important;
+  border: none;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 2%;
+  margin-left: 3%;
+}
+
+.buttonWrap{
+  display: flex;
+  justify-content: center;
+}
+
+.toggleEdit, .handleDelete, .handleLogout {
   cursor: pointer;
   padding: 10px 20px;
   background-color: #E1525F !important;
@@ -97,8 +72,7 @@
   border-radius: 4px;
   font-size: 16px;
   margin: 2%;
-  margin-left: 1%;
-  
+  width: 50%;
 }
 
 .toggleEdit:hover, .toggleEdit:hover, .submitButton:hover, .handleCancel:hover, .handleDelete:hover, .handleLogout:hover {
