@@ -132,13 +132,13 @@ function Profile() {
 
             return (
             <div key={key} className={styles.formGroup} hidden={key === 'email' ? true : false}>
-                <label>{capitalizeLabel(key)}:</label>
+                <label className='labelProfile'>{capitalizeLabel(key)}:</label>
                 <input
                 type="text"
                 name={key}
                 value={formData[key]}
                 onChange={handleChange}
-                />
+                className='inputProfile'/>
             </div>
             );
         })}

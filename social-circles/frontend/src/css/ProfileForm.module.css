@@ -1,4 +1,4 @@
-/* ProfileForm.css
+/* ProfileForm.css */
 
 .userProfile{
   display: grid;
@@ -27,86 +27,81 @@
 
 
 .form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
   
-  .form-group {
-    padding-top: 15px;
-    margin-bottom: 15px;
-  }
-  .profilePic{
-    border-radius: 50%;
-    margin: auto;
-    width: 200px;
-  }
-  .name{
-    margin: auto;
-  }
-  .h2Profile, .pProfile{
-    margin-top: 20px;
-    padding-left: 10%;
-  }
+.form-group {
+  padding-top: 15px;
+  margin-bottom: 15px;
+}
+.profilePic{
+  border-radius: 50%;
+  margin: auto;
+  width: 200px;
+}
+.name{
+  margin: auto;
+}
+.h2Profile, .pProfile{
+  margin-top: 20px;
+  padding-left: 10%;
+}
   
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 16px;
-    color: #333;
-    margin-top: 20px;
-    padding-left: 10%;
-  }
-  
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"] {
-    width: 50%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    margin-left: 10%;
-  }
-  
-  input[type="text"]:focus,
-  input[type="email"]:focus,
-  input[type="tel"]:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .submitButton {
-    cursor: pointer;
-    padding: 10px 20px;
-    background-color: #E1525F !important;
-    border: none;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 2%;
-    margin-left: 10%;
-  }
+.labelProfile {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #333;
+  margin-top: 20px;
+  padding-left: 10%;
+}
 
-  .toggleEdit, .toggleEdit, .handleCancel, .handleDelete, .handleLogout {
-    cursor: pointer;
-    padding: 10px 20px;
-    background-color: #E1525F !important;
-    border: none;
-    color: #ffffff;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 2%;
-    margin-left: 1%;
-    
-  }
+.inputProfile {
+  width: 50%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-left: 10%;
+}
+
+.inputProfile:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.submitButton {
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #E1525F !important;
+  border: none;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 2%;
+  margin-left: 10%;
+}
+
+.toggleEdit, .toggleEdit, .handleCancel, .handleDelete, .handleLogout {
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #E1525F !important;
+  border: none;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 2%;
+  margin-left: 1%;
   
-  .toggleEdit:hover, .toggleEdit:hover, .submitButton:hover, .handleCancel:hover, .handleDelete:hover, .handleLogout:hover {
-    transform: scale(1.05);
-    transition: transform 0.15s;
-  }
-   */
+}
+
+.toggleEdit:hover, .toggleEdit:hover, .submitButton:hover, .handleCancel:hover, .handleDelete:hover, .handleLogout:hover {
+  transform: scale(1.05);
+  transition: transform 0.15s;
+}
