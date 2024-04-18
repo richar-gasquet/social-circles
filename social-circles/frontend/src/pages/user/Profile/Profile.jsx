@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useUserContext } from '../../../contexts/UserContextHandler';
+import AdminHeader from '../../../components/headers/AdminHeader';
 import UserHeader from '../../../components/headers/UserHeader';
 import GuestHeader from '../../../components/headers/GuestHeader';
 import styles from '../../../css/ProfileForm.module.css';
+import WebStreamLoader from '../../../components/WebStream/WebStreamLoader';
 
 
 function Profile() {
   const { userData, isLoading} = useUserContext();
-  console.log(userData)
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     first_name: '',
@@ -104,16 +105,29 @@ function Profile() {
   };
 
 
-  if (isLoading) {
-    return <div>Loading...</div>; // Or a more sophisticated loader/spinner
-  }
+  
 
   // Determine which header to use based on whether is_admin is undefined
-  const Header = typeof userData.is_admin === 'boolean' ? UserHeader : GuestHeader;
+  const Header = userData.is_admin ? AdminHeader : (userData.is_admin === false ? UserHeader : GuestHeader);
+
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <div className="col-12 d-flex justify-content-center">
+        <div className="spinner-border mt-5" role="status"
+          style={{ width: '10rem', height: '10rem'}}>
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+      </>
+    )
+  }
 
   if (!userData || userData.email === undefined || userData.is_admin === undefined || editMode === true) {
     return (
       <>
+        <WebStreamLoader/>
         <Header />
         <div className="container mt-4">
           <h2>Profile</h2>
@@ -131,11 +145,12 @@ function Profile() {
                     value={formData[key]}
                     onChange={handleChange}
                     className="form-control"
+                    required={key === 'first_name' || key === 'last_name' || key === 'address' || key === 'phone_number'}
                   />
                 </div>
               );
             })}
-            <button type="submit" className={styles.submitButton}>Submit</button>
+          <button type="submit" className={styles.submitButton}>Submit</button>
           <button type="button" onClick={handleCancel} className={styles.handleCancel}>Cancel</button>
           </form>
         </div>
@@ -144,12 +159,13 @@ function Profile() {
   } else {
     return (
       <>
+        <WebStreamLoader/>
         <Header />
         <div className="container mt-4">
           <div className={styles.profileRow} >
             <div className="col-md-6">
               <div className={styles.profilePicWrap}>
-                <img src={userData.picture} alt="Profile" className={styles.profilePic}/>
+                <img src={userData.picture} alt="Profile" className={styles.profilePic} referrerPolicy="no-referrer"/>
               </div>
               <h3 className={styles.name}>{userData.first_name} {userData.last_name}</h3>
               <div className={styles.buttonWrap}>

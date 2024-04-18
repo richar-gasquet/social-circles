@@ -75,34 +75,26 @@ def add_user(args: dict) -> None:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            first_name = args.get('first_name')
-            last_name = args.get('last_name')
-            email = args.get('email')
-            address = args.get('address')
-            preferred_name = args.get('preferred_name')
-            pronouns = args.get('pronouns')
-            phone_number = args.get('phone_number')
-            marital_status = args.get('marital_status')
-            family_circumstance = args.get('family_circumstance')
-            community_status = args.get('community_status')
-            interests = args.get('interests')
-            personal_identity = args.get('personal_identity')
+            # Initialize lists to hold SQL columns and corresponding values
+            columns = []
+            values = []
+            # Check each field in args and add non-empty values to lists
+            for field in ['first_name', 'last_name', 'email', 'address', 
+                          'preferred_name', 'pronouns', 'phone_number', 
+                          'marital_status', 'family_circumstance', 
+                          'community_status', 'interests', 'personal_identity']:
+                if args.get(field):
+                    columns.append(field)
+                    values.append(args[field])
             
-            values = (first_name, last_name, email, address, 
-                      preferred_name, pronouns, phone_number, 
-                      marital_status, family_circumstance, 
-                      community_status, interests, personal_identity)
+            # Construct the SQL query dynamically based on non-empty values
+            sql = f'''
+                INSERT INTO users ({', '.join(columns)})
+                VALUES ({', '.join(['%s'] * len(columns))})
+            '''
             
-            cursor.execute('''
-                INSERT INTO 
-                    users (first_name, last_name, email, address, 
-                            preferred_name, pronouns, phone_number, 
-                            marital_status, family_circumstance, 
-                            community_status, interests, 
-                            personal_identity)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ''', values)
-            
+            # Execute the query with the non-empty values
+            cursor.execute(sql, tuple(values))
             connection.commit()
     except Exception:
         raise
@@ -111,40 +103,58 @@ def add_user(args: dict) -> None:
 
 def update_user(args: dict):
     connection = get_connection()
-    # MUST FIX SO ONLY CHANGED ENTRIES ARE SET, LOOK AT UPDATE COMMUNITY
-    # / UPDATE EVENTS
     try:
         with connection.cursor() as cursor:
-            first_name = args.get('first_name')
-            last_name = args.get('last_name')
-            email = args.get('email')
-            address = args.get('address')
-            preferred_name = args.get('preferred_name')
-            pronouns = args.get('pronouns')
-            phone_number = args.get('phone_number')
-            marital_status = args.get('marital_status')
-            family_circumstance = args.get('family_circumstance')
-            community_status = args.get('community_status')
-            interests = args.get('interests')
-            personal_identity = args.get('personal_identity')
-            
-            values = (first_name, last_name, email, address, 
-                      preferred_name, pronouns, phone_number, 
-                      marital_status, family_circumstance, 
-                      community_status, interests, personal_identity)
-            
-            # Update SQL query
+            # Retrieve user information from their email
             cursor.execute('''
-                UPDATE 
+                SELECT DISTINCT
+                    user_id
+                FROM
                     users
-                SET 
-                    first_name = %s, last_name = %s, address = %s, preferred_name = %s, pronouns = %s, 
-                    phone_number = %s, marital_status = %s, family_circumstance = %s, community_status = %s, 
-                    interests = %s, personal_identity = %s
-                WHERE 
-                    email = %s
-            ''', values)
-        connection.commit()
+                WHERE
+                    users.email = %s               
+            ''', (args['email'], ))
+            user_info = cursor.fetchone()
+
+            if user_info is None:
+                raise ValueError("User not found.")
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+
+
+            # Dictionary of field mappings
+            field_map = {
+                'first_name': 'first_name',
+                'last_name': 'last_name',
+                'email': 'email',  # This should remain constant as it's used in WHERE clause
+                'address': 'address',
+                'preferred_name': 'preferred_name',
+                'pronouns': 'pronouns',
+                'phone_number': 'phone_number',
+                'marital_status': 'marital_status',
+                'family_circumstance': 'family_circumstance',
+                'community_status': 'community_status',
+                'interests': 'interests',
+                'personal_identity': 'personal_identity'
+            }
+
+            # Filtering out empty values and preparing SQL parts
+            update_fields = []
+            update_values = []
+            for key, db_field in field_map.items():
+                if key in args and args[key]:
+                    update_fields.append(f"{db_field} = %s")
+                    update_values.append(args.get(key))
+
+            # Construct the dynamic SQL query
+            if update_fields:
+                sql = f"UPDATE users SET {', '.join(update_fields)} WHERE user_id = %s"
+                update_values.append(user_id)\
+                
+                # Execute the update query
+                cursor.execute(sql, tuple(update_values))
+                connection.commit()
     except Exception:
         raise
     finally:
@@ -154,15 +164,48 @@ def delete_user(email: str):
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT DISTINCT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+
+            if user_info is None:
+                raise ValueError("User not found.")
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+
             # Execute the DELETE statement to remove the user
+            # Start transaction
+
+            # Dependent tables
+            dependent_tables = ['event_registrations', 'community_registrations']
+            for table in dependent_tables:
+                cursor.execute(f'''
+                    DELETE FROM 
+                        {table}
+                    WHERE 
+                        user_id = %s
+                ''', (user_id,))
+
+            # Delete from users table
             cursor.execute('''
                 DELETE FROM 
                     users
                 WHERE 
-                    email = %s
-            ''', (email,))
-        connection.commit()
-    except Exception:
-        raise
+                    user_id = %s
+            ''', (user_id,))
+
+            # Commit all changes
+            connection.commit()
+    except Exception as e:
+        connection.rollback()  # Rollback in case of any error
+        raise e
     finally:
         put_connection(connection)

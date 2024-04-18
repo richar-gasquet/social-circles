@@ -6,6 +6,7 @@ import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function RegisteredEvents() {
   const [events, setEvents] = useState([]);
@@ -41,6 +42,7 @@ function RegisteredEvents() {
 
   return (
     <>
+      <WebStreamLoader/>
       <UserHeader />
       <div className={`container-fluid p-5`}>
         <div className={`row container-fluid align-items-center`}>

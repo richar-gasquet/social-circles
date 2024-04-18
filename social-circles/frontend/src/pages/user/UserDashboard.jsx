@@ -2,18 +2,30 @@ import { Navigate } from "react-router-dom";
 import { useUserContext } from '../../contexts/UserContextHandler';
 import UserHeader from "../../components/headers/UserHeader";
 import LogoutButton from '../../components/auth-components/LogoutButton';
+import WebStreamLoader from "../../components/WebStream/WebStreamLoader";
 
 
 function UserDashboard() {
   const { userData, isLoading } = useUserContext();
   if (isLoading) {
-    return <div>Loading...</div>; // Or a more sophisticated loader/spinner
+    return (
+      <>
+      <UserHeader />
+      <div className="col-12 d-flex justify-content-center">
+        <div className="spinner-border mt-5" role="status"
+          style={{ width: '10rem', height: '10rem'}}>
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+      </>
+    )
   }
   if (userData.is_admin == undefined){
     return <Navigate to={"/profile"} />;
   }
   return (
     <>
+      <WebStreamLoader/>
       <UserHeader />
       <h2>This is the User Dashboard.</h2>
       <p>

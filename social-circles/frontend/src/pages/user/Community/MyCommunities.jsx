@@ -7,6 +7,7 @@ import CommunitiesAside from "../../../components/community-functions/Communitie
 import CommunityCard from "../../../components/card-components/CommunityCard.jsx";
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function Communities() {
   const {
@@ -48,6 +49,7 @@ function Communities() {
 
   return (
     <>
+      <WebStreamLoader/>
       <UserHeader />
       <div className={`container-fluid p-5`}>
         {registrationAlerts.map((alert) => (

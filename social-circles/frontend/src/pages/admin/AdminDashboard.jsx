@@ -1,12 +1,26 @@
 import AdminHeader from '../../components/headers/AdminHeader';
 import LogoutButton from '../../components/auth-components/LogoutButton';
 import { useUserContext } from '../../contexts/UserContextHandler';
+import WebStreamLoader from '../../components/WebStream/WebStreamLoader';
 
 function AdminDashboard() {
-  const { userData } = useUserContext();
-
+  const { userData, isLoading } = useUserContext();
+  if (isLoading) {
+    return (
+      <>
+      <AdminHeader />
+      <div className="col-12 d-flex justify-content-center">
+        <div className="spinner-border mt-5" role="status"
+          style={{ width: '10rem', height: '10rem'}}>
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+      </>
+    )
+  }
   return (
     <>
+      <WebStreamLoader/>
       <AdminHeader />
       <h2>This is the Admin Dashboard.</h2>
       <p>

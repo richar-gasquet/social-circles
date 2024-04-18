@@ -1,9 +1,12 @@
 import { NavLink } from "react-router-dom";
 import GuestHeader from "../../components/headers/GuestHeader";
+import WebStreamLoader from "../../components/WebStream/WebStreamLoader.jsx";
+
 
 function LandingPage() {
   return (
     <>
+      <WebStreamLoader/>
       <GuestHeader />
       <p>
         <NavLink to="/user-dashboard">Access User Dashboard</NavLink>

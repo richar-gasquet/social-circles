@@ -1,9 +1,11 @@
 import React from "react";
 import GuestHeader from "../../components/headers/GuestHeader";
+import WebStreamLoader from "../../components/WebStream/WebStreamLoader";
 
 function Contact() {
   return (
     <>
+      <WebStreamLoader/>
       <GuestHeader />
       <div className="container">
         <div className="row justify-content-center my-5">
