@@ -18,8 +18,8 @@ function Communities() {
     setDisplayAlert,
     updateCommunitiesOnRegistration,
   } = useCommunityContext();
-  const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
+  const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const { isAdmin } = useAuthContext();
   const [showAddCommunity, setShowAddCommunity] = useState(false);
 

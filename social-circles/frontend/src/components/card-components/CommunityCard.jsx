@@ -27,7 +27,7 @@ function CommunityCard(props) {
       if (request.ok) {
         props.addRegistrationAlert("success", "Registration successful!", 
                       `You have registered for ${props.name}.`);
-                      props.updateCommunities(props.group_id, true, props.count + 1);
+        props.updateCommunities(props.group_id, true, props.count + 1);
       } else {
         props.addRegistrationAlert("danger", "Registration failed!", 
                       `We couldn't register you for ${props.name}.`);
