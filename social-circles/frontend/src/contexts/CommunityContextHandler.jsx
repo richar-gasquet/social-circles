@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 const CommunityContext = createContext({});
 export const useCommunityContext = () => useContext(CommunityContext);
@@ -9,6 +10,12 @@ function CommunityContextProvider({ children }) {
   const [displayAlert, setDisplayAlert] = useState(null);
   const [query, setQuery] = useState("");
   const [searchParam] = useState(["name", "desc"]);
+  const location = useLocation();
+
+  useEffect(() => {
+    setDisplayAlert(null)
+    setQuery("");
+  }, [location])
 
   const fetchCommunities = useCallback(async (route) => {
     try {
