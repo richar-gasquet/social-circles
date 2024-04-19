@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 const CommunityContext = createContext({});
 export const useCommunityContext = () => useContext(CommunityContext);
@@ -7,6 +8,14 @@ function CommunityContextProvider({ children }) {
   const [communities, setCommunities] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [displayAlert, setDisplayAlert] = useState(null);
+  const [query, setQuery] = useState("");
+  const [searchParam] = useState(["name", "desc"]);
+  const location = useLocation();
+
+  useEffect(() => {
+    setDisplayAlert(null)
+    setQuery("");
+  }, [location])
 
   const fetchCommunities = useCallback(async (route) => {
     try {
@@ -38,7 +47,7 @@ function CommunityContextProvider({ children }) {
     }
   }, []);
 
-  const updateCommunitiesOnRegistration = (group_id, registered, new_count) => {
+  const updateCommunitiesOnRegistration = useCallback((group_id, registered, new_count) => {
     setCommunities(
       communities.map((community) => {
         if (community.group_id === group_id) {
@@ -48,16 +57,28 @@ function CommunityContextProvider({ children }) {
         }
       })
     );
-  };
+  }, [communities]);
+
+  const searchCommunities = useCallback(() => {
+    if (!query) return communities;
+    return communities.filter(community =>
+      searchParam.some(param =>
+        community[param].toString().toLowerCase().includes(query.toLowerCase())
+      )
+    );
+  }, [communities, query, searchParam]);
 
   return (
     <CommunityContext.Provider value={{
         communities,
         isFetching,
         displayAlert,
+        query,
+        setQuery,
         setDisplayAlert,
         fetchCommunities,
         updateCommunitiesOnRegistration,
+        searchCommunities
     }}>
       {children}
     </CommunityContext.Provider>

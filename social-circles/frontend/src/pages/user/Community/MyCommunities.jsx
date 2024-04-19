@@ -7,6 +7,7 @@ import CommunitiesAside from "../../../components/community-functions/Communitie
 import CommunityCard from "../../../components/card-components/CommunityCard.jsx";
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function Communities() {
@@ -17,6 +18,9 @@ function Communities() {
     displayAlert,
     setDisplayAlert,
     updateCommunitiesOnRegistration,
+    query,
+    setQuery,
+    searchCommunities
   } = useCommunityContext();
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
@@ -46,6 +50,8 @@ function Communities() {
       prevRegistrationAlerts.filter((alert) => alert.id !== id)
     );
   };
+  
+  const filteredCommunities = searchCommunities(communities);
 
   return (
     <>
@@ -83,6 +89,10 @@ function Communities() {
         <div className={`row`}>
           <CommunitiesAside />
           <div className={`col-lg-10 mt-3`}>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}>
+            </SearchBar>
             <div className={`row`}>
               {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
@@ -94,8 +104,8 @@ function Communities() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : communities.length > 0 ? (
-                communities.map((comm) => (
+              ) : filteredCommunities.length > 0 ? (
+                searchCommunities(communities).map((comm) => (
                   <div
                     key={comm.group_id}
                     className="col-lg-6 col-md-6 col-sm-12 mt-3"

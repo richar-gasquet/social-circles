@@ -7,6 +7,7 @@ import CommunitiesAside from "../../../components/community-functions/Communitie
 import CommunityCard from "../../../components/card-components/CommunityCard.jsx";
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function Communities() {
@@ -17,10 +18,13 @@ function Communities() {
     displayAlert,
     setDisplayAlert,
     updateCommunitiesOnRegistration,
+    query,
+    setQuery,
+    searchCommunities
   } = useCommunityContext();
+  const { isAdmin } = useAuthContext();
 
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
-  const { isAdmin } = useAuthContext();
   const [showAddCommunity, setShowAddCommunity] = useState(false);
 
   useEffect(() => {
@@ -47,9 +51,11 @@ function Communities() {
     );
   };
 
+  const filteredCommunities = searchCommunities(communities);
+
   return (
     <>
-      <WebStreamLoader/>
+      <WebStreamLoader />
       <UserHeader />
       <div className={`container-fluid p-5`}>
         {registrationAlerts.map((alert) => (
@@ -83,6 +89,10 @@ function Communities() {
         <div className={`row`}>
           <CommunitiesAside />
           <div className={`col-lg-10 mt-3`}>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}>
+            </SearchBar>
             <div className={`row`}>
               {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
@@ -94,8 +104,8 @@ function Communities() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : communities.length > 0 ? (
-                communities.map((comm) => (
+              ) : filteredCommunities.length > 0 ? (
+                searchCommunities(communities).map((comm) => (
                   <div
                     key={comm.group_id}
                     className="col-lg-6 col-md-6 col-sm-12 mt-3"
