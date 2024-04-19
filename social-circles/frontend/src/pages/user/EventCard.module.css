@@ -1,0 +1,25 @@
+.card:hover {
+    transform: scale(1.05);
+    transition: transform 0.15s
+}
+
+.cardImgTop {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+  
+.cardTitle, .cardSubtitle {
+    white-space: nowrap; /* Prevent from wrapping to the next line */ 
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis;
+}
+  
+.cardText {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}

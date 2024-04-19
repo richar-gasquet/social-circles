@@ -14,10 +14,10 @@ import UserDashboard from "./pages/user/UserDashboard.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import Events from "./pages/user/Events/Events.jsx";
 import RegisteredEvents from "./pages/user/Events/RegisteredEvents.jsx";
-import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
+import ReactCalendar from "./pages/shared/Calendar.jsx";
 
 function App() {
   return (
@@ -58,7 +58,7 @@ function App() {
           />
           <Route
             exact path="/calendar"
-            element={<ProtectedRoute component={Calendar} />}
+            element={<ProtectedRoute component={ReactCalendar} />}
           />
           <Route
             exact path="/communities"

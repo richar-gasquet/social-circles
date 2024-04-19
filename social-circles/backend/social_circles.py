@@ -208,7 +208,12 @@ def add_event_registration_route():
 @app.route('/delete-event-registration', methods = ['POST'])    
 def delete_event_registration_route():
     return events.delete_event_registration()
-    
+
+# grab events for calendar
+@app.route('/calendar', methods=['GET'])
+def calendar_route():
+    return events.get_available_events()
+
 #----------------------------------------------------------------------
 
 # Routes for querying COMMUNITIES data from database
