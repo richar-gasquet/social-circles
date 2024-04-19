@@ -1,0 +1,13 @@
+.searchBar { 
+    width: auto;
+    position: relative;
+}
+
+.searchBtn {
+    position: absolute;
+    z-index: 10;
+}
+
+.searchInput {
+    padding-left: 35px;
+}
