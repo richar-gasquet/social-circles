@@ -14,9 +14,6 @@ function AddEvent(props) {
   const [endTime, setEndTime] = useState("");
 
   const [alert, setAlert] = useState(null)
-  // const [emptyAlert, setEmptyAlert] = useState(false);
-  // const [successAlert, setSuccessAlert] = useState(false);
-  // const [errorAlert, setErrorAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,17 +83,6 @@ function AddEvent(props) {
           handleClose={() => setAlert(null)}>
         </AlertBox>
         )}
-        {/* {errorAlert && (
-          <Alert variant="danger">
-            Error! The event could not be added. Try again or 
-            contact technical support. 
-          </Alert>
-        )}
-        {emptyAlert && (
-          <Alert variant="warning">
-            All fields must be filled.
-          </Alert>
-        )} */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>

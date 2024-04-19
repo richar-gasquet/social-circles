@@ -5,12 +5,9 @@ import AlertBox from "../shared-components/AlertBox";
 import styles from '../../css/Modal.module.css';
 
 function DeleteEvent(props) {
-  // const [successAlert, setSuccessAlert] = useState(false);
-  // const [errorAlert, setErrorAlert] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
     try {
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/delete-event`,
@@ -64,12 +61,7 @@ function DeleteEvent(props) {
             handleClose={() => setAlert(null)}
           ></AlertBox>
         )}
-        {/* {errorAlert && (
-          <Alert variant="danger">
-            Error! The event could not be deleted. Try again or contact
-            technical support.
-          </Alert>
-        )} */}
+        
         <p>
           Are you sure you want to delete the event{" "}
           <strong>{props.name}</strong>? This action will be irreversible.

@@ -20,9 +20,6 @@ function Events() {
   } = useEventContext();
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
-  // const [events, setEvents] = useState([]);
-  // const [error, setError] = useState("");
-  // const [isQuerying, setQuerying] = useState(true);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const { isAdmin } = useAuthContext();
 
@@ -32,28 +29,6 @@ function Events() {
 
   const fetchRegisteredEvents = () => 
     fetchEvents("/get-registered-events");
-
-  // const fetchAllEvents = async () => {
-  //   try {
-  //     setQuerying(true);
-  //     const response = await fetch(
-  //       `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
-  //       { credentials: "include" }
-  //     )
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setEvents(data.results);
-  //     } else {
-  //       const errorData = await response.json();
-  //       setError(errorData.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch event data: ", error);
-  //     setError("Server error. Please contact the administrator.")
-  //   } finally {
-  //     setQuerying(false);
-  //   }
-  // };
 
   const addRegistrationAlert = (type, header, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
@@ -71,12 +46,6 @@ function Events() {
       prevRegistrationAlerts.filter((alert) => alert.id !== id)
     );
   };
-
-  // const handleShowAddEvent = () => setShowAddEvent(true)
-  // const handleCloseAddEvent = () => {
-  //   setShowAddEvent(false);
-  //   fetchAllEvents();
-  // };
 
   return (
     <>

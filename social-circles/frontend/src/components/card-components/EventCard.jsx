@@ -11,7 +11,6 @@ function EventCard(props) {
   const formattedEnd = new Date(props.end).toLocaleString();
   const [showDeleteEvent, setShowDeleteEvent] = useState(false);
   const [showEditEvent, setShowEditEvent] = useState(false);
-  // const [show, setShow] = useState(false);
 
   const handleRegistration = async () => {
     try {
@@ -64,22 +63,6 @@ function EventCard(props) {
                     `We could not connect to the server while cancelling your registration for ${props.name}.`);
     }
   }
-
-  // const handleShowDeleteEvent = () => setShowDeleteEvent(true);
-  // const handleCloseDeleteEvent = () => {
-  //   setShowDeleteEvent(false);
-  //   props.fetchAllEvents();
-  // };
-
-  // const handleShowEditEvent = () => setShowEditEvent(true);
-  // const handleCloseEditEvent = () => {
-  //   setShowEditEvent(false);
-  //   props.fetchAllEvents();
-  // };
-
-  // function toggleShow() {
-  //   setShow(!show);
-  // }
 
   return (
     <div className={`card h-100 ${styles.card}`}>
