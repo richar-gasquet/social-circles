@@ -145,7 +145,7 @@ def delete_event():
                 raise Exception("User is not authorized!")
 
             event_data = flask.request.json
-            event_id = event_data.get('group_id')
+            event_id = event_data.get('event_id')
             
             event_db.delete_event(event_id)
                 

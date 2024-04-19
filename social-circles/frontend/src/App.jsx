@@ -18,6 +18,7 @@ import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
+import EventContextProvider from "./contexts/EventsContextHandler.jsx";
 
 function App() {
   return (
@@ -50,11 +51,18 @@ function App() {
           />
           <Route
             exact path="/events"
-            element={<ProtectedRoute component={Events} />}
+            element={
+              <EventContextProvider>
+            <ProtectedRoute component={Events} />
+            </EventContextProvider>
+          }
           />
           <Route
             exact path="/registered-events"
-            element={<ProtectedRoute component={RegisteredEvents} />}
+            element={
+              <EventContextProvider>
+                <ProtectedRoute component={RegisteredEvents} />
+                </EventContextProvider>  }
           />
           <Route
             exact path="/calendar"
