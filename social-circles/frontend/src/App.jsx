@@ -5,6 +5,7 @@ import UserContextProvider from "./contexts/UserContextHandler.jsx";
 import CommunityContextProvider from "./contexts/CommunityContextHandler.jsx";
 import ProtectedAdminRoute from "./components/auth-components/ProtectedAdminRoute.jsx";
 import ProtectedRoute from "./components/auth-components/ProtectedRoute.jsx";
+import NotFound from "./pages/shared/NotFound.jsx";
 import LandingPage from "./pages/guest/LandingPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import About from "./pages/shared/About.jsx";
@@ -33,15 +34,17 @@ function App() {
 
           {/* Member routes */}
           <Route
-            exact path="/profile" 
+            exact
+            path="/profile"
             element={
-                <UserContextProvider>
-                    <ProtectedRoute component = {Profile} />
-                </UserContextProvider>
-            } 
+              <UserContextProvider>
+                <ProtectedRoute component={Profile} />
+              </UserContextProvider>
+            }
           />
           <Route
-            exact path="/user-dashboard"
+            exact
+            path="/user-dashboard"
             element={
               <UserContextProvider>
                 <ProtectedRoute component={UserDashboard} />
@@ -49,43 +52,52 @@ function App() {
             }
           />
           <Route
-            exact path="/events"
+            exact
+            path="/events"
             element={<ProtectedRoute component={Events} />}
           />
           <Route
-            exact path="/registered-events"
+            exact
+            path="/registered-events"
             element={<ProtectedRoute component={RegisteredEvents} />}
           />
           <Route
-            exact path="/calendar"
+            exact
+            path="/calendar"
             element={<ProtectedRoute component={Calendar} />}
           />
           <Route
-            exact path="/communities"
+            exact
+            path="/communities"
             element={
               <CommunityContextProvider>
-                  <ProtectedRoute component={Communities} />
+                <ProtectedRoute component={Communities} />
               </CommunityContextProvider>
             }
           />
           <Route
-            exact path="/my-communities"
+            exact
+            path="/my-communities"
             element={
               <CommunityContextProvider>
-                  <ProtectedRoute component={MyCommunities} />
+                <ProtectedRoute component={MyCommunities} />
               </CommunityContextProvider>
             }
           />
 
           {/* Admin routes */}
           <Route
-            exact path="/admin-dashboard"
+            exact
+            path="/admin-dashboard"
             element={
               <UserContextProvider>
                 <ProtectedAdminRoute component={AdminDashboard} />
               </UserContextProvider>
             }
           />
+
+          {/* 404 Not Found */}
+          <Route path="/*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
