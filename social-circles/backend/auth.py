@@ -80,8 +80,15 @@ def callback():
     flask.session['name'] = userinfo_response.get('name')
     flask.session['picture'] = userinfo_response.get('picture')
 
+    # Check if the user is in the blacklist
+    if db.is_in_blacklist(flask.session['email']):
+        # Clear session and redirect user to a blocked page or notice
+        flask.session.clear()
+        return flask.redirect(f'{REACT_FRONTEND}/')
+
     user_details = db.get_user_details(flask.session['email'])
-    if user_details is not None:
+    
+    if user_details:
         # If user exists, direct them to the appropriate dashboard
         if user_details['is_admin']:
             return flask.redirect(f'{REACT_FRONTEND}/admin-dashboard')
@@ -101,6 +108,11 @@ def logout():
 
 def authenticate():
     if 'email' in flask.session:
+        if db.is_in_blacklist(flask.session['email']):
+            # User is blacklisted; clear the session and return unauthorized
+            flask.session.clear()
+            return flask.jsonify({'status': 'blocked'}), 403 # Forbidden
+        
         # Function get_user_details(email) that returns user details including is_admin
         is_admin = db.get_user_authorization(flask.session['email'])
         

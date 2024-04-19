@@ -209,3 +209,124 @@ def delete_user(email: str):
         raise e
     finally:
         put_connection(connection)
+
+
+def get_all_user_details() -> list:
+    all_user_details = []
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT 
+                    *
+                FROM 
+                    users
+            ''')
+
+            user_rows = cursor.fetchall()
+            
+            for user_row in user_rows:
+                user_details = {
+                    'user_id': user_row[0],
+                    'first_name': user_row[1],
+                    'last_name': user_row[2],
+                    'email': user_row[3],
+                    'is_admin': user_row[4],  
+                    'address': user_row[5],
+                    'preferred_name': user_row[6],
+                    'pronouns': user_row[7],
+                    'phone_number': user_row[8],
+                    'marital_status': user_row[9],
+                    'family_circumstance': user_row[10],
+                    'community_status': user_row[11],
+                    'interests': user_row[12],
+                    'personal_identity': user_row[13]
+                }
+                all_user_details.append(user_details)
+    except Exception as e:
+        raise e
+    finally:
+        put_connection(connection)
+    
+    return all_user_details
+
+
+def blacklist_and_delete_user(email: str):
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Retrieve user's details before deleting
+            cursor.execute('''
+                SELECT first_name, last_name, email
+                FROM users
+                WHERE email = %s
+            ''', (email,))
+            user_details = cursor.fetchone()
+
+            if user_details is None:
+                raise ValueError("User not found.")
+
+            # Add user to blacklist
+            cursor.execute('''
+                INSERT INTO user_blacklist (first_name, last_name, email)
+                VALUES (%s, %s, %s)
+            ''', (user_details[0], user_details[1], user_details[2]))
+            # Commit changes
+            connection.commit()
+
+            # Delete user from the users table
+            delete_user(email)
+    except Exception as e:
+        connection.rollback()  # Rollback in case of any error
+        raise e
+    finally:
+        put_connection(connection)
+
+
+def get_all_blacklisted_users():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT first_name, last_name, email
+                FROM user_blacklist
+            ''')
+            blacklisted_users = cursor.fetchall()
+            return [{'first_name': user[0], 'last_name': user[1], 'email': user[2]} for user in blacklisted_users]
+    except Exception as e:
+        raise e
+    finally:
+        put_connection(connection)
+
+
+def remove_user_from_blacklist(email: str):
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM user_blacklist
+                WHERE email = %s
+            ''', (email,))
+            connection.commit()
+    except Exception as e:
+        connection.rollback()  # Rollback in case of any error
+        raise e
+    finally:
+        put_connection(connection)
+
+def is_in_blacklist(email: str) -> bool:
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT EXISTS(
+                    SELECT 1 FROM user_blacklist WHERE email = %s
+                )
+            ''', (email,))
+            is_blacklisted = cursor.fetchone()[0]
+            return is_blacklisted
+    except Exception as e:
+        print(f"Error checking if user is in blacklist: {e}")
+        raise
+    finally:
+        put_connection(connection)
