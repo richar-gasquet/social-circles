@@ -2,7 +2,8 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
+import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function EditEvent(props) {
   const [eventName, setEventName] = useState(props.eventName);
@@ -11,9 +12,11 @@ function EditEvent(props) {
   const [eventCapacity, setEventCapacity] = useState(props.capacity);
   const [eventStart, setEventStart] = useState(props.start);
   const [eventEnd, setEventEnd] = useState(props.end);
-  const [noChangeAlert, setNoChangeAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+
+  const [alert, setAlert] = useState(null);
+  // const [noChangeAlert, setNoChangeAlert] = useState(false);
+  // const [successAlert, setSuccessAlert] = useState(false);
+  // const [errorAlert, setErrorAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ function EditEvent(props) {
       eventData.end_time = eventEnd;
 
     if (Object.keys(eventData).length > 1) {
-      setNoChangeAlert(false);
+      // setNoChangeAlert(false);
       try {
         const request = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/edit-event`,
@@ -46,35 +49,53 @@ function EditEvent(props) {
           }
         );
         if (request.ok) {
-          setSuccessAlert(true);
-          setErrorAlert(false);
+          setAlert({
+            type: "success",
+            header: "Edit successful!",
+            text: "The event was successfully updated."
+          });
+        setTimeout(() => {
+          props.fetchEvents()
+        }, 1500)
         } else {
-          setSuccessAlert(false);
-          setErrorAlert(true);
+          setAlert({
+            type: "danger",
+            header: "Edit failed!",
+            text: "The event could not be updated."
+          });
         }
       } catch (error) {
-        setSuccessAlert(false);
-        setErrorAlert(true);
+        setAlert({
+          type: "danger",
+          header: "Edit error!",
+          text: "We could not connect to the server while updating the event."
+        });
       }
     } else {
-      setNoChangeAlert(true);
-      setSuccessAlert(false);
-      setErrorAlert(false);
+      setAlert({
+        type: "warning",
+        header: "Missing changes!",
+        text: "Please update one or more fields."
+    });
     }
   }
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Edit Event</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>Edit Event</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The event was successfully updated!
-          </Alert>
+        {alert && (
+          <AlertBox
+            type={alert.type}
+            header={alert.header}
+            text={alert.text}
+            wantTimer={false}
+            handleClose={() => setAlert(null)}>
+          </AlertBox>
         )}
-        {errorAlert && (
+        {/* {errorAlert && (
           <Alert variant="danger">
             Error! The event could not be updated. Try again or contact
             technical support.
@@ -82,8 +103,8 @@ function EditEvent(props) {
         )}
         {noChangeAlert && (
           <Alert variant="warning">At least one field must be changed.</Alert>
-        )}
-        <Form onSubmit={handleSubmit}>
+        )} */}
+        <Form onSubmit={handleSubmit}> 
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>
             <Form.Control
@@ -96,7 +117,8 @@ function EditEvent(props) {
           <Form.Group className={`mb-2`} controlId="eventDesc">
             <Form.Label>Event Description</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={5}
               placeholder={props.eventDesc}
               value={eventDesc}
               onChange={(e) => setEventDesc(e.target.value)}
@@ -132,16 +154,16 @@ function EditEvent(props) {
           <Form.Group className={`mb-2`} controlId="imageLink">
             <Form.Label>Image Link</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
               placeholder={props.imageLink}
               value={imageLink}
               onChange={(e) => setImageLink(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
             Close
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
             Submit
           </Button>
         </Form>

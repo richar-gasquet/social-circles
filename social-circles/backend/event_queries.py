@@ -141,19 +141,19 @@ def update_event(args: dict) -> None:
             sql_query_base = "UPDATE events SET "
             values = []
             if event_name:
-                sql_query_base += "event_name = %s "
+                sql_query_base += "event_name = %s, "
                 values.append(event_name)
             if event_desc:
-                sql_query_base += "event_desc = %s "
+                sql_query_base += "event_desc = %s, "
                 values.append(event_desc)
             if image_link:
-                sql_query_base += "image_link = %s "
+                sql_query_base += "image_link = %s, "
                 values.append(image_link)
             if event_capacity:
-                sql_query_base += "capacity = %s "
+                sql_query_base += "capacity = %s, "
                 values.append(event_capacity)
             if start_time:
-                sql_query_base += "start_time = %s "
+                sql_query_base += "start_time = %s, "
                 values.append(start_time.isoformat())
             if end_time:
                 sql_query_base += "end_time = %s "
@@ -190,7 +190,41 @@ def add_event_registration(email: str, event_id: int):
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            pass
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+            
+            values = (user_id, event_id)
+            
+            # Add event registration
+            cursor.execute('''
+                INSERT INTO
+                    event_registrations (registr_id, user_id, 
+                                            event_id)
+                VALUES 
+                    (DEFAULT, %s, %s)              
+            ''', values)
+            
+            cursor.execute('''
+                UPDATE 
+                    events
+                SET 
+                    filled_spots = filled_spots + 1
+                WHERE 
+                    event_id = %s
+            ''', (event_id, ))
+            
+            connection.commit()
     except Exception:
         connection.rollback()
         raise
@@ -201,7 +235,36 @@ def delete_event_registration(email: str, event_id: int):
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            pass
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+            
+            values = (user_id, event_id)
+            
+            cursor.execute('''
+                DELETE FROM 
+                    event_registrations
+                WHERE 
+                    user_id = %s AND event_id = %s             
+            ''', values)
+            
+            cursor.execute('''
+                UPDATE events
+                SET filled_spots = GREATEST(0, filled_spots - 1)
+                WHERE event_id = %s
+            ''', (event_id, ))
+            
+            connection.commit()
     except Exception:
         connection.rollback()
         raise

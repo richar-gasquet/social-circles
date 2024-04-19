@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx"
 import EventsAside from "../../../components/event-functions/EventsAside.jsx";
@@ -9,59 +10,103 @@ import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function Events() {
-  const [events, setEvents] = useState([]);
-  const [error, setError] = useState("");
-  const [isQuerying, setQuerying] = useState(true);
-  const [showAddEvent, setShowAddEvent] = useState(false);
+  const {
+    events,
+    isFetching,
+    fetchEvents,
+    displayAlert,
+    setDisplayAlert,
+    updateEventsOnRegistration,
+  } = useEventContext();
+  const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
+  // const [events, setEvents] = useState([]);
+  // const [error, setError] = useState("");
+  // const [isQuerying, setQuerying] = useState(true);
+  const [showAddEvent, setShowAddEvent] = useState(false);
   const { isAdmin } = useAuthContext();
 
   useEffect(() => {
-    fetchAllEvents()
+    console.log("hdhakhka");
+    fetchEvents("/get-available-events");
   }, []);
 
-  const fetchAllEvents = async () => {
-    try {
-      setQuerying(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
-        { credentials: "include" }
-      )
-      if (response.ok) {
-        const data = await response.json();
-        setEvents(data.results);
+  const fetchAllEvents = () => 
+    fetchEvents("/get-available-events");
+
+  // const fetchAllEvents = async () => {
+  //   try {
+  //     setQuerying(true);
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
+  //       { credentials: "include" }
+  //     )
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setEvents(data.results);
+  //     } else {
+  //       const errorData = await response.json();
+  //       setError(errorData.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch event data: ", error);
+  //     setError("Server error. Please contact the administrator.")
+  //   } finally {
+  //     setQuerying(false);
+  //   }
+  // };
+
+  const addRegistrationAlert = (type, header, text) => {
+    setRegistrationAlerts((prevRegistrationAlerts) => {
+      const newRegistrationAlert = { id: Date.now(), type, header, text };
+      if (prevRegistrationAlerts.length >= 3) {
+        return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
       } else {
-        const errorData = await response.json();
-        setError(errorData.message);
+        return [newRegistrationAlert, ...prevRegistrationAlerts];
       }
-    } catch (error) {
-      console.error("Failed to fetch event data: ", error);
-      setError("Server error. Please contact the administrator.")
-    } finally {
-      setQuerying(false);
-    }
+    });
   };
 
-  const handleShowAddEvent = () => setShowAddEvent(true)
-  const handleCloseAddEvent = () => {
-    setShowAddEvent(false);
-    fetchAllEvents();
+  const removeRegistrationAlert = (id) => {
+    setRegistrationAlerts((prevRegistrationAlerts) =>
+      prevRegistrationAlerts.filter((alert) => alert.id !== id)
+    );
   };
+
+  // const handleShowAddEvent = () => setShowAddEvent(true)
+  // const handleCloseAddEvent = () => {
+  //   setShowAddEvent(false);
+  //   fetchAllEvents();
+  // };
 
   return (
     <>
       <WebStreamLoader/>
       <UserHeader />
       <div className={`container-fluid p-5`}>
+      {registrationAlerts.map((alert) => (
+          <AlertBox
+            key={alert.id}
+            type={alert.type}
+            header={alert.header}
+            text={alert.text}
+            wantTimer={true}
+            handleClose={() => removeRegistrationAlert(alert.id)}
+          ></AlertBox>
+        ))}
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
-            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Upcoming Events</h1>
+            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
+              Upcoming Events
+            </h1>
           </div>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
               <AddButton
                 type="Add Event"
-                action={handleShowAddEvent}>
+                action={() => {
+                  setShowAddEvent(true);
+                }}>
               </AddButton>
             </div>
           )}
@@ -71,7 +116,7 @@ function Events() {
           <EventsAside />
           <div className={`col-lg-10 mt-3`}>
             <div className={`row`}>
-              {isQuerying ? (
+              {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
                   <div className="spinner-border mt-5" role="status"
                     style={{ width: '10rem', height: '10rem'}}>
@@ -90,14 +135,25 @@ function Events() {
                       capacity={event.capacity}
                       filled={event.filled_spots}
                       image={event.image}
+                      isRegistered={event.isRegistered}
                       isAdmin={isAdmin}
-                      fetchAllEvents={fetchAllEvents}>
-                    </EventCard>
+                      fetchAllEvents={fetchAllEvents}
+                      updateEvents={updateEventsOnRegistration}
+                      addRegistrationAlert={addRegistrationAlert}
+                    ></EventCard>
                   </div>
                 ))
+              ) : displayAlert ? (
+                <AlertBox
+                  type={displayAlert.type}
+                  header={displayAlert.header}
+                  text={displayAlert.text}
+                  wantTimer={false}
+                  handleClose={() => setDisplayAlert(null)}
+                ></AlertBox>
               ) : (
                 <h3 className="col-12">
-                  There are no available events.
+                  There are no events matching filter criteria.
                 </h3>
               )}
             </div>
@@ -107,8 +163,9 @@ function Events() {
       {showAddEvent && isAdmin && (
         <AddEvent
           isShown={showAddEvent}
-          handleClose={handleCloseAddEvent}>
-        </AddEvent>
+          handleClose={() => setShowAddEvent(false)}
+          fetchEvents={fetchAllEvents}
+        ></AddEvent>
       )}
     </>
   );

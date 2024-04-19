@@ -1,14 +1,16 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Alert from "react-bootstrap/Alert";
+import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function DeleteEvent(props) {
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+  // const [successAlert, setSuccessAlert] = useState(false);
+  // const [errorAlert, setErrorAlert] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     try {
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/delete-event`,
@@ -23,43 +25,59 @@ function DeleteEvent(props) {
       );
 
       if (request.ok) {
-        setSuccessAlert(true);
-        setErrorAlert(false);
+        setAlert({
+          type: "success",
+          header: "Deletion successful!",
+          text: "The event was successfully deleted.",
+        });
+        setTimeout(() => {
+          props.fetchEvents()
+        }, 1500)
       } else {
-        setSuccessAlert(false);
-        setErrorAlert(true);
+        setAlert({
+          type: "danger",
+          header: "Deletion failed!",
+          text: "The event could not be deleted.",
+        });
       }
     } catch (error) {
-      setSuccessAlert(false);
-      setErrorAlert(true);
+      setAlert({
+        type: "danger",
+        header: "Deletion error!",
+        text: "We could not connect to the server while deleting the event.",
+      });
     }
   }
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Delete Event</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>Delete Event</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The event was successfully deleted!
-          </Alert>
+        {alert && (
+          <AlertBox
+            type={alert.type}
+            header={alert.header}
+            text={alert.text}
+            wantTimer={false}
+            handleClose={() => setAlert(null)}
+          ></AlertBox>
         )}
-        {errorAlert && (
+        {/* {errorAlert && (
           <Alert variant="danger">
             Error! The event could not be deleted. Try again or contact
             technical support.
           </Alert>
-        )}
+        )} */}
         <p>
           Are you sure you want to delete the event{" "}
           <strong>{props.name}</strong>? This action will be irreversible.
         </p>
-        <Button variant="secondary" onClick={props.handleClose}>
-          Cancel
+        <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
+          Close
         </Button>
-        <Button variant="danger" onClick={handleSubmit}>
+        <Button variant="danger" className={`${styles.modalBtn} ${styles.modalSubmit}`} onClick={handleSubmit}>
           Delete
         </Button>
       </Modal.Body>

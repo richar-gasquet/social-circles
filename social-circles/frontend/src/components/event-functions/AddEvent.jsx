@@ -2,7 +2,8 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
+import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function AddEvent(props) {
   const [eventName, setEventName] = useState("");
@@ -11,14 +12,18 @@ function AddEvent(props) {
   const [imageLink, setImageLink] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [emptyAlert, setEmptyAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+
+  const [alert, setAlert] = useState(null)
+  // const [emptyAlert, setEmptyAlert] = useState(false);
+  // const [successAlert, setSuccessAlert] = useState(false);
+  // const [errorAlert, setErrorAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!eventName && !capacity && !eventDesc && !imageLink && !startTime && !endTime) {
-      setEmptyAlert(true); 
+      setAlert({type: "warning", 
+                header: "Missing fields!", 
+                text: "All fields must be filled." }); 
       return; 
     }
 
@@ -44,8 +49,10 @@ function AddEvent(props) {
         }
       );
       if (request.ok) {
-        setSuccessAlert(true);
-        setErrorAlert(false);
+        setAlert({type: "success", 
+                  header: "Addition successful!",
+                  text: "The event was successfully added." })
+        props.fetchEvents();
         setEventName("");
         setCapacity("");
         setEventDesc("");
@@ -53,25 +60,33 @@ function AddEvent(props) {
         setStartTime("");
         setEndTime("");
       } else {
-        setErrorAlert(true);
+        setAlert({type: "danger",  
+                  header: "Addition failed!",
+                  text: "The event could not be added." });
       }
     } catch (error) {
-      setErrorAlert(true);
+      setAlert({type: "danger", 
+                header: "Addition error!",
+                text: "We could not connect to the server while adding the community." })
     }
   };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Add Event</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>Add Event</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The event was successfully added!
-          </Alert>
+        {alert && (
+          <AlertBox
+          type={alert.type}
+          header={alert.header}
+          text={alert.text}
+          wantTimer={false}
+          handleClose={() => setAlert(null)}>
+        </AlertBox>
         )}
-        {errorAlert && (
+        {/* {errorAlert && (
           <Alert variant="danger">
             Error! The event could not be added. Try again or 
             contact technical support. 
@@ -81,7 +96,7 @@ function AddEvent(props) {
           <Alert variant="warning">
             All fields must be filled.
           </Alert>
-        )}
+        )} */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>
@@ -104,7 +119,8 @@ function AddEvent(props) {
           <Form.Group className={`mb-2`} controlId="eventDesc">
             <Form.Label>Event Description</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={5}
               placeholder="Enter an event description"
               value={eventDesc}
               onChange={(e) => setEventDesc(e.target.value)}
@@ -137,10 +153,10 @@ function AddEvent(props) {
               onChange={(e) => setEndTime(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
             Close
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
             Submit
           </Button>
         </Form>
