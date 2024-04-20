@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useLocation } from "react-router";
 
 const EventContext = createContext({});
 export const useEventContext = () => useContext(EventContext);
@@ -7,6 +8,14 @@ function EventContextProvider({ children }) {
   const [events, setEvents] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [displayAlert, setDisplayAlert] = useState(null);
+  const [query, setQuery] = useState("");
+  const [searchParam] = useState(["name", "desc"]);
+  const location = useLocation();
+
+  useEffect(() => {
+    setDisplayAlert(null)
+    setQuery("");
+  }, [location])
 
   const fetchEvents = useCallback(async (route) => {
     try {
@@ -38,7 +47,7 @@ function EventContextProvider({ children }) {
     }
   }, []);
 
-  const updateEventsOnRegistration = (event_id, registered, new_count) => {
+  const updateEventsOnRegistration = useCallback((event_id, registered, new_count) => {
     setEvents(
       events.map((event) => {
         if (event.event_id === event_id) {
@@ -48,16 +57,28 @@ function EventContextProvider({ children }) {
         }
       })
     );
-  };
+  }, [events]);
+
+  const searchEvents = useCallback(() => {
+    if (!query) return events;
+    return events.filter(event =>
+      searchParam.some(param =>
+        event[param].toString().toLowerCase().includes(query.toLowerCase())
+      )
+    );
+  }, [events, query, searchParam]);
 
   return (
     <EventContext.Provider value={{
         events,
         isFetching,
         displayAlert,
+        query, 
+        setQuery,
         setDisplayAlert,
         fetchEvents,
         updateEventsOnRegistration,
+        searchEvents
     }}>
       {children}
     </EventContext.Provider>

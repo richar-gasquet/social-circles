@@ -105,7 +105,7 @@ function Communities() {
                   </div>
                 </div>
               ) : filteredCommunities.length > 0 ? (
-                searchCommunities(communities).map((comm) => (
+                filteredCommunities.map((comm) => (
                   <div
                     key={comm.group_id}
                     className="col-lg-6 col-md-6 col-sm-12 mt-3"

@@ -120,7 +120,7 @@ function Events() {
                   handleClose={() => setDisplayAlert(null)}
                 ></AlertBox>
               ) : (
-                <h3 className="col-12">
+                <h3 className="col-12 text-center">
                   There are no events matching filter criteria.
                 </h3>
               )}

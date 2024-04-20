@@ -7,6 +7,7 @@ import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function Events() {
@@ -17,44 +18,22 @@ function Events() {
     displayAlert,
     setDisplayAlert,
     updateEventsOnRegistration,
+    query,
+    setQuery,
+    searchEvents
   } = useEventContext();
-  const [registrationAlerts, setRegistrationAlerts] = useState([]);
-
-  // const [events, setEvents] = useState([]);
-  // const [error, setError] = useState("");
-  // const [isQuerying, setQuerying] = useState(true);
-  const [showAddEvent, setShowAddEvent] = useState(false);
   const { isAdmin } = useAuthContext();
 
+  const [registrationAlerts, setRegistrationAlerts] = useState([]);
+  const [showAddEvent, setShowAddEvent] = useState(false);
+
+
   useEffect(() => {
-    console.log("hdhakhka");
     fetchEvents("/get-available-events");
   }, []);
 
   const fetchAllEvents = () => 
     fetchEvents("/get-available-events");
-
-  // const fetchAllEvents = async () => {
-  //   try {
-  //     setQuerying(true);
-  //     const response = await fetch(
-  //       `${import.meta.env.VITE_BACKEND_URL}/get-available-events`,
-  //       { credentials: "include" }
-  //     )
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setEvents(data.results);
-  //     } else {
-  //       const errorData = await response.json();
-  //       setError(errorData.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch event data: ", error);
-  //     setError("Server error. Please contact the administrator.")
-  //   } finally {
-  //     setQuerying(false);
-  //   }
-  // };
 
   const addRegistrationAlert = (type, header, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
@@ -73,18 +52,14 @@ function Events() {
     );
   };
 
-  // const handleShowAddEvent = () => setShowAddEvent(true)
-  // const handleCloseAddEvent = () => {
-  //   setShowAddEvent(false);
-  //   fetchAllEvents();
-  // };
+  const filteredEvents = searchEvents(events);
 
   return (
     <>
       <WebStreamLoader/>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-      {registrationAlerts.map((alert) => (
+        {registrationAlerts.map((alert) => (
           <AlertBox
             key={alert.id}
             type={alert.type}
@@ -115,6 +90,10 @@ function Events() {
         <div className={`row`}>
           <EventsAside />
           <div className={`col-lg-10 mt-3`}>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}>
+            </SearchBar>
             <div className={`row`}>
               {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
@@ -123,8 +102,8 @@ function Events() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : events.length > 0 ? (
-                events.map((event) => (
+              ) : filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
                   <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
                     <EventCard
                       id={event.event_id}
@@ -152,7 +131,7 @@ function Events() {
                   handleClose={() => setDisplayAlert(null)}
                 ></AlertBox>
               ) : (
-                <h3 className="col-12">
+                <h3 className="col-12 text-center">
                   There are no events matching filter criteria.
                 </h3>
               )}

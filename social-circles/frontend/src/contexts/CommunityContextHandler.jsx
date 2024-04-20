@@ -32,7 +32,7 @@ function CommunityContextProvider({ children }) {
       } else {
         setDisplayAlert({
           type: "danger",
-          header: "Could not display events!",
+          header: "Could not display communities!",
           text: "Try again or contact the administrator.",
         });
       }
