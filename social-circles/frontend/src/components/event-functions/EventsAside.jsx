@@ -17,7 +17,7 @@ function EventsAside() {
                 </li>
                 <li className={`nav-item`}>
                   <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 
-                    to="/registered-events">Registered Events</NavLink>
+                    to="/my-events">My Events</NavLink>
                 </li>
                 <li className={`nav-item`}>
                   <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 

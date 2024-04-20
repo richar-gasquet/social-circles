@@ -14,7 +14,7 @@ import Resources from "./pages/shared/Resources.jsx";
 import UserDashboard from "./pages/user/UserDashboard.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import Events from "./pages/user/Events/Events.jsx";
-import RegisteredEvents from "./pages/user/Events/RegisteredEvents.jsx";
+import MyEvents from "./pages/user/Events/MyEvents.jsx";
 import PastEvents from "./pages/user/Events/PastEvents.jsx";
 import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
@@ -62,10 +62,10 @@ function App() {
           }
           />
           <Route
-            exact path="/registered-events"
+            exact path="/my-events"
             element={
               <EventContextProvider>
-                <ProtectedRoute component={RegisteredEvents} />
+                <ProtectedRoute component={MyEvents} />
                 </EventContextProvider>  }
           />
           <Route

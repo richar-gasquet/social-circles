@@ -9,7 +9,7 @@ import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
-function Events() {
+function MyEvents() {
   const {
     events,
     isFetching,
@@ -18,10 +18,11 @@ function Events() {
     setDisplayAlert,
     updateEventsOnRegistration,
   } = useEventContext();
-  const [registrationAlerts, setRegistrationAlerts] = useState([]);
-
-  const [showAddEvent, setShowAddEvent] = useState(false);
   const { isAdmin } = useAuthContext();
+
+  const [registrationAlerts, setRegistrationAlerts] = useState([]);
+  const [showAddEvent, setShowAddEvent] = useState(false);
+
 
   useEffect(() => {
     fetchEvents("/get-registered-events");
@@ -65,7 +66,7 @@ function Events() {
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
-              Registered Events
+              My Events
             </h1>
           </div>
           {isAdmin && (
@@ -141,4 +142,4 @@ function Events() {
 }
 
 
-export default Events;
+export default MyEvents;
