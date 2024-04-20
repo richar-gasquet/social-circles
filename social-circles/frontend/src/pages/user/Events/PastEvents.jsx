@@ -7,6 +7,7 @@ import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
 
 function Events() {
@@ -16,56 +17,32 @@ function Events() {
     fetchEvents,
     displayAlert,
     setDisplayAlert,
-    updateEventsOnRegistration,
+    query,
+    setQuery,
+    searchEvents
   } = useEventContext();
-  const [registrationAlerts, setRegistrationAlerts] = useState([]);
-
-  const [showAddEvent, setShowAddEvent] = useState(false);
   const { isAdmin } = useAuthContext();
 
+  const [showAddEvent, setShowAddEvent] = useState(false);
+
   useEffect(() => {
-    fetchEvents("/get-registered-events");
+    fetchEvents("/get-past-events");
   }, []);
 
-  const fetchRegisteredEvents = () => 
-    fetchEvents("/get-registered-events");
+  const fetchPastEvents = () => 
+    fetchEvents("/get-past-events");
 
-  const addRegistrationAlert = (type, header, text) => {
-    setRegistrationAlerts((prevRegistrationAlerts) => {
-      const newRegistrationAlert = { id: Date.now(), type, header, text };
-      if (prevRegistrationAlerts.length >= 3) {
-        return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
-      } else {
-        return [newRegistrationAlert, ...prevRegistrationAlerts];
-      }
-    });
-  };
-
-  const removeRegistrationAlert = (id) => {
-    setRegistrationAlerts((prevRegistrationAlerts) =>
-      prevRegistrationAlerts.filter((alert) => alert.id !== id)
-    );
-  };
+  const filteredEvents = searchEvents(events);
 
   return (
     <>
       <WebStreamLoader/>
       <UserHeader />
       <div className={`container-fluid p-5`}>
-      {registrationAlerts.map((alert) => (
-          <AlertBox
-            key={alert.id}
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            wantTimer={true}
-            handleClose={() => removeRegistrationAlert(alert.id)}
-          ></AlertBox>
-        ))}
         <div className={`row container-fluid align-items-center`}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
-              Registered Events
+              Past Events
             </h1>
           </div>
           {isAdmin && (
@@ -83,6 +60,10 @@ function Events() {
         <div className={`row`}>
           <EventsAside />
           <div className={`col-lg-10 mt-3`}>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}>
+            </SearchBar>
             <div className={`row`}>
               {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
@@ -91,8 +72,8 @@ function Events() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : events.length > 0 ? (
-                events.map((event) => (
+              ) : filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
                   <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
                     <EventCard
                       id={event.event_id}
@@ -105,10 +86,8 @@ function Events() {
                       image={event.image}
                       isRegistered={event.isRegistered}
                       isAdmin={isAdmin}
-                      fetchEvents={fetchRegisteredEvents}
-                      updateEvents={updateEventsOnRegistration}
-                      addRegistrationAlert={addRegistrationAlert}
-                      isPastEvent={event.inPast}
+                      fetchEvents={fetchPastEvents}
+                      isPastEvent={true}
                     ></EventCard>
                   </div>
                 ))
@@ -133,7 +112,7 @@ function Events() {
         <AddEvent
           isShown={showAddEvent}
           handleClose={() => setShowAddEvent(false)}
-          fetchEvents={fetchRegisteredEvents}
+          fetchEvents={fetchPastEvents}
         ></AddEvent>
       )}
     </>

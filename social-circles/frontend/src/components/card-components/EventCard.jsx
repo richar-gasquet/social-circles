@@ -27,7 +27,7 @@ function EventCard(props) {
       if (request.ok) {
         props.addRegistrationAlert("success", "Registration successful!", 
                       `You have registered for ${props.name}.`);
-                      props.updateEvents(props.id, true, props.filled + 1);
+        props.updateEvents(props.id, true, props.filled + 1);
       } else {
         props.addRegistrationAlert("danger", "Registration failed!", 
                       `We couldn't register you for ${props.name}.`);
@@ -102,7 +102,8 @@ function EventCard(props) {
             <RegisterButton
               isRegistered={props.isRegistered}
               handleRegister={handleRegistration}
-              handleCancel={handleCancelRegistration}>
+              handleCancel={handleCancelRegistration}
+              isDisabled={props.isPastEvent}>
             </RegisterButton>
           </div>
       </div>
@@ -113,7 +114,7 @@ function EventCard(props) {
           handleClose={() => setShowDeleteEvent(false)}
           event_id={props.id}
           name={props.name}
-          fetchEvents={props.fetchAllEvents}
+          fetchEvents={props.fetchEvents}
         ></DeleteEvent>
       )}
 
@@ -130,7 +131,7 @@ function EventCard(props) {
           start={formattedStart}
           end={formattedEnd}
           isRegistered={props.isRegistered}
-          fetchEvents={props.fetchAllEvents}
+          fetchEvents={props.fetchEvents}
         ></EditEvent>
       )}
     </div>

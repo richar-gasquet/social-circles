@@ -5,7 +5,8 @@ function RegisterButton(props) {
   const handleOnClick = props.isRegistered ? props.handleCancel : props.handleRegister;
   return (
     <Button variant = {props.isRegistered ? "danger" : "success"}
-      onClick = {handleOnClick}>
+      onClick = {handleOnClick}
+      disabled = {props.isDisabled}>
       {buttonText}
     </Button>
   );

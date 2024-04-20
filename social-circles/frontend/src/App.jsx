@@ -15,6 +15,7 @@ import UserDashboard from "./pages/user/UserDashboard.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import Events from "./pages/user/Events/Events.jsx";
 import RegisteredEvents from "./pages/user/Events/RegisteredEvents.jsx";
+import PastEvents from "./pages/user/Events/PastEvents.jsx";
 import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
@@ -65,6 +66,13 @@ function App() {
             element={
               <EventContextProvider>
                 <ProtectedRoute component={RegisteredEvents} />
+                </EventContextProvider>  }
+          />
+          <Route
+            exact path="/past-events"
+            element={
+              <EventContextProvider>
+                <ProtectedRoute component={PastEvents} />
                 </EventContextProvider>  }
           />
           <Route

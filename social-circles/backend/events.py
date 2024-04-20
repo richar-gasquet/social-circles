@@ -55,7 +55,8 @@ def get_registered_events():
                     'capacity': event[5],
                     'filled_spots': event[6],
                     'image': event[7],
-                    'isRegistered' : event[8]
+                    'isRegistered' : event[8],
+                    'inPast' : event[9]
                 }
                 events_list.append(event_dict)
                 
@@ -72,6 +73,40 @@ def get_registered_events():
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
         
+def get_past_events():
+    if 'email' in flask.session:
+        try:
+            email = flask.session['email']
+            past_events = event_db.get_past_events(email)
+            events_list = []
+            
+            for event in past_events:
+                event_dict = {
+                    'event_id': event[0],
+                    'name': event[1],
+                    'desc': event[2],
+                    'start_time': event[3],
+                    'end_time': event[4],
+                    'capacity': event[5],
+                    'filled_spots': event[6],
+                    'image' : event[7],
+                    'isRegistered' : event[8]
+                }
+                events_list.append(event_dict)
+                
+            return flask.jsonify({
+                'results' : events_list
+            }), 200 # OK
+        except Exception as ex:
+            print(f'{sys.argv[0]}: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
+
 def add_event():
     if 'email' in flask.session:
         try:

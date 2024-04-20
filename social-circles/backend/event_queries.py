@@ -27,7 +27,7 @@ def get_available_events(email) -> list:
             # Retrieve user's user_id at index 0
             user_id = user_info[0]
             
-            # Get all available events' info from event table
+            # Get all upcoming  events' info from event table
             cursor.execute('''
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
@@ -41,6 +41,10 @@ def get_available_events(email) -> list:
                 ON
                     e.event_id = e_reg.event_id
                     AND e_reg.user_id = %s
+                WHERE
+                    e.end_time > CURRENT_TIMESTAMP
+                ORDER BY
+                    e.start_time ASC
             ''', (user_id, ))
             
             all_events = cursor.fetchall()
@@ -79,7 +83,8 @@ def get_registered_events(email: str) -> list:
                         e.event_id, e.event_name, e.event_desc, 
                         e.start_time, e.end_time, e.capacity, 
                         e.filled_spots, e.image_link,
-                        TRUE as is_registered
+                        TRUE as is_registered,
+                        (e.end_time < CURRENT_TIMESTAMP) as in_past
                 FROM   
                     events e
                 INNER JOIN 
@@ -88,6 +93,8 @@ def get_registered_events(email: str) -> list:
                     e.event_id = e_reg.event_id
                 WHERE 
                     e_reg.user_id = %s
+                ORDER BY
+                    e.end_time DESC
             ''', (user_id, ))
             
             registered_events = cursor.fetchall()
@@ -97,6 +104,55 @@ def get_registered_events(email: str) -> list:
         put_connection(connection)
         
     return registered_events
+
+def get_past_events(email) -> list:
+    past_events = []
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor: 
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+            
+            if not user_info:
+                return past_events
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+            # Get past events' info from event table
+            cursor.execute('''
+                SELECT DISTINCT
+                    e.event_id, e.event_name, e.event_desc, 
+                    e.start_time, e.end_time, e.capacity, 
+                    e.filled_spots, e.image_link,
+                    (e_reg.user_id IS NOT NULL) as is_registered
+                FROM 
+                    events e
+                LEFT JOIN 
+                    event_registrations e_reg
+                ON
+                    e.event_id = e_reg.event_id
+                    AND e_reg.user_id = %s
+                WHERE
+                    e.end_time < CURRENT_TIMESTAMP
+                ORDER BY
+                    e.end_time DESC
+            ''', (user_id, ))
+            
+            past_events = cursor.fetchall()
+    except Exception:
+        raise
+    finally:
+        put_connection(connection)
+        
+    return past_events
 
 def add_event(args: dict) -> None:
     connection = get_connection()

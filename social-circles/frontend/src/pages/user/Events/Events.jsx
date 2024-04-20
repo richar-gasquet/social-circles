@@ -116,9 +116,10 @@ function Events() {
                       image={event.image}
                       isRegistered={event.isRegistered}
                       isAdmin={isAdmin}
-                      fetchAllEvents={fetchAllEvents}
+                      fetchEvents={fetchAllEvents}
                       updateEvents={updateEventsOnRegistration}
                       addRegistrationAlert={addRegistrationAlert}
+                      isPastEvent={false}
                     ></EventCard>
                   </div>
                 ))

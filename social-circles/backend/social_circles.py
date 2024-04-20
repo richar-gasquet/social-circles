@@ -85,7 +85,6 @@ def get_user_data():
 def add_user_data():
     if 'email' in flask.session:
         try:
-
             user_data = flask.request.json
             user_dict = {
                 'first_name': user_data.get('first_name'),
@@ -250,6 +249,10 @@ def get_available_events_route():
 @app.route('/get-registered-events', methods = ['GET'])
 def get_registered_events_route():
     return events.get_registered_events()
+
+@app.route('/get-past-events', methods = ['GET'])
+def get_past_events_route():
+    return events.get_past_events()
  
 @app.route('/add-event', methods = ['POST'])
 def add_event_route():
