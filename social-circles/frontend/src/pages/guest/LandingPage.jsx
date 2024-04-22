@@ -1,12 +1,11 @@
 import { NavLink } from "react-router-dom";
 import GuestHeader from "../../components/headers/GuestHeader";
-import WebStreamLoader from "../../components/WebStream/WebStreamLoader.jsx";
-
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
 function LandingPage() {
   return (
     <>
-      <WebStreamLoader/>
+      <SessionTimeoutHandler />
       <GuestHeader />
       <p>
         <NavLink to="/user-dashboard">Access User Dashboard</NavLink>

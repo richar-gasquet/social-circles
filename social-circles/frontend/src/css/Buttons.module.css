@@ -1,0 +1,27 @@
+.SubmitButton {
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #E1525F !important;
+    border: none;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.CancelButton {
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #6c757d !important;
+    border: none;
+    color: #ffffff;
+    border-radius: 4px;
+    font-size: 16px;
+    margin: 2%;
+    margin-left: 3%;
+}
+
+.SubmitButton:hover, .CancelButton:hover {
+    transform: scale(1.05);
+    transition: transform 0.15s;
+}

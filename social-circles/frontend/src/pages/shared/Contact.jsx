@@ -1,11 +1,11 @@
 import React from "react";
 import GuestHeader from "../../components/headers/GuestHeader";
-import WebStreamLoader from "../../components/WebStream/WebStreamLoader";
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
 function Contact() {
   return (
     <>
-      <WebStreamLoader/>
+      <SessionTimeoutHandler />
       <GuestHeader />
       <div className="container">
         <div className="row justify-content-center my-5">

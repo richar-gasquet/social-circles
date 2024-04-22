@@ -8,7 +8,7 @@ import CommunityCard from "../../../components/card-components/CommunityCard.jsx
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
-import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
+import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 
 function Communities() {
   const {
@@ -55,7 +55,7 @@ function Communities() {
 
   return (
     <>
-      <WebStreamLoader />
+      <SessionTimeoutHandler />
       <UserHeader />
       <div className={`container-fluid p-5`}>
         {registrationAlerts.map((alert) => (

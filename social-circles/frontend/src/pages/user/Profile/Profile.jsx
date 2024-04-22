@@ -4,7 +4,7 @@ import AdminHeader from '../../../components/headers/AdminHeader';
 import UserHeader from '../../../components/headers/UserHeader';
 import GuestHeader from '../../../components/headers/GuestHeader';
 import styles from '../../../css/ProfileForm.module.css';
-import WebStreamLoader from '../../../components/WebStream/WebStreamLoader';
+import SessionTimeoutHandler from '../../../components/session-checker/SessionTimeoutHandler';
 
 
 function Profile() {
@@ -127,7 +127,7 @@ function Profile() {
   if (!userData || userData.email === undefined || userData.is_admin === undefined || editMode === true) {
     return (
       <>
-        <WebStreamLoader/>
+        {userData && <SessionTimeoutHandler />}
         <Header />
         <div className="container mt-4">
           <h2>Profile</h2>
@@ -159,7 +159,7 @@ function Profile() {
   } else {
     return (
       <>
-        <WebStreamLoader/>
+        {userData && <SessionTimeoutHandler />}
         <Header />
         <div className="container mt-4">
           <div className={styles.profileRow} >
