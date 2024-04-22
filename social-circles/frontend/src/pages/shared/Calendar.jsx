@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import UserHeader from '../../components/headers/UserHeader';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 function ReactCalendar() {
     const [events, setEvents] = useState([]);
@@ -11,52 +12,53 @@ function ReactCalendar() {
     const [isQuerying, setQuerying] = useState(true);
 
     useEffect(() => {
-        fetchCalendarEvents()
+        fetchCalendarEvents();
     }, []);
-    
-    const transformedEvents = events.map(event => ({
-        id: event.event_id,
-        title: event.name,
-        start: new Date(event.start_time),
-        end: new Date(event.end_time),
-    }));
 
     const fetchCalendarEvents = async () => {
         try {
-        setQuerying(true);
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/calendar`,
-            { credentials: "include" }
-        )
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data.results);
-            setEvents(data.results);
-            setEvents(transformedEvents);
-        } else {
-            const errorData = await response.json();
-            setError(errorData.message);
-        }
+            setQuerying(true);
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/calendar`,
+                { credentials: "include" }
+            );
+            if (response.ok) {
+                const data = await response.json();
+                const transformedEvents = data.results.map((event, index) => ({
+                    id: parseInt(event.event_id),
+                    title: String(event.name),
+                    start: moment(event.start_time).toDate(),
+                    end: moment(event.end_time).toDate(),
+                }));
+                setEvents(transformedEvents);
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message);
+            }
         } catch (error) {
-        console.error("Failed to fetch event data: ", error);
-        setError("Server error. Please contact the administrator.")
+            console.error("Failed to fetch event data: ", error);
+            setError("Server error. Please contact the administrator.");
         } finally {
-        setQuerying(false);
+            setQuerying(false);
         }
-  };
+    };
 
-  return (
-    <>
-      <div className="height600">
-        <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        />
-    </div>
-    </>
-  );
+    return (
+        <>
+            <UserHeader />
+            <div className="height600">
+                <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    defaultDate={moment().toDate()}
+                    defaultView="month"
+                    style={{ height: '80vh',width: '95%', margin: '10px auto 0' }}
+                />
+            </div>
+        </>
+    );
 }
 
 export default ReactCalendar;

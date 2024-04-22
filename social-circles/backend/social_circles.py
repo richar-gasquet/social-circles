@@ -209,6 +209,10 @@ def add_event_registration_route():
 def delete_event_registration_route():
     return events.delete_event_registration()
 
+@app.route('/api/get-event-emails', methods = ['POST'])
+def email_event_route():
+    return events.get_event_emails()
+
 # grab events for calendar
 @app.route('/calendar', methods=['GET'])
 def calendar_route():

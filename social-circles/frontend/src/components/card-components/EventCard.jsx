@@ -4,12 +4,14 @@ import CardButton from './CardButton';
 import EditEvent from '../event-functions/EditEvent';
 import DeleteEvent from '../event-functions/DeleteEvent';
 import styles from '../../css/Card.module.css'; 
+import EmailEventGroup from '../event-functions/EmailEvents';
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toLocaleString();
   const formattedEnd = new Date(props.end).toLocaleString();
   const [showDeleteEvent, setShowDeleteEvent] = useState(false);
   const [showEditEvent, setShowEditEvent] = useState(false);
+  const [showEmailEvent, setShowEmailEvent] = useState(false)
   const [show, setShow] = useState(false);
 
   const handleShowDeleteEvent = () => setShowDeleteEvent(true);
@@ -21,6 +23,12 @@ function EventCard(props) {
   const handleShowEditEvent = () => setShowEditEvent(true);
   const handleCloseEditEvent = () => {
     setShowEditEvent(false);
+    props.fetchAllEvents();
+  };
+
+  const handleShowEmailEvent = () => setShowEmailEvent(true);
+  const handleCloseEmailEvent = () => {
+    setShowEmailEvent(false);
     props.fetchAllEvents();
   };
 
@@ -40,10 +48,16 @@ function EventCard(props) {
             icon="fas fa-edit"
           ></CardButton>
           <CardButton
+            className="mb-2"
             action={handleShowDeleteEvent}
             message="Delete Event"
             icon="fas fa-trash"
           ></CardButton>
+          <CardButton 
+            action={handleShowEmailEvent}
+            message="Email Event Attendees"
+            icon="fas fa-envelope">
+          </CardButton>
         </div>
       )}
       <div className={`card-body d-flex flex-column`}>
@@ -84,6 +98,15 @@ function EventCard(props) {
           start={formattedStart}
           end={formattedEnd}
         ></EditEvent>
+      )}
+
+      {showEmailEvent && props.isAdmin && (
+        <EmailEventGroup
+          isShown={showEmailEvent}
+          handleClose={handleCloseEmailEvent}
+          event_id={props.id}
+          eventName={props.name}
+        ></EmailEventGroup>
       )}
     </div>
   );

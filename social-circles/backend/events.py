@@ -208,19 +208,19 @@ def delete_event_registration():
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
         
-def get_events_emails():
+def get_event_emails():
+    print("here")
     if 'email' in flask.session:
         try:
+            print("here two")
             is_admin = user_db.get_user_authorization(flask.session['email'])
             if not is_admin:
                 raise Exception("User is not authorized!")
             
             event_data = flask.request.json
             event_id = event_data.get('event_id')
-            
             emails_list = event_db.get_event_emails(event_id)
-            print(emails_list)
-            emails_str = ','.join(email for email in emails_list)
+            emails_str = ','.join(email[0] for email in emails_list)
             return flask.jsonify({
                 'status' : 'success',
                 'results' : emails_str
