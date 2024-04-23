@@ -150,8 +150,8 @@ def update_user(args: dict):
             # Construct the dynamic SQL query
             if update_fields:
                 sql = f"UPDATE users SET {', '.join(update_fields)} WHERE user_id = %s"
-                update_values.append(user_id)\
-                
+                update_values.append(user_id)
+
                 # Execute the update query
                 cursor.execute(sql, tuple(update_values))
                 connection.commit()

@@ -1,7 +1,7 @@
 import { useAuthContext } from "../../contexts/AuthContextHandler";
 import GuestHeader from "../../components/headers/GuestHeader";
 import UserHeader from "../../components/headers/UserHeader";
-import WebStreamLoader from "../../components/WebStream/WebStreamLoader";
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
 function Resources() {
   const { isAuth } = useAuthContext();
@@ -9,10 +9,10 @@ function Resources() {
   return (
     <>
       {isAuth ? (
-        <WebStreamLoader/>,
+        <SessionTimeoutHandler />,
         <UserHeader />
       ) : (
-        <WebStreamLoader/>,
+        <SessionTimeoutHandler />,
         <GuestHeader />
       )}
     </>

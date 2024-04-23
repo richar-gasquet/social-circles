@@ -8,7 +8,7 @@ import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
-import WebStreamLoader from "../../../components/WebStream/WebStreamLoader.jsx";
+import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 
 function Events() {
   const {
@@ -36,7 +36,7 @@ function Events() {
 
   return (
     <>
-      <WebStreamLoader/>
+      <SessionTimeoutHandler />
       <UserHeader />
       <div className={`container-fluid p-5`}>
         <div className={`row container-fluid align-items-center`}>

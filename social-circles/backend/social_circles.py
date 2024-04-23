@@ -7,14 +7,19 @@ import auth
 import users
 import events
 import communities
+import vistors
 import user_queries as db
+import uuid
+from datetime import datetime, timezone
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = True
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
 app.config["SESSION_COOKIE_SAMESITE"] = "None" # Allow cookies to be sent in cross-site requests
 app.config['SESSION_COOKIE_SECURE'] = True  # Ensure cookies are sent in secure channel (HTTPS)
@@ -27,6 +32,16 @@ flask_cors.CORS(app, supports_credentials=True, resources={r"/*": {"origins": RE
 #----------------------------------------------------------------------
 
 # Routes for authentication and authorization
+
+@app.before_request
+def make_session_permanent():
+    flask.session.permanent = True  # Make the session permanent so that it uses the configured expiration
+    flask.session['session_start'] = datetime.now(timezone.utc)
+    if 'visited' not in flask.session:
+        flask.session['visited'] = True
+        flask.session['session_id'] = str(uuid.uuid4())
+        vistors.log_visit(flask.session['session_id'])
+
 
 @app.route('/login', methods = ['GET'])
 def login_route():
@@ -43,6 +58,12 @@ def logout_route():
 @app.route('/authenticate', methods = ['GET'])
 def authenticate_route():
     return auth.authenticate()
+
+app.route('/extend-session', methods = ['POST'])
+def session_timeout():
+    # Reset the session timeout
+    flask.session.modified = True
+    return flask.jsonify({'status': 'success', 'message': 'Session extended'})
 
 #----------------------------------------------------------------------
 
@@ -137,7 +158,7 @@ def update_user_data():
                 'interests': user_data.get('interests', 'N/A') if user_data.get('interests') != '' else 'N/A',
                 'personal_identity': user_data.get('personal_identity', 'N/A') if user_data.get('personal_identity') != '' else 'N/A'
             }
-            print(user_data.get('family_circumstance', 'N/A') if user_data.get('family_circumstance') != '' else 'N/A')
+            
             db.update_user(user_dict)
             return flask.jsonify({
                 'status' : 'success'
@@ -237,6 +258,9 @@ def remove_user_from_blacklist():
         return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
 
 
+@app.route('/current_visitors', methods = ['GET'])
+def get_current_visitors():
+    return vistors.current_visitors()
 
 #----------------------------------------------------------------------
 
@@ -310,3 +334,12 @@ def delete_community_registration_route():
 @app.route('/api/get-community-emails', methods = ['POST'])
 def email_community_route():
     return communities.get_community_emails()
+
+
+def clear_expired_sessions():
+    with app.app_context():
+        vistors.delete_expired_sessions_from_database()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
+scheduler.start()

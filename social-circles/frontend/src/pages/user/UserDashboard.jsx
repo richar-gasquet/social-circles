@@ -2,8 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useUserContext } from '../../contexts/UserContextHandler';
 import UserHeader from "../../components/headers/UserHeader";
 import LogoutButton from '../../components/auth-components/LogoutButton';
-import WebStreamLoader from "../../components/WebStream/WebStreamLoader";
-
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
 function UserDashboard() {
   const { userData, isLoading } = useUserContext();
@@ -25,7 +24,7 @@ function UserDashboard() {
   }
   return (
     <>
-      <WebStreamLoader/>
+      {userData && <SessionTimeoutHandler />}
       <UserHeader />
       <h2>This is the User Dashboard.</h2>
       <p>

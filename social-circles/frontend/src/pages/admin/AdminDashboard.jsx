@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import AdminHeader from '../../components/headers/AdminHeader';
 import LogoutButton from '../../components/auth-components/LogoutButton';
 import { useUserContext } from '../../contexts/UserContextHandler';
-import WebStreamLoader from '../../components/WebStream/WebStreamLoader';
+import SessionTimeoutHandler from '../../components/session-checker/SessionTimeoutHandler';
 import Modal from 'react-bootstrap/Modal'; 
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend);
+
 
 function AdminDashboard() {
   const { userData, isLoading } = useUserContext();
@@ -11,7 +16,52 @@ function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [blacklistedUsers, setBlacklistedUsers] = useState([]);
+  const [currentUsers, setCurrentUsers] = useState([]);
+  const [rerender, setRerender] = useState(false);
+  const [chartData, setChartData] = useState({
+    labels: [], // This will hold time intervals or dates
+    datasets: [{
+      label: 'Current Users',
+      data: [], // Array of user counts
+      fill: false,
+      backgroundColor: 'rgb(75, 192, 192)',
+      borderColor: 'rgba(75, 192, 192, 0.2)',
+      tension: 0.1
+    }]
+  });
 
+  const fetchCurrentUsers = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/current_visitors`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      const data = await response.json();
+      console.log(data);
+      updateChartData(data.current_visitors);
+    } catch (error) {
+      console.error('Error fetching current users:', error);
+    }
+  };
+
+  const updateChartData = (currentCount) => {
+    const newTime = new Date().toLocaleTimeString();
+    const newChartData = { ...chartData };
+    newChartData.labels.push(newTime);
+    newChartData.datasets[0].data.push(currentCount);
+    if (newChartData.labels.length > 10) { // Limit data points
+      newChartData.labels.shift();
+      newChartData.datasets[0].data.shift();
+    }
+    setChartData(newChartData);
+  };
+
+  // Button click handler to force redraw
+  const handleRedraw = () => {
+    fetchCurrentUsers();
+    setRerender(true);
+    setTimeout(() => setRerender(false), 0);  // Reset redraw state immediately
+  };
 
   useEffect(() => {
     setIsFetching(true);
@@ -141,13 +191,20 @@ useEffect(() => {
 
   return (
     <>
-    <WebStreamLoader />
+    <SessionTimeoutHandler />
     <AdminHeader />
     <div>
       <h2>Hello {userData.first_name} {userData.last_name}</h2>
       <br/>
       <div>
         <h3>Website Analytics</h3>
+        <div>
+          <h4>Current Users on Site</h4>
+          <div style={{ width: '75%', margin: 'auto'}}>
+            <Line data={chartData} redraw={rerender}/>
+            <button onClick={handleRedraw}>Redraw Graph</button>
+          </div>
+        </div>
         <h3>All Users</h3>
         <p>Click on a user to view user information.</p>
         {isFetching ? (

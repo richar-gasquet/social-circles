@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import GuestHeader from "../../components/headers/GuestHeader.jsx";
-import WebStreamLoader from "../../components/WebStream/WebStreamLoader.jsx";
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler.jsx";
 
 
 function LoginPage() {
@@ -33,7 +33,7 @@ function LoginPage() {
   
   return (
     <>
-      <WebStreamLoader/>
+      <SessionTimeoutHandler />
       <GuestHeader />
       <h2>This is the login page.</h2>
       <button onClick={handleLogin}>Log In with Google</button>

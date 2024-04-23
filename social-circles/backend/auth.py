@@ -5,6 +5,7 @@ import requests
 from dotenv import load_dotenv
 import flask
 import oauthlib.oauth2
+import vistors
 import user_queries as db
 
 #----------------------------------------------------------------------
@@ -101,6 +102,8 @@ def callback():
 #----------------------------------------------------------------------
 
 def logout():
+    session_id = flask.session.get('session_id')
+    vistors.delete_user_session_from_database(session_id)
     flask.session.clear()
     return flask.redirect(f'{REACT_FRONTEND}')
 

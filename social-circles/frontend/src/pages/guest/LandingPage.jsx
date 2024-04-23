@@ -4,10 +4,12 @@ import danaImg from "../../assets/dana.webp";
 import moorheadImg from "../../assets/moorhead.jpg";
 import logo from "../../assets/social-circles-logo.png";
 import styles from "../../css/LandingPage.module.css";
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
 function LandingPage() {
   return (
     <div className={`${styles.overallContainer}`}>
+      <SessionTimeoutHandler />
       <div className={`container-fluid ${styles.carouselContainer}`}>
         <Carousel fade indicators={false} controls={false}>
           <Carousel.Item className={`${styles.carouselItem}`}>
