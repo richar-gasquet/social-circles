@@ -1,0 +1,136 @@
+@import url('../index.css');
+
+.overallContainer {
+    min-width: 500px;
+    scroll-snap-type: y mandatory;
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.carouselContainer {
+    padding: 0; 
+    position: relative;
+    background: linear-gradient(to right, black, 25%, rgba(0, 0, 0, 0.65), 75%, black);
+    scroll-snap-align: center;
+    height: 95vh;
+    border-bottom: solid 3px;
+}
+
+.carouselImg {
+    height: 95vh;
+    object-fit: cover;
+}
+
+.carouselGradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, black, 25%, rgba(0, 0, 0, 0.65), 75%, black);
+    z-index: 1;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.textOverlay {
+    z-index: 10; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.textOverlay h2 {
+    font-size: 2.7rem;
+    animation: fadeIn 1.5s;
+}
+
+.textOverlay h1{
+    font-size: 4.3rem;
+    opacity: 0;
+    animation: fadeIn 1.5s forwards;
+    animation-delay: 2.0s;
+    text-wrap: nowrap;
+}
+
+.logo {
+    max-width: 250px;
+    opacity: 0;
+    animation: fadeIn 2.0s forwards;
+    animation-delay: 1.5s;
+}
+
+.carouselText {
+    color: white;
+}
+
+.button {
+    height: 70px;
+    width: 170px;
+    border: none;
+    font-size: 1.2rem;
+
+    opacity: 0;
+    animation: fadeIn 2.0s forwards;
+    animation-delay: 2.5s;
+
+    transition: background-color 0.6s;
+}
+
+.startButton {
+    background-color: var(--primary-color);
+}
+
+.startButton:hover, .startButton:focus{
+    background-color: rgb(210, 31, 0);
+    transition: background-color 0.6s;
+}
+
+.learnButton {
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+.learnButton:hover, .learnButton:focus{
+    background-color: rgb(214, 213, 213);
+    color: black;
+    transition: background-color 0.6s;
+}
+
+.descContainer {
+    min-height: 450px;
+    scroll-snap-align: center;
+    border-bottom: solid 3px;
+}
+
+.danaContainer {
+    min-height: 500px;
+    scroll-snap-align: center;
+    border-bottom: solid 3px;
+}
+
+.danaImg {
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.joinContainer {
+    min-height: 200px;
+    scroll-snap-align: center;
+}
+
+.joinText {
+    color: var(--primary-color);
+}
+
+.joinText:hover, .joinText:focus{
+    color: rgb(210, 31, 0);
+    transition: background-color 0.6s;
+}
