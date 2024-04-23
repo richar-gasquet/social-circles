@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import AdminHeader from '../../components/headers/AdminHeader';
-import LogoutButton from '../../components/auth-components/LogoutButton';
 import { useUserContext } from '../../contexts/UserContextHandler';
 import SessionTimeoutHandler from '../../components/session-checker/SessionTimeoutHandler';
 import Modal from 'react-bootstrap/Modal'; 
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend } from 'chart.js';
+import styles from '../../css/Buttons.module.css';
+import dashstyles from '../../css/AdminDash.module.css'
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend);
 
@@ -14,6 +15,8 @@ function AdminDashboard() {
   const { userData, isLoading } = useUserContext();
   const [allUsers, setAllUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [isFetching, setIsFetching] = useState(false);
   const [blacklistedUsers, setBlacklistedUsers] = useState([]);
   const [currentUsers, setCurrentUsers] = useState([]);
@@ -24,7 +27,7 @@ function AdminDashboard() {
       label: 'Current Users',
       data: [], // Array of user counts
       fill: false,
-      backgroundColor: 'rgb(75, 192, 192)',
+      backgroundColor: 'rgb(0, 150, 255)',
       borderColor: 'rgba(75, 192, 192, 0.2)',
       tension: 0.1
     }]
@@ -74,6 +77,7 @@ function AdminDashboard() {
       // Filter out admin users
       const nonAdminUsers = data.filter(user => !user.is_admin);
       setAllUsers(nonAdminUsers);
+      setFilteredUsers(nonAdminUsers);
       setIsFetching(false);
     })
     .catch(error => {
@@ -82,23 +86,50 @@ function AdminDashboard() {
     });
   }, []);
 
-
-useEffect(() => {
-  const fetchBlacklistedUsers = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-blacklisted-users`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      const data = await response.json();
-      setBlacklistedUsers(data);
-    } catch (error) {
-      console.error('Error fetching blacklisted users:', error);
-    }
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    filterUsers(value);
   };
 
-  fetchBlacklistedUsers();
-}, []);
+  const filterUsers = (term) => {
+    const lowerCaseTerm = term.toLowerCase();
+    const filtered = allUsers.filter(user => {
+      console.log(user)
+      return (
+        (user.first_name && user.first_name.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.last_name && user.last_name.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.email && user.email.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.phone_number && user.phone_number.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.address && user.address.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.pronouns && user.pronouns.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.marital_status && user.marital_status.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.family_circumstance && user.family_circumstance.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.community_status && user.community_status.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.interests && user.interests.toLowerCase().includes(lowerCaseTerm)) ||
+        (user.personal_identity && user.personal_identity.toLowerCase().includes(lowerCaseTerm))
+        );
+    });
+    setFilteredUsers(filtered);
+  };
+
+
+  useEffect(() => {
+    const fetchBlacklistedUsers = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-blacklisted-users`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+        const data = await response.json();
+        setBlacklistedUsers(data);
+      } catch (error) {
+        console.error('Error fetching blacklisted users:', error);
+      }
+    };
+
+    fetchBlacklistedUsers();
+  }, []);
 
   const handleUserClick = (user) => {
     setSelectedUser(user);
@@ -174,6 +205,10 @@ useEffect(() => {
       }
     }
   };
+
+  const handleLogout = (e) => {
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
+  };
   
 
   if (isLoading) {
@@ -193,43 +228,53 @@ useEffect(() => {
     <>
     <SessionTimeoutHandler />
     <AdminHeader />
-    <div>
-      <h2>Hello {userData.first_name} {userData.last_name}</h2>
-      <br/>
+    <div style={{margin: '5%'}}>
       <div>
-        <h3>Website Analytics</h3>
+        <h2>Hello {userData.first_name} {userData.last_name}</h2>
+        <br/>
         <div>
-          <h4>Current Users on Site</h4>
-          <div style={{ width: '75%', margin: 'auto'}}>
-            <Line data={chartData} redraw={rerender}/>
-            <button onClick={handleRedraw}>Redraw Graph</button>
+          <div style={{outline: '#F5EDED solid 10px', borderRadius: '1%', padding: '2%'}}>
+            <h3 style={{marginLeft: '5%'}}>Website Analytics</h3>
+            <h4 style={{marginLeft: '5%'}}>Current Users on Site</h4>
+            <div style={{ width: '75%', margin: 'auto'}}>
+              <Line data={chartData} redraw={rerender}/>
+              <button className={styles.submitButton} style={{marginTop: '2%'}} onClick={handleRedraw}>Redraw Graph</button>
+            </div>
+          </div>
+          <hr style={{marginTop: '5%'}}/>
+          <div className='row' style={{marginTop: '5%', marginBottom: '3%', padding: '2%', outline: '#F5EDED solid 10px', borderRadius: '1%'}}>
+            <div className='col-md-6'>
+              <h3>All Users</h3>
+              <input className='form-control mb-2' style={{width: '50%'}} type="text" placeholder="Search users and their info..." onChange={handleSearchChange} value={searchTerm}/>
+              <p>Click on a user to view user information.</p>
+              {isFetching ? (
+                <p>Loading users...</p>
+              ) : (
+                <ul className='list-group' style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '20px', width: '50%' }}>
+                  {filteredUsers.map(user => (
+                    <li className={`list-group-item ${dashstyles.userName}`} key={user.email} onClick={() => handleUserClick(user)} style={{ cursor: 'pointer'}}>
+                      {user.first_name} {user.last_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className='col-md-6'>
+              <h3>Blacklisted Users</h3>
+              <ul className='list-group' style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '20px', width: '50%' }}>
+                {blacklistedUsers.map(user => (
+                  <li className={'list-group-item'} key={user.email} style={{padding: 'auto'}}>
+                    {user.first_name} {user.last_name} 
+                    <button className={styles.smallSubmitButton} style={{marginLeft: '7%'}} onClick={() => removeUserFromBlacklist(user.email)}>Remove from Blacklist</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-        <h3>All Users</h3>
-        <p>Click on a user to view user information.</p>
-        {isFetching ? (
-          <p>Loading users...</p>
-        ) : (
-          <ul style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '20px' }}>
-            {allUsers.map(user => (
-              <li key={user.email} onClick={() => handleUserClick(user)} style={{ cursor: 'pointer' }}>
-                {user.first_name} {user.last_name}
-              </li>
-            ))}
-          </ul>
-        )}
-        <h3>Blacklisted Users</h3>
-        <ul style={{ maxHeight: '200px', overflowY: 'auto' }}>
-          {blacklistedUsers.map(user => (
-            <li key={user.email} style={{ cursor: 'pointer' }}>
-              {user.first_name} {user.last_name} - 
-              <button onClick={() => removeUserFromBlacklist(user.email)}>Remove from Blacklist</button>
-            </li>
-          ))}
-        </ul>
       </div>
+      <button className={styles.submitButton} onClick={handleLogout}>Log Out</button>
     </div>
-    <LogoutButton />
     {selectedUser && (
     <Modal show={selectedUser !== null} onHide={closePopup}>
       <Modal.Header closeButton>
@@ -250,8 +295,8 @@ useEffect(() => {
           <p><strong>Personal Identity:</strong> {selectedUser.personal_identity}</p>
       </Modal.Body>
       <Modal.Footer>
-        <button variant="danger" onClick={blacklistAndDeleteUser}>Blacklist and Delete</button>
-        <button variant="secondary" onClick={closePopup}>Close</button>
+        <button className={styles.submitButton} variant="danger" onClick={blacklistAndDeleteUser}>Blacklist and Delete</button>
+        <button className={styles.cancelButton} variant="secondary" onClick={closePopup}>Close</button>
       </Modal.Footer>
     </Modal>
     )}
