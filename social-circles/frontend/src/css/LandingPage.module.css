@@ -36,6 +36,14 @@
     100% { opacity: 1; }
 }
 
+.animated {
+    opacity: 0;
+}
+
+.fadeIn {
+    animation: fadeIn 1.5s forwards;
+}
+
 .textOverlay {
     z-index: 10; 
     position: absolute;
