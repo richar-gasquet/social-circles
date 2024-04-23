@@ -1,0 +1,10 @@
+
+.userName{
+    transition: all 0.25s ease;
+}
+
+.userName:hover {
+    background-color: #E1525F !important;
+    color: #ffffff;
+    
+}

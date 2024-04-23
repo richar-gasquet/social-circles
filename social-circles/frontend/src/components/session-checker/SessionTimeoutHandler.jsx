@@ -53,8 +53,8 @@ function SessionTimeoutHandler() {
         Your session is about to expire. Do you want to continue your session?
       </Modal.Body>
       <Modal.Footer>
-        <button className={styles.CancelButton} onClick={endSession}>End Session</button>
-        <button className={styles.SubmitButton} onClick={continueSession}>Continue Session</button>
+        <button className={styles.cancelButton} onClick={endSession}>End Session</button>
+        <button className={styles.submitButton} onClick={continueSession}>Continue Session</button>
       </Modal.Footer>
     </Modal>
   );
