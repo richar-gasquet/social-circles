@@ -1,5 +1,6 @@
 import sys
 import os
+import html
 import flask
 import ssl
 import smtplib
@@ -126,10 +127,10 @@ def add_event():
 
             event_data = flask.request.json
             event_dict = {
-                'event_name' : event_data['event_name'],
-                'capacity' : int(event_data['capacity']),
-                'event_desc' : event_data['event_desc'],
-                'image_link' : event_data['image_link'],
+                'event_name' : html.escape(event_data['event_name']),
+                'capacity' : html.escape(int(event_data['capacity'])),
+                'event_desc' : html.escape(event_data['event_desc']),
+                'image_link' : html.escape(event_data['image_link']),
                 'start_time' : parser.parse(event_data['start_time']),
                 'end_time' : parser.parse(event_data['end_time'])
             }
@@ -159,10 +160,10 @@ def edit_event():
             event_data = flask.request.json
             event_dict = {
                 'event_id' : event_data.get('event_id', ''),
-                'event_name' : event_data.get('event_name', ''),
-                'event_desc' : event_data.get('event_desc', ''),
-                'image_link' : event_data.get('image_link', ''),
-                'event_capacity' : event_data.get('capacity', ''),
+                'event_name' : html.escape(event_data.get('event_name', '')),
+                'event_desc' : html.escape(event_data.get('event_desc', '')),
+                'image_link' : html.escape(event_data.get('image_link', '')),
+                'event_capacity' : html.escape(event_data.get('capacity', '')),
                 'start_time' : parser.parse(event_data['start_time']),
                 'end_time' : parser.parse(event_data['end_time'])
             }

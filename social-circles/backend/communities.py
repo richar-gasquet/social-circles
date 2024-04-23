@@ -1,4 +1,5 @@
 import sys
+import html
 import flask
 import community_queries as comm_db
 import user_queries as user_db
@@ -74,9 +75,9 @@ def add_community():
 
             community_data = flask.request.json
             community_dict = {
-                'group_name' : community_data.get('group_name'),
-                'group_desc' : community_data.get('group_desc'),
-                'image_link' : community_data.get('image_link') 
+                'group_name' : html.escape(community_data.get('group_name')),
+                'group_desc' : html.escape(community_data.get('group_desc')),
+                'image_link' : html.escape(community_data.get('image_link')) 
             }
             
             comm_db.add_community(community_dict)
@@ -103,9 +104,9 @@ def edit_community():
             community_data = flask.request.json
             community_dict = {
                 'group_id' : community_data.get('group_id', ''),
-                'group_name' : community_data.get('group_name', ''),
-                'group_desc' : community_data.get('group_desc', ''),
-                'image_link' : community_data.get('image_link', '')
+                'group_name' : html.escape(community_data.get('group_name', '')),
+                'group_desc' : html.escape(community_data.get('group_desc', '')),
+                'image_link' : html.escape(community_data.get('image_link', ''))
             }
             
             comm_db.update_community(community_dict)
