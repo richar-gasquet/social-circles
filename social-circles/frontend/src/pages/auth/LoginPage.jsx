@@ -10,7 +10,7 @@ function LoginPage() {
   if (isLoading) {
     return (
       <>
-      <WebStreamLoader/>
+      <SessionTimeoutHandler />
       <GuestHeader />
       <div className="col-12 d-flex justify-content-center">
         <div className="spinner-border mt-5" role="status"
