@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import Carousel from "react-bootstrap/Carousel";
 import danaImg from "../../assets/dana.webp";
-import moorheadImg from "../../assets/moorhead.jpg";
 import logo from "../../assets/social-circles-logo.png";
 import styles from "../../css/LandingPage.module.css";
 
