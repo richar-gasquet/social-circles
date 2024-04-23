@@ -7,8 +7,8 @@ import DeleteEvent from '../event-functions/DeleteEvent';
 import styles from '../../css/Card.module.css'; 
 
 function EventCard(props) {
-  const formattedStart = new Date(props.start).toLocaleString();
-  const formattedEnd = new Date(props.end).toLocaleString();
+  const formattedStart = new Date(props.start).toISOString().slice(0, 16);
+  const formattedEnd = new Date(props.end).toISOString().slice(0, 16);
   const [showDeleteEvent, setShowDeleteEvent] = useState(false);
   const [showEditEvent, setShowEditEvent] = useState(false);
 

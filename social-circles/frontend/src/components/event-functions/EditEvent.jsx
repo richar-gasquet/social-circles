@@ -14,9 +14,6 @@ function EditEvent(props) {
   const [eventEnd, setEventEnd] = useState(props.end);
 
   const [alert, setAlert] = useState(null);
-  // const [noChangeAlert, setNoChangeAlert] = useState(false);
-  // const [successAlert, setSuccessAlert] = useState(false);
-  // const [errorAlert, setErrorAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +32,6 @@ function EditEvent(props) {
       eventData.end_time = eventEnd;
 
     if (Object.keys(eventData).length > 1) {
-      // setNoChangeAlert(false);
       try {
         const request = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/edit-event`,
@@ -95,15 +91,6 @@ function EditEvent(props) {
             handleClose={() => setAlert(null)}>
           </AlertBox>
         )}
-        {/* {errorAlert && (
-          <Alert variant="danger">
-            Error! The event could not be updated. Try again or contact
-            technical support.
-          </Alert>
-        )}
-        {noChangeAlert && (
-          <Alert variant="warning">At least one field must be changed.</Alert>
-        )} */}
         <Form onSubmit={handleSubmit}> 
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>

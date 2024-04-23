@@ -7,8 +7,6 @@ function RegisterButton(props) {
     : props.isRegistered ? "Cancel Registration"
     : props.isFull ? "Join Waitlist"
     : "Register"
-
-  console.log(props.isFull)
       
   const buttonType = props.isRegistered 
     ? "danger" 
