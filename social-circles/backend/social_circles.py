@@ -179,7 +179,6 @@ def update_user_data():
 def delete_user_data():
     if 'email' in flask.session:
         try:
-
             user_data = flask.request.json
             db.delete_user(user_data['email'])
             return flask.jsonify({
@@ -298,6 +297,10 @@ def add_event_registration_route():
 @app.route('/delete-event-registration', methods = ['POST'])    
 def delete_event_registration_route():
     return events.delete_event_registration()
+
+@app.route('/delete-event-waitlist', methods = ['POST'])    
+def delete_event_waitlist_route():
+    return events.delete_event_waitlist()
     
 #----------------------------------------------------------------------
 
@@ -334,7 +337,6 @@ def delete_community_registration_route():
 @app.route('/api/get-community-emails', methods = ['POST'])
 def email_community_route():
     return communities.get_community_emails()
-
 
 def clear_expired_sessions():
     with app.app_context():

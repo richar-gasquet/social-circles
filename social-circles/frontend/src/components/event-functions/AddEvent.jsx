@@ -17,10 +17,17 @@ function AddEvent(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!eventName && !capacity && !eventDesc && !imageLink && !startTime && !endTime) {
+    if (!eventName || !capacity || !eventDesc || !startTime || !endTime) {
       setAlert({type: "warning", 
                 header: "Missing fields!", 
                 text: "All fields must be filled." }); 
+      return; 
+    }
+
+    if (capacity < 0) {
+      setAlert({type: "warning", 
+                header: "Invalid capacity!", 
+                text: "Capacity must be greater than 0." }); 
       return; 
     }
 
@@ -76,12 +83,12 @@ function AddEvent(props) {
       <Modal.Body>
         {alert && (
           <AlertBox
-          type={alert.type}
-          header={alert.header}
-          text={alert.text}
-          wantTimer={false}
-          handleClose={() => setAlert(null)}>
-        </AlertBox>
+            type={alert.type}
+            header={alert.header}
+            text={alert.text}
+            wantTimer={false}
+            handleClose={() => setAlert(null)}>
+          </AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">

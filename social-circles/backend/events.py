@@ -1,8 +1,16 @@
 import sys
+import os
 import flask
+import ssl
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from dateutil import parser
+from dotenv import load_dotenv
 import event_queries as event_db
 import user_queries as user_db
+
+load_dotenv()
 
 def get_available_events():
     if 'email' in flask.session:
@@ -21,7 +29,9 @@ def get_available_events():
                     'capacity': event[5],
                     'filled_spots': event[6],
                     'image': event[7],
-                    'isRegistered' : event[8]
+                    'isRegistered' : event[8],
+                    'isWaitlisted' : event[9],
+                    'isFull' : event[10]
                 }
                 events_list.append(event_dict)
                 
@@ -202,14 +212,20 @@ def add_event_registration():
         try:
             event_data = flask.request.json
             event_id = event_data.get('event_id')
-            
             email = flask.session['email']
             
-            event_db.add_event_registration(email, event_id)
-                
-            return flask.jsonify({
-                'status' : 'success'
-            }), 200 # OK
+            filled, capacity = event_db.get_event_spots(event_id)
+            if filled >= capacity:
+                event_db.add_to_waitlist(email, event_id)
+                return flask.jsonify({
+                    'status' : 'waitlist'
+                }), 200 # OK
+            else:
+                event_db.add_event_registration(email, event_id)
+                send_confirmation_email(email, event_id, "registration")
+                return flask.jsonify({
+                    'status' : 'registered'
+                }), 200 # OK
         except Exception as ex:
             print(f'{sys.argv[0]}: {str(ex)}')
             return flask.jsonify({
@@ -229,7 +245,29 @@ def delete_event_registration():
             email = flask.session['email']
             
             event_db.delete_event_registration(email, event_id)
-                
+            promote_from_waitlist(event_id)
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200 # OK
+        except Exception as ex:
+            print(f'{sys.argv[0]}: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
+        
+def delete_event_waitlist():
+    if 'email' in flask.session:
+        try:
+            event_data = flask.request.json
+            event_id = event_data.get('event_id')
+            
+            email = flask.session['email']
+            
+            event_db.remove_from_waitlist(email, event_id)
             return flask.jsonify({
                 'status' : 'success'
             }), 200 # OK
@@ -254,7 +292,6 @@ def get_events_emails():
             event_id = event_data.get('event_id')
             
             emails_list = event_db.get_event_emails(event_id)
-            print(emails_list)
             emails_str = ','.join(email for email in emails_list)
             return flask.jsonify({
                 'status' : 'success',
@@ -269,3 +306,60 @@ def get_events_emails():
         return flask.jsonify({
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
+        
+# ---------------------------------------------------------------------
+# Helper functions for events back-end logic
+# ---------------------------------------------------------------------
+def promote_from_waitlist(event_id: int) -> None:
+    waitlisted_user_email = event_db.get_first_waitlist_user(event_id)
+    if waitlisted_user_email:
+        email = waitlisted_user_email
+        event_db.add_event_registration(email, event_id)
+        event_db.remove_from_waitlist(email, event_id)
+        send_confirmation_email(email, event_id, "waitlist_moved")
+        
+def send_confirmation_email(receiver_email: str, event_id: int, 
+                            email_type: str) -> None:
+    try:
+        event_name = event_db.get_event_name(event_id)
+    except Exception as ex:
+        print(f'{sys.argv[0]}: {str(ex)}')
+        return
+    
+    sender = "socialcircles333@gmail.com"
+    sender_password = os.environ.get('GOOGLE_PASSWORD')
+    
+    msg = MIMEMultipart()
+    msg['From'] = sender
+    msg['To'] = receiver_email
+    body = ""
+    if email_type == "registration":
+        msg['Subject'] = f"[Social Circles] Your Registration is Confirmed for {event_name}."
+        body = (
+            "Hi there,\n\n"
+            f"You have been successfully registered for {event_name}! We look "
+            "forward to seeing you there!\n\n"
+            "Best,\n"
+            "Social Circles Team"
+        )
+    if email_type == "waitlist_moved":
+        msg['Subject'] = f"[Social Circles] You've been moved off the waitlist for {event_name}."
+        body = (
+            "Hi there,\n\n"
+            f"You have been successfully moved to the main event for {event_name}! "
+            "We look forward to seeing you there!\n\n"
+            "Best,\n"
+            "Social Circles Team"
+        )
+        
+    msg.attach(MIMEText(body, 'plain'))
+    
+    context = ssl.create_default_context()
+    port = 465
+    
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, 
+                          context=context) as server:
+        server.login(sender, sender_password)
+        text = msg.as_string()
+        server.sendmail(sender, receiver_email, text)
+            

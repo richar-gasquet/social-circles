@@ -25,12 +25,26 @@ function EventCard(props) {
         }
       );
       if (request.ok) {
-        props.addRegistrationAlert("success", "Registration successful!", 
-                      `You have registered for ${props.name}.`);
-        props.updateEvents(props.id, true, props.filled + 1);
+        const data = await request.json()
+        if (data.status === "waitlist") {
+          props.updateEvents(props.id, false, true, true, props.filled);
+          props.addRegistrationAlert("success", "Waitlist registration successful!", 
+                                      `You have joined the waitlist for ${props.name}.`);
+          
+        } else {
+          props.updateEvents(props.id, true, false, props.filled + 1 >= props.capacity, props.filled + 1);
+          props.addRegistrationAlert("success", "Registration successful!", 
+                                    `You have registered for ${props.name}.`);
+        }
       } else {
-        props.addRegistrationAlert("danger", "Registration failed!", 
+        const data = await request.json()
+        if (data.message === "waitlist_error") {
+          props.addRegistrationAlert("danger", "Waitlist registration failed!", 
+                        `We couldn't enter you into the waitlist you for ${props.name}.`);
+        } else {
+          props.addRegistrationAlert("danger", "Registration failed!", 
                       `We couldn't register you for ${props.name}.`);
+        }
       }
     } catch (error) {
       props.addRegistrationAlert("danger", "Registration error!", 
@@ -51,9 +65,9 @@ function EventCard(props) {
         }
       )
       if (request.ok) {
+        props.fetchEvents()
         props.addRegistrationAlert("success", "Cancellation successful!", 
                       `You have canceled your registration for ${props.name}.`);
-        props.updateEvents(props.id, false, props.filled - 1);
       } else {
         props.addRegistrationAlert("danger", "Cancellation failed!", 
                       `We couldn't cancel your registration for ${props.name}.`);
@@ -61,6 +75,32 @@ function EventCard(props) {
     } catch (error) {
       props.addRegistrationAlert("danger", "Cancellation error!", 
                     `We could not connect to the server while cancelling your registration for ${props.name}.`);
+    }
+  }
+
+  const handleCancelWaitlist = async () => {
+    try {
+      const request = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/delete-event-waitlist`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({event_id : props.id})
+        }
+      )
+      if (request.ok) {
+        props.updateEvents(props.id, false, false, true, props.filled);
+        props.addRegistrationAlert("success", "Waitlist cancellation successful!", 
+                      `You have left the waitlist for ${props.name}.`);
+      } else {
+        props.addRegistrationAlert("danger", "Waitlist cancellation failed!", 
+                      `We couldn't cancel your waitlist spot for ${props.name}.`);
+      }
+    } catch (error) {
+      props.addRegistrationAlert("danger", "Waitlist cancellation error!", 
+                    `We could not connect to the server while cancelling your waitlist spot for ${props.name}.`);
     }
   }
 
@@ -101,9 +141,12 @@ function EventCard(props) {
         <div className={``}>
             <RegisterButton
               isRegistered={props.isRegistered}
+              isFull={props.isFull}
+              isWaitlisted={props.isWaitlisted}
+              isDisabled={props.isPastEvent}
               handleRegister={handleRegistration}
-              handleCancel={handleCancelRegistration}
-              isDisabled={props.isPastEvent}>
+              handleCancelRegistration={handleCancelRegistration}
+              handleCancelWaitlist={handleCancelWaitlist}>
             </RegisterButton>
           </div>
       </div>

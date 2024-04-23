@@ -47,11 +47,16 @@ function EventContextProvider({ children }) {
     }
   }, []);
 
-  const updateEventsOnRegistration = useCallback((event_id, registered, new_count) => {
-    setEvents(
-      events.map((event) => {
+  const updateEventsOnRegistration = useCallback((event_id, registered, waitlisted, full, new_count) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) => {
         if (event.event_id === event_id) {
-          return { ...event, isRegistered: registered, count: new_count };
+          return {
+            ...event, 
+            isRegistered: registered, 
+            isWaitlisted: waitlisted,
+            isFull: full, 
+            filled_spots: new_count};
         } else {
           return event;
         }

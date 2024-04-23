@@ -55,22 +55,22 @@
 
 .textOverlay h2 {
     font-size: 2.7rem;
-    animation: fadeIn 1.5s;
+    animation: fadeIn 1.0s;
 }
 
 .textOverlay h1{
     font-size: 4.3rem;
     opacity: 0;
     animation: fadeIn 1.5s forwards;
-    animation-delay: 2.0s;
+    animation-delay: 1.0s;
     text-wrap: nowrap;
 }
 
 .logo {
     max-width: 250px;
     opacity: 0;
-    animation: fadeIn 2.0s forwards;
-    animation-delay: 1.5s;
+    animation: fadeIn 1.5s forwards;
+    animation-delay: 1.0s;
 }
 
 .carouselText {
@@ -84,8 +84,8 @@
     font-size: 1.2rem;
 
     opacity: 0;
-    animation: fadeIn 2.0s forwards;
-    animation-delay: 2.5s;
+    animation: fadeIn 1.0s forwards;
+    animation-delay: 1.5s;
 
     transition: background-color 0.6s;
 }

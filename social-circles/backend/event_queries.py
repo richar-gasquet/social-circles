@@ -33,19 +33,26 @@ def get_available_events(email) -> list:
                     e.event_id, e.event_name, e.event_desc, 
                     e.start_time, e.end_time, e.capacity, 
                     e.filled_spots, e.image_link,
-                    (e_reg.user_id IS NOT NULL) as is_registered
+                    (e_reg.user_id IS NOT NULL) as is_registered,
+                    (e_wait.user_id IS NOT NULL) as is_waitlisted,
+                    (e.filled_spots >= e.capacity) as is_full
                 FROM 
                     events e
                 LEFT JOIN 
                     event_registrations e_reg
-                ON
-                    e.event_id = e_reg.event_id
-                    AND e_reg.user_id = %s
+                    ON
+                        e.event_id = e_reg.event_id
+                        AND e_reg.user_id = %s
+                LEFT JOIN
+                    event_waitlists e_wait
+                    ON
+                        e.event_id = e_wait.event_id
+                        AND e_wait.user_id = %s
                 WHERE
                     e.end_time > CURRENT_TIMESTAMP
                 ORDER BY
                     e.start_time ASC
-            ''', (user_id, ))
+            ''', (user_id, user_id, ))
             
             all_events = cursor.fetchall()
     except Exception:
@@ -241,7 +248,8 @@ def delete_event(event_id: int) -> None:
         raise
     finally:
         put_connection(connection)
-
+            
+    
 def add_event_registration(email: str, event_id: int):
     connection = get_connection()
     try:
@@ -315,9 +323,12 @@ def delete_event_registration(email: str, event_id: int):
             ''', values)
             
             cursor.execute('''
-                UPDATE events
-                SET filled_spots = GREATEST(0, filled_spots - 1)
-                WHERE event_id = %s
+                UPDATE 
+                    events
+                SET 
+                    filled_spots = GREATEST(0, filled_spots - 1)
+                WHERE 
+                    event_id = %s
             ''', (event_id, ))
             
             connection.commit()
@@ -326,3 +337,143 @@ def delete_event_registration(email: str, event_id: int):
         raise
     finally:
         put_connection(connection)
+        
+def get_event_name(event_id: int) -> str:
+    event_name = ""
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT 
+                    e.event_name
+                FROM          
+                    events e
+                WHERE
+                    e.event_id = %s     
+            ''', (event_id, ))
+            result = cursor.fetchone()
+            if result:
+                event_name = result[0]
+    except Exception as ex:
+        raise
+    return event_name
+        
+# ---------------------------------------------------------------------
+# Queries/Helper functions for WAITLIST functionality
+# ---------------------------------------------------------------------
+
+def get_event_spots(event_id: str) -> tuple:
+    event_spots = []
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT 
+                    e.filled_spots, e.capacity   
+                FROM
+                    events e
+                WHERE
+                    e.event_id = %s            
+            ''', (event_id, ))
+            event_spots = cursor.fetchone()
+    except Exception:
+        raise
+    finally:
+        put_connection(connection)
+    return event_spots
+
+def add_to_waitlist(email: str, event_id: int) -> None:
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+            
+            values = (user_id, event_id)
+            
+            cursor.execute('''
+                INSERT INTO 
+                    event_waitlists (user_id, event_id)  
+                VALUES
+                    (%s, %s)             
+            ''', values)
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        put_connection(connection)
+    
+def remove_from_waitlist(email, event_id) -> None:
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+            
+            values = (user_id, event_id)
+            
+            cursor.execute('''
+                DELETE FROM
+                    event_waitlists
+                WHERE
+                    user_id = %s AND event_id = %s              
+            ''', values)
+            connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        put_connection(connection)
+        
+def get_first_waitlist_user(event_id) -> str:
+    waitlist_user_email = None
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT 
+                    u.email
+                FROM 
+                    event_waitlists e_wait
+                JOIN
+                    users u
+                    ON 
+                        e_wait.user_id = u.user_id
+                WHERE 
+                    e_wait.event_id = %s
+                ORDER BY 
+                    e_wait.timestamp ASC
+                LIMIT 
+                    1
+            ''', (event_id, ))
+            result = cursor.fetchone()
+            if result:
+                waitlist_user_email = result[0]
+    except Exception:
+        raise
+    finally:
+        put_connection(connection)
+    return waitlist_user_email

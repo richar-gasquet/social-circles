@@ -115,6 +115,8 @@ function Events() {
                       filled={event.filled_spots}
                       image={event.image}
                       isRegistered={event.isRegistered}
+                      isWaitlisted={event.isWaitlisted}
+                      isFull={event.isFull}
                       isAdmin={isAdmin}
                       fetchEvents={fetchAllEvents}
                       updateEvents={updateEventsOnRegistration}
