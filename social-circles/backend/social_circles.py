@@ -7,6 +7,7 @@ import auth
 import users
 import events
 import communities
+import resources
 import user_queries as db
 
 
@@ -244,3 +245,23 @@ def delete_community_registration_route():
 @app.route('/api/get-community-emails', methods = ['POST'])
 def email_community_route():
     return communities.get_community_emails()
+
+#----------------------------------------------------------------------
+
+# Routes for querying RESOURCES data from database
+
+@app.route('/api/get-resources', methods = ['GET'])
+def get_resources_route():
+    return resources.get_resources()
+
+@app.route('/api/add-resources', methods = ['POST'])
+def add_resources_route():
+    return resources.add_resources()
+
+@app.route('/api/delete-resources', methods = ['POST'])
+def delete_resources_route():
+    return resources.delete_resources()
+
+@app.route('/api/update-resources', methods = ['POST'])
+def update_resources_route():
+    return resources.update_resources()
