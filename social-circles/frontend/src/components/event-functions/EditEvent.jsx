@@ -24,11 +24,11 @@ function EditEvent(props) {
       eventData.event_desc = eventDesc;
     if (imageLink !== props.imageLink && imageLink.trim() !== "")
       eventData.image_link = imageLink;
-    if (eventCapacity !== props.capacity && eventCapacity.trim() !== "")
-      eventData.capacity = eventCapacity;
-    if (eventStart !== props.start && eventStart.trim() !== "")
+    if (eventCapacity !== props.capacity && !isNaN(parseInt(eventCapacity)))
+      eventData.capacity = parseInt(eventCapacity);
+    if (eventStart !== props.start && eventStart)
       eventData.start_time = eventStart;
-    if (eventEnd !== props.end && eventEnd.trim() !== "")
+    if (eventEnd !== props.end && eventEnd)
       eventData.end_time = eventEnd;
 
     if (Object.keys(eventData).length > 1) {

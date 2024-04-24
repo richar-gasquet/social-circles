@@ -197,7 +197,7 @@ def update_event(args: dict) -> None:
             event_name = args.get('event_name')
             event_desc = args.get('event_desc')
             image_link = args.get('image_link')
-            event_capacity = args.get('event_capacity')
+            event_capacity = args.get('capacity')
             start_time = args.get('start_time')
             end_time = args.get('end_time')
             

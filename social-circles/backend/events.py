@@ -40,7 +40,7 @@ def get_available_events():
                 'results' : events_list
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -75,7 +75,7 @@ def get_registered_events():
                 'results' : events_list
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -109,7 +109,7 @@ def get_past_events():
                 'results' : events_list
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -128,7 +128,7 @@ def add_event():
             event_data = flask.request.json
             event_dict = {
                 'event_name' : html.escape(event_data['event_name']),
-                'capacity' : html.escape(int(event_data['capacity'])),
+                'capacity' : int(event_data['capacity']),
                 'event_desc' : html.escape(event_data['event_desc']),
                 'image_link' : html.escape(event_data['image_link']),
                 'start_time' : parser.parse(event_data['start_time']),
@@ -141,7 +141,7 @@ def add_event():
                 'status' : 'success'
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -163,7 +163,7 @@ def edit_event():
                 'event_name' : html.escape(event_data.get('event_name', '')),
                 'event_desc' : html.escape(event_data.get('event_desc', '')),
                 'image_link' : html.escape(event_data.get('image_link', '')),
-                'event_capacity' : html.escape(event_data.get('capacity', '')),
+                'capacity' : event_data.get('capacity', ''),
                 'start_time' : parser.parse(event_data['start_time']),
                 'end_time' : parser.parse(event_data['end_time'])
             }
@@ -174,7 +174,7 @@ def edit_event():
                 'status' : 'success'
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -199,7 +199,7 @@ def delete_event():
                 'status' : 'success'
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -228,7 +228,7 @@ def add_event_registration():
                     'status' : 'registered'
                 }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -251,7 +251,7 @@ def delete_event_registration():
                 'status' : 'success'
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -273,7 +273,7 @@ def delete_event_waitlist():
                 'status' : 'success'
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -299,7 +299,7 @@ def get_events_emails():
                 'results' : emails_str
             }), 200 # OK
         except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
+            print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
@@ -324,7 +324,7 @@ def send_confirmation_email(receiver_email: str, event_id: int,
     try:
         event_name = event_db.get_event_name(event_id)
     except Exception as ex:
-        print(f'{sys.argv[0]}: {str(ex)}')
+        print(f'events.py: {str(ex)}')
         return
     
     sender = "socialcircles333@gmail.com"
