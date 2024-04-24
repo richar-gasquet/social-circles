@@ -16,9 +16,9 @@ function Profile() {
     email: '',
     address: '',
     preferred_name: '',
-    pronouns: '',
+    pronouns: 'Select',
     phone_number: '',
-    marital_status: '',
+    marital_status: 'Select',
     family_circumstance: '',
     community_status: '',
     interests: '',
@@ -104,6 +104,26 @@ function Profile() {
     }
   };
 
+  const handleDynamicSelectChange = (e) => {
+    const { name, value } = e.target;
+    if (value === "Other") {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value,
+        [`${name}Other`]: ''
+      }));
+    } else {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value,
+        [`${name}Other`]: undefined
+      }));
+    }
+  };
+
+  const pronounsOptions = ['He/His', 'She/Her', 'They/Them', 'Other'];
+  const maritalStatusOptions = ['Single', 'Married', 'Divorced', 'Widowed', 'Other'];
+
 
   
 
@@ -127,33 +147,57 @@ function Profile() {
   if (!userData || userData.email === undefined || userData.is_admin === undefined || editMode === true) {
     return (
       <>
-        {userData && <SessionTimeoutHandler />}
-        <Header />
-        <div className="container mt-4">
+      {userData && <SessionTimeoutHandler />}
+      <Header />
+      <div className="container mt-4">
           <h2>Profile</h2>
           <p>Please fill in the information to complete your account</p>
           <form onSubmit={handleSubmit} className="mb-3">
             {Object.keys(formData).map(key => {
-              if (['is_admin', 'picture'].includes(key)) return null;
-              const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter
+              if (['is_admin', 'picture'].includes(key) || key.endsWith('Other')) return null;
+              const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              const isSelect = key === 'pronouns' || key === 'marital_status';
+              const isOtherField = formData[`${key}Other`] !== undefined;
               return (
-                <div className="mb-3" key={key} hidden={key === 'email'}>
-                  <label className="form-label">{label}</label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="form-control"
-                    required={key === 'first_name' || key === 'last_name' || key === 'address' || key === 'phone_number'}
-                  />
+                <div style={{marginTop: '4%'}} className="input-group mb-3" key={key}>
+                  <label className="input-group-text">{label}</label>
+                  {isSelect ? (
+                    <select
+                      className="form-select"
+                      name={key}
+                      value={formData[key]}
+                      onChange={handleDynamicSelectChange}
+                      required
+                    >
+                      <option value="Select">Select</option>
+                      {key === 'pronouns' ? pronounsOptions.map(option => <option key={option} value={option}>{option}</option>) : maritalStatusOptions.map(option => <option key={option} value={option}>{option}</option>)}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      name={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="form-control"
+                      required={key === 'first_name' || key === 'last_name' || key === 'address' || key === 'phone_number'}
+                    />
+                  )}
+                  {isOtherField && (
+                    <input
+                      type="text"
+                      name={`${key}Other`}
+                      value={formData[`${key}Other`]}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Please specify" required />
+                      )}
                 </div>
-              );
-            })}
+                      );
+              })}
           <button type="submit" className={styles.submitButton}>Submit</button>
           <button type="button" onClick={handleCancel} className={styles.handleCancel}>Cancel</button>
-          </form>
-        </div>
+        </form>
+      </div>
       </>
     );
   } else {
