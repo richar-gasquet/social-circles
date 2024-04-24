@@ -204,19 +204,19 @@ def update_event(args: dict) -> None:
             sql_query_base = "UPDATE events SET "
             values = []
             if event_name:
-                sql_query_base += "event_name = %s, "
+                sql_query_base += "event_name = %s "
                 values.append(event_name)
             if event_desc:
-                sql_query_base += "event_desc = %s, "
+                sql_query_base += "event_desc = %s "
                 values.append(event_desc)
             if image_link:
-                sql_query_base += "image_link = %s, "
+                sql_query_base += "image_link = %s "
                 values.append(image_link)
             if event_capacity:
-                sql_query_base += "capacity = %s, "
+                sql_query_base += "capacity = %s "
                 values.append(event_capacity)
             if start_time:
-                sql_query_base += "start_time = %s, "
+                sql_query_base += "start_time = %s "
                 values.append(start_time.isoformat())
             if end_time:
                 sql_query_base += "end_time = %s "

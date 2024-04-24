@@ -158,14 +158,21 @@ def edit_event():
                 raise Exception("User is not authorized!")
 
             event_data = flask.request.json
+            start_time = event_data.get('start_time', '')
+            if start_time:
+                start_time = parser.parse(start_time)
+            end_time = event_data.get('end_time', '')
+            if end_time:
+                end_time = parser.parse(end_time)
+            
             event_dict = {
                 'event_id' : event_data.get('event_id', ''),
                 'event_name' : html.escape(event_data.get('event_name', '')),
                 'event_desc' : html.escape(event_data.get('event_desc', '')),
                 'image_link' : html.escape(event_data.get('image_link', '')),
                 'capacity' : event_data.get('capacity', ''),
-                'start_time' : parser.parse(event_data['start_time']),
-                'end_time' : parser.parse(event_data['end_time'])
+                'start_time' : start_time,
+                'end_time' : end_time
             }
             
             event_db.update_event(event_dict)

@@ -57,7 +57,7 @@ function EditEvent(props) {
           setAlert({
             type: "danger",
             header: "Edit failed!",
-            text: "The event could not be updated."
+            text: "The event could not be updated. Please try again or contact the webmasters."
           });
         }
       } catch (error) {
