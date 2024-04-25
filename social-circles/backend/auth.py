@@ -82,7 +82,7 @@ def callback():
     flask.session['picture'] = userinfo_response.get('picture')
 
     # Check if the user is in the blacklist
-    if db.is_in_blacklist(flask.session['email']):
+    if db.is_in_block(flask.session['email']):
         # Clear session and redirect user to a blocked page or notice
         flask.session.clear()
         return flask.redirect(f'{REACT_FRONTEND}/')
@@ -111,7 +111,7 @@ def logout():
 
 def authenticate():
     if 'email' in flask.session:
-        if db.is_in_blacklist(flask.session['email']):
+        if db.is_in_block(flask.session['email']):
             # User is blacklisted; clear the session and return unauthorized
             flask.session.clear()
             return flask.jsonify({'status': 'blocked'}), 403 # Forbidden
