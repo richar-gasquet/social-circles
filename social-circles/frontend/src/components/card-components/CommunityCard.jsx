@@ -102,9 +102,12 @@ function CommunityCard(props) {
           <div className={``}>
             <RegisterButton
               isRegistered={props.isRegistered}
+              isFull={false}
+              isWaitlisted={false}
+              isDisabled={false}
               handleRegister={handleRegistration}
-              handleCancel={handleCancelRegistration}>
-            </RegisterButton>
+              handleCancelRegistration={handleCancelRegistration}
+            />
           </div>
         </div>
       </div>
@@ -117,8 +120,8 @@ function CommunityCard(props) {
           groupDesc={props.desc}
           imageLink={props.image}
           isRegistered={props.isRegistered}
-          fetchCommunities={props.fetchCommunities}>
-        </EditCommunity>
+          fetchCommunities={props.fetchCommunities}
+        />
       )}
       {showDeleteComm && props.isAdmin && (
         <DeleteCommunity
@@ -126,16 +129,16 @@ function CommunityCard(props) {
           handleClose={() => setShowDeleteComm(false)}
           group_id={props.group_id}
           name={props.name}
-          fetchCommunities={props.fetchCommunities}>
-        </DeleteCommunity>
+          fetchCommunities={props.fetchCommunities}
+        />
       )}
       {showEmailComm && props.isAdmin && (
-      <EmailCommunity
-        isShown={showEmailComm}
-        handleClose={() => setShowEmailComm(false)}
-        group_id={props.group_id}
-        groupName={props.name}>
-      </EmailCommunity>
+        <EmailCommunity
+          isShown={showEmailComm}
+          handleClose={() => setShowEmailComm(false)}
+          group_id={props.group_id}
+          groupName={props.name}
+        />
       )}
     </>
   );
