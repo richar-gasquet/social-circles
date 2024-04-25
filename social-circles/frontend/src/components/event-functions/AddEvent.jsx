@@ -98,6 +98,7 @@ function AddEvent(props) {
               placeholder="Enter event name"
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
+              maxLength={150}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="capacity">
@@ -117,15 +118,7 @@ function AddEvent(props) {
               placeholder="Enter an event description"
               value={eventDesc}
               onChange={(e) => setEventDesc(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group className={`mb-2`} controlId="imageLink">
-            <Form.Label>Image Link</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter an event image link (png/jpg)"
-              value={imageLink}
-              onChange={(e) => setImageLink(e.target.value)}
+              maxLength={800}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="startTime">
@@ -144,6 +137,16 @@ function AddEvent(props) {
               placeholder="Enter the event end time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
+            ></Form.Control>  
+          </Form.Group>
+          <Form.Group className={`mb-2`} controlId="imageLink">
+            <Form.Label>Image Link</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter an event image link (png/jpg)"
+              value={imageLink}
+              onChange={(e) => setImageLink(e.target.value)}
+              maxLength={200}
             ></Form.Control>
           </Form.Group>
           <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>

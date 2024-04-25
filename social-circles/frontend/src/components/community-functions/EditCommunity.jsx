@@ -87,6 +87,7 @@ function EditCommunity(props) {
                 placeholder={props.groupName}
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
+                maxLength={100}
               ></Form.Control>
             </Form.Group>
             <Form.Group className={`mb-2`} controlId="groupDesc">
@@ -97,6 +98,7 @@ function EditCommunity(props) {
                 placeholder={props.groupDesc}
                 value={groupDesc}
                 onChange={(e) => setGroupDesc(e.target.value)}
+                maxLength={500}
               ></Form.Control>
             </Form.Group>
             <Form.Group className={`mb-2`} controlId="imageLink">
@@ -106,6 +108,7 @@ function EditCommunity(props) {
                 placeholder={props.imageLink}
                 value={imageLink}
                 onChange={(e) => setImageLink(e.target.value)}
+                maxLength={200}
               ></Form.Control>
             </Form.Group>
             <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>

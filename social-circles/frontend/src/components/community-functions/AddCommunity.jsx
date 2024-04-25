@@ -80,6 +80,7 @@ function AddCommunity(props) {
               placeholder="Enter group name"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
+              maxLength={100}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="groupDesc">
@@ -90,6 +91,7 @@ function AddCommunity(props) {
               placeholder="Enter group description"
               value={groupDesc}
               onChange={(e) => setGroupDesc(e.target.value)}
+              maxLength={500}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="imageLink">
@@ -99,6 +101,7 @@ function AddCommunity(props) {
               placeholder="Enter image URL"
               value={imageLink}
               onChange={(e) => setImageLink(e.target.value)}
+              maxLength={200}
             ></Form.Control>
           </Form.Group>
           <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>

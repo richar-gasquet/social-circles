@@ -99,6 +99,7 @@ function EditEvent(props) {
               placeholder={props.eventName}
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
+              maxLength={150}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="eventDesc">
@@ -109,6 +110,7 @@ function EditEvent(props) {
               placeholder={props.eventDesc}
               value={eventDesc}
               onChange={(e) => setEventDesc(e.target.value)}
+              maxLength={800}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="eventCapacity">
@@ -145,6 +147,7 @@ function EditEvent(props) {
               placeholder={props.imageLink}
               value={imageLink}
               onChange={(e) => setImageLink(e.target.value)}
+              maxLength={200}
             ></Form.Control>
           </Form.Group>
           <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
