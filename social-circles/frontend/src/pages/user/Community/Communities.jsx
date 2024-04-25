@@ -3,6 +3,7 @@ import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useCommunityContext } from "../../../contexts/CommunityContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx";
+import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import CommunitiesAside from "../../../components/community-functions/CommunitiesAside.jsx";
 import CommunityCard from "../../../components/card-components/CommunityCard.jsx";
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
@@ -52,11 +53,12 @@ function Communities() {
   };
 
   const filteredCommunities = searchCommunities(communities);
+  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>
       <SessionTimeoutHandler />
-      <UserHeader />
+      <Header />
       <div className={`container-fluid p-5`}>
         {registrationAlerts.map((alert) => (
           <AlertBox

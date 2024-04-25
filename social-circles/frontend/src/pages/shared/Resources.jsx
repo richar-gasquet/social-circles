@@ -1,20 +1,16 @@
 import { useAuthContext } from "../../contexts/AuthContextHandler";
 import GuestHeader from "../../components/headers/GuestHeader";
 import UserHeader from "../../components/headers/UserHeader";
+import AdminHeader from "../../components/headers/AdminHeader";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
 function Resources() {
-  const { isAuth } = useAuthContext();
+  const { isAuth, isAdmin } = useAuthContext();
 
   return (
     <>
-      {isAuth ? (
-        <SessionTimeoutHandler />,
-        <UserHeader />
-      ) : (
-        <SessionTimeoutHandler />,
-        <GuestHeader />
-      )}
+      <SessionTimeoutHandler/>
+      {isAdmin ? <AdminHeader /> : isAuth ? <UserHeader /> : <GuestHeader />}
     </>
   );
 }

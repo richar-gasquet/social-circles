@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import moment from 'moment';
 import UserHeader from '../../components/headers/UserHeader';
+import AdminHeader from '../../components/headers/AdminHeader.jsx';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -10,6 +12,7 @@ function ReactCalendar() {
     const [events, setEvents] = useState([]);
     const [error, setError] = useState("");
     const [isQuerying, setQuerying] = useState(true);
+    const { isAdmin } = useAuthContext();
 
     useEffect(() => {
         fetchCalendarEvents();
@@ -43,9 +46,11 @@ function ReactCalendar() {
         }
     };
 
+    const Header = isAdmin ? AdminHeader : UserHeader;
+
     return (
         <>
-            <UserHeader />
+            <Header />
             <div className="height600" style={{paddingTop: '12em', marginBottom: '5em'}}>
                 <Calendar
                     localizer={localizer}
