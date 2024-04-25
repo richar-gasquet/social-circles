@@ -5,12 +5,14 @@ import RegisterButton from '../user-functions/RegisterButton';
 import EditEvent from '../event-functions/EditEvent';
 import DeleteEvent from '../event-functions/DeleteEvent';
 import styles from '../../css/Card.module.css'; 
+import EmailEventGroup from '../event-functions/EmailEvents';
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toISOString().slice(0, 16);
   const formattedEnd = new Date(props.end).toISOString().slice(0, 16);
   const [showDeleteEvent, setShowDeleteEvent] = useState(false);
   const [showEditEvent, setShowEditEvent] = useState(false);
+  const [showEmailEvent, setShowEmailEvent] = useState(false);
 
   const handleRegistration = async () => {
     try {
@@ -117,10 +119,16 @@ function EventCard(props) {
             icon="fas fa-edit"
           ></CardButton>
           <CardButton
+            className="mb-2"
             action={() => setShowDeleteEvent(true)}
             message="Delete Event"
             icon="fas fa-trash"
           ></CardButton>
+          <CardButton 
+            action={() => setShowEmailEvent(true)}
+            message="Email Event Attendees"
+            icon="fas fa-envelope">
+          </CardButton>
         </div>
       )}
       </div>
@@ -176,6 +184,16 @@ function EventCard(props) {
           isRegistered={props.isRegistered}
           fetchEvents={props.fetchEvents}
         ></EditEvent>
+      )}
+
+      {showEmailEvent && props.isAdmin && (
+        <EmailEventGroup
+          isShown={showEmailEvent}
+          handleClose={() => setShowEmailEvent(false)}
+          event_id={props.id}
+          eventName={props.name}
+          fetchEvents={props.fetchEvents}
+        ></EmailEventGroup>
       )}
     </div>
   );

@@ -16,11 +16,11 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import Events from "./pages/user/Events/Events.jsx";
 import MyEvents from "./pages/user/Events/MyEvents.jsx";
 import PastEvents from "./pages/user/Events/PastEvents.jsx";
-import Calendar from "./pages/user/Calendar.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
 import EventContextProvider from "./contexts/EventsContextHandler.jsx";
+import ReactCalendar from "./pages/shared/Calendar.jsx";
 
 function App() {
   return (
@@ -76,9 +76,8 @@ function App() {
                 </EventContextProvider>  }
           />
           <Route
-            exact
-            path="/calendar"
-            element={<ProtectedRoute component={Calendar} />}
+            exact path="/calendar"
+            element={<ProtectedRoute component={ReactCalendar} />}
           />
           <Route
             exact

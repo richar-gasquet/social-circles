@@ -357,6 +357,40 @@ def get_event_name(event_id: int) -> str:
     except Exception as ex:
         raise
     return event_name
+
+def get_event_emails(event_id: int) -> list:
+    """_summary_
+
+    Args:
+        event_id (int): _description_
+
+    Returns:
+        list: _description_
+    """
+    event_emails = []
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT 
+                    users.email
+                FROM 
+                    users
+                INNER JOIN 
+                    event_registrations 
+                ON 
+                    users.user_id = event_registrations.user_id
+                WHERE 
+                    event_registrations.event_id = %s;
+            ''', (event_id, ))
+            event_emails = cursor.fetchall()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        put_connection(connection)
+
+    return event_emails
         
 # ---------------------------------------------------------------------
 # Queries/Helper functions for WAITLIST functionality

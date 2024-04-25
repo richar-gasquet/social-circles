@@ -301,7 +301,16 @@ def delete_event_registration_route():
 @app.route('/delete-event-waitlist', methods = ['POST'])    
 def delete_event_waitlist_route():
     return events.delete_event_waitlist()
-    
+
+@app.route('/api/get-event-emails', methods = ['POST'])
+def email_event_route():
+    return events.get_event_emails()
+
+# grab events for calendar
+@app.route('/calendar', methods=['GET'])
+def calendar_route():
+    return events.get_available_events()
+
 #----------------------------------------------------------------------
 
 # Routes for querying COMMUNITIES data from database
