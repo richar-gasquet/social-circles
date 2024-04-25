@@ -149,7 +149,7 @@ function Profile() {
       <>
       {userData && <SessionTimeoutHandler />}
       <Header />
-      <div className="container mt-4">
+      <div className="container" style={{paddingTop: '10em'}}>
           <h2>Profile</h2>
           <p>Please fill in the information to complete your account</p>
           <form onSubmit={handleSubmit} className="mb-3">
@@ -205,7 +205,7 @@ function Profile() {
       <>
         {userData && <SessionTimeoutHandler />}
         <Header />
-        <div className="container mt-4">
+        <div className="container" style={{paddingTop: '10em'}}>
           <div className={styles.profileRow} >
             <div className="col-md-6">
               <div className={styles.profilePicWrap}>

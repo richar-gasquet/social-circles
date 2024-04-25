@@ -242,7 +242,7 @@ function AdminDashboard() {
     <>
     <SessionTimeoutHandler />
     <AdminHeader />
-    <div style={{margin: '5%'}}>
+    <div style={{marginBottom: '5%', marginLeft: '5%', marginRight: '5%', paddingTop: '10em'}}>
       <div>
         <h2>Hello {userData.first_name} {userData.last_name}</h2>
         <br/>

@@ -46,7 +46,7 @@ function ReactCalendar() {
     return (
         <>
             <UserHeader />
-            <div className="height600">
+            <div className="height600" style={{paddingTop: '12em', marginBottom: '5em'}}>
                 <Calendar
                     localizer={localizer}
                     events={events}

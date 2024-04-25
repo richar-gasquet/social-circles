@@ -8,8 +8,8 @@ function About() {
       <SessionTimeoutHandler />
       <GuestHeader />
 
-      <div className="row justify-content-center mt-5">
-        <div className="col-md-6 text-center">
+      <div className="row justify-content-center" style={{marginTop: '0px'}}>
+        <div className="col-md-6 text-center" style={{marginTop: '20em'}}>
           <h1 className="display-4">Social Circles</h1>
           <p className="lead">(brief description)</p>
           <div className="btn-group mt-4">

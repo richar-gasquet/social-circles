@@ -12,7 +12,7 @@ function LoginPage() {
       <>
       <SessionTimeoutHandler />
       <GuestHeader />
-      <div className="col-12 d-flex justify-content-center">
+      <div className="col-12 d-flex justify-content-center" style={{paddingTop: '20em'}}>
         <div className="spinner-border mt-5" role="status"
           style={{ width: '10rem', height: '10rem'}}>
           <span className="sr-only">Loading...</span>
@@ -35,8 +35,10 @@ function LoginPage() {
     <>
       <SessionTimeoutHandler />
       <GuestHeader />
-      <h2>This is the login page.</h2>
-      <button onClick={handleLogin}>Log In with Google</button>
+      <div style={{paddingTop: '15em'}}>
+        <h2>This is the login page.</h2>
+        <button onClick={handleLogin}>Log In with Google</button>
+      </div>
     </>
   );
 }

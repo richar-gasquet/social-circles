@@ -3,6 +3,7 @@ import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx"
+import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
@@ -53,11 +54,12 @@ function Events() {
   };
 
   const filteredEvents = searchEvents(events);
+  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>
       <SessionTimeoutHandler />
-      <UserHeader />
+      <Header />
       <div className={`container-fluid p-5`}>
         {registrationAlerts.map((alert) => (
           <AlertBox
@@ -69,7 +71,7 @@ function Events() {
             handleClose={() => removeRegistrationAlert(alert.id)}
           ></AlertBox>
         ))}
-        <div className={`row container-fluid align-items-center`}>
+        <div className={`row container-fluid align-items-center`} style={{marginTop: '9em'}}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
               Upcoming Events
