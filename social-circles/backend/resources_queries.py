@@ -78,15 +78,17 @@ def update_resources(args: dict) -> None:
             sql_query_base = "UPDATE resources SET "
             values = []
             if resource:
-                sql_query_base += "resource = %s "
+                sql_query_base += "resource = %s, "
                 values.append(resource)
             if disp_name:
-                sql_query_base += "disp_name = %s "
+                sql_query_base += "disp_name = %s, "
                 values.append(disp_name)
             if descrip:
-                sql_query_base += "descrip = %s "
+                sql_query_base += "descrip = %s, "
                 values.append(descrip)
-            sql_query_base += "WHERE resource_id = %s"
+
+            sql_query_base = sql_query_base[:-2]
+            sql_query_base += " WHERE resource_id = %s"
             values.append(resource_id)
 
             cursor.execute(sql_query_base, tuple(values))
