@@ -109,18 +109,18 @@ def add_user_data():
         try:
             user_data = flask.request.json
             user_dict = {
-                'first_name': user_data.get('first_name'),
-                'last_name': user_data.get('last_name'),
-                'email': user_data.get('email'),
-                'address': user_data.get('address'),
-                'preferred_name': user_data.get('preferred_name'),
-                'pronouns': user_data.get('pronouns'),
-                'phone_number': user_data.get('phone_number'),
-                'marital_status': user_data.get('marital_status'),
-                'family_circumstance': user_data.get('family_circumstance'),
-                'community_status': user_data.get('community_status'),
-                'interests': user_data.get('interests'),
-                'personal_identity': user_data.get('personal_identity')
+                'first_name': user_data.get('first_name', '')[:50],
+                'last_name': user_data.get('last_name', '')[:50],
+                'email': user_data.get('email', '')[:50],
+                'address': user_data.get('address', '')[:50],
+                'preferred_name': user_data.get('preferred_name', '')[:50],
+                'pronouns': user_data.get('pronouns', '')[:50],
+                'phone_number': user_data.get('phone_number', '')[:15],
+                'marital_status': user_data.get('marital_status', '')[:50],
+                'family_circumstance': user_data.get('family_circumstance', '')[:50],
+                'community_status': user_data.get('community_status', '')[:50],
+                'interests': user_data.get('interests', '')[:50],
+                'personal_identity': user_data.get('personal_identity', '')[:50]
             }
             db.add_user(user_dict)
             return flask.jsonify({
@@ -146,18 +146,18 @@ def update_user_data():
             
             user_data = flask.request.json
             user_dict = {
-                'first_name': user_data.get('first_name'),
-                'last_name': user_data.get('last_name') ,
-                'email': user_data.get('email'),
-                'address': user_data.get('address'),
-                'preferred_name': user_data.get('preferred_name', 'N/A') if user_data.get('preferred_name') != '' else 'N/A',
-                'pronouns': user_data.get('pronouns', 'N/A') if user_data.get('pronouns') != '' else 'N/A',
-                'phone_number': user_data.get('phone_number'),
-                'marital_status': user_data.get('marital_status', 'N/A') if user_data.get('marital_status') != '' else 'N/A',
-                'family_circumstance': user_data.get('family_circumstance', 'N/A') if user_data.get('family_circumstance') != '' else 'N/A',
-                'community_status': user_data.get('community_status', 'N/A') if user_data.get('community_status') != '' else 'N/A',
-                'interests': user_data.get('interests', 'N/A') if user_data.get('interests') != '' else 'N/A',
-                'personal_identity': user_data.get('personal_identity', 'N/A') if user_data.get('personal_identity') != '' else 'N/A'
+                'first_name': user_data.get('first_name', '')[:50],
+                'last_name': user_data.get('last_name', '')[:50],
+                'email': user_data.get('email', '')[:50],
+                'address': user_data.get('address', '')[:50],
+                'preferred_name': user_data.get('preferred_name', 'N/A')[:50] if user_data.get('preferred_name') != '' else 'N/A',
+                'pronouns': user_data.get('pronouns', 'N/A')[:50] if user_data.get('pronouns') != '' else 'N/A',
+                'phone_number': user_data.get('phone_number', '')[:15],
+                'marital_status': user_data.get('marital_status', 'N/A')[:50] if user_data.get('marital_status') != '' else 'N/A',
+                'family_circumstance': user_data.get('family_circumstance', 'N/A')[:50] if user_data.get('family_circumstance') != '' else 'N/A',
+                'community_status': user_data.get('community_status', 'N/A')[:50] if user_data.get('community_status') != '' else 'N/A',
+                'interests': user_data.get('interests', 'N/A')[:50] if user_data.get('interests') != '' else 'N/A',
+                'personal_identity': user_data.get('personal_identity', 'N/A')[:50] if user_data.get('personal_identity') != '' else 'N/A'
             }
             
             db.update_user(user_dict)
