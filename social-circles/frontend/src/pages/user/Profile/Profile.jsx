@@ -16,6 +16,7 @@ function Profile() {
   const [formErrors, setFormErrors] = useState({});
   const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
   const [welcomeModal, setWelcomeModal] = useState(false);
+  const [charLimitModal, setCharLimitModal] = useState({ show: false, field: "" });
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -44,11 +45,13 @@ function Profile() {
       ...prevFormData,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    
     // Reset error for that field
     if (formErrors[name]) {
       setFormErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
     }
   };
+  
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
@@ -103,15 +106,48 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Handle validation
+    // Character limits definition
+    const maxChar = {
+      first_name: 50,
+      last_name: 50,
+      address: 50,
+      phone_number: 15,
+      email: 50,
+      preferred_name: 50,
+      pronouns: 50,
+      marital_status: 50,
+      family_circumstance: 50,
+      community_status: 50,
+      interests: 50,
+      personal_identity: 50,
+    };
+
+    // Handle validation and character limit
     const newErrors = {};
+    let characterLimitExceeded = false;
+
     Object.keys(formData).forEach(field => {
       if (field.endsWith('Other') && formData[field] === '' && formData[field.replace('Other', '')] === 'Other') {
         newErrors[field] = 'Please complete this field.';
       } else if (['first_name', 'last_name', 'address', 'phone_number'].includes(field) && !formData[field].trim()) {
         newErrors[field] = 'Please complete this field.';
       }
+      // Check for character limits
+      if (maxChar[field] && formData[field] && formData[field].length > maxChar[field]) {
+        newErrors[field] = `Character limit of ${maxChar[field]} exceeded.`;
+        characterLimitExceeded = true;
+      }
     });
+
+
+    
+      if (characterLimitExceeded) {
+        // Show the first field that exceeded character limit for user's convenience
+        const firstExceededField = Object.keys(newErrors).find(field => newErrors[field].includes('exceeded'));
+        setCharLimitModal({ show: true, field: firstExceededField });
+        setFormErrors(newErrors);
+        return; // Prevent form submission if any character limit is exceeded
+      }
 
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
@@ -243,18 +279,18 @@ function Profile() {
                 const isOtherField = formData[`${key}Other`] !== undefined;
                 // Define character limits based on field names
                 const characterLimits = {
-                  first_name: 50,
-                  last_name: 50,
-                  address: 100,
+                  first_name: 55,
+                  last_name: 55,
+                  address: 55,
                   phone_number: 15,
-                  email: 100,
-                  preferred_name: 50,
-                  pronouns: 50,
-                  marital_status: 50,
-                  family_circumstance: 255,
-                  community_status: 255,
-                  interests: 255,
-                  personal_identity: 100
+                  email: 55,
+                  preferred_name: 55,
+                  pronouns: 55,
+                  marital_status: 55,
+                  family_circumstance: 55,
+                  community_status: 55,
+                  interests: 55,
+                  personal_identity: 55
                 };
                 const placeholders = {
                   first_name: 'Enter your first name',
@@ -307,7 +343,7 @@ function Profile() {
                         className={`form-control ${formErrors[key] ? 'is-invalid' : ''}`}
                         required={key === 'first_name' || key === 'last_name' || key === 'address' || key === 'phone_number'}
                         disabled={key === 'email'}
-                        maxLength={characterLimits[key] || 255}
+                        maxLength={characterLimits[key] || 50}
                         placeholder={placeholders[key]}
                       />
                     )}
@@ -321,7 +357,7 @@ function Profile() {
                         className={`form-control ${formErrors[`${key}Other`] ? 'is-invalid' : ''}`}
                         placeholder="Please specify" 
                         required 
-                        maxLength={characterLimits[key] || 255}
+                        maxLength={characterLimits[key] || 50}
                         />
                       )}
                       {formErrors[key] && (
@@ -406,6 +442,20 @@ function Profile() {
             </Button>
           </Modal.Footer>
         </Modal>
+        <Modal show={charLimitModal.show} onHide={() => setCharLimitModal({ ...charLimitModal, show: false })}>
+          <Modal.Header closeButton>
+            <Modal.Title>Character Limit Exceeded</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            You have exceeded the character limit for {charLimitModal.field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setCharLimitModal({ ...charLimitModal, show: false })}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
       </>
     );
   }
