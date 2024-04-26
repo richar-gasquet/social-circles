@@ -15,6 +15,7 @@ function Profile() {
   const [editMode, setEditMode] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
+  const [welcomeModal, setWelcomeModal] = useState(false);
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -95,6 +96,10 @@ function Profile() {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
   };
 
+  const updateUserData = (newData) => {
+    setUserContext(prev => ({...prev, ...newData}));
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -133,7 +138,14 @@ function Profile() {
       });
       if (request.ok) {
         setEditMode(false);
-        window.location.reload();
+        if(endpoint === '/add-user') {
+          setWelcomeModal(true);
+          userData.is_admin = false;
+          updateUserData(submissionData)
+        }
+        else{
+          window.location.reload();
+        }
       } else {
         console.error('Failed to submit form request');
       }
@@ -192,6 +204,12 @@ function Profile() {
     confirmModal.onConfirm();
     setConfirmModal({ ...confirmModal, show: false }); // Hide modal after confirming
   };
+
+  const redirectToEvents = () => {
+    window.location.href = '/events'; // Modify as needed to match your routing setup
+  };
+
+
 
   const pronounsOptions = ['He/His', 'She/Her', 'They/Them', 'Other'];
   const maritalStatusOptions = ['Single', 'Married', 'Divorced', 'Widowed', 'Other'];
@@ -369,6 +387,22 @@ function Profile() {
             </Button>
             <Button variant="danger" onClick={handleConfirm}>
               Delete Account
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal 
+          show={welcomeModal} 
+          onHide={() => {
+            setWelcomeModal(false); 
+            window.location.reload();  
+          }}> 
+          <Modal.Header closeButton>
+            <Modal.Title>Welcome!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Thank you for signing up, get started with your first event</Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger" onClick={redirectToEvents}>
+              To Events
             </Button>
           </Modal.Footer>
         </Modal>
