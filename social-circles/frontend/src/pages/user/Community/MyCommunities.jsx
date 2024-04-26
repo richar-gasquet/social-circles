@@ -10,6 +10,7 @@ import AddCommunity from "../../../components/community-functions/AddCommunity.j
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import Loading from "../../../components/loading-component/loading.jsx";
 
 function Communities() {
   const {
@@ -98,15 +99,7 @@ function Communities() {
             </SearchBar>
             <div className={`row`}>
               {isFetching ? (
-                <div className="col-12 d-flex justify-content-center">
-                  <div
-                    className="spinner-border mt-5"
-                    role="status"
-                    style={{ width: "10rem", height: "10rem" }}
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
+                <Loading />
               ) : filteredCommunities.length > 0 ? (
                 searchCommunities(communities).map((comm) => (
                   <div

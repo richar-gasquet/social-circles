@@ -252,7 +252,7 @@ function EventCard(props) {
           isShown={showEmailEvent}
           handleClose={() => setShowEmailEvent(false)}
           event_id={props.id}
-          eventName={props.name}
+          name={props.name}
           fetchEvents={props.fetchEvents}
         ></EmailEventGroup>
       )}

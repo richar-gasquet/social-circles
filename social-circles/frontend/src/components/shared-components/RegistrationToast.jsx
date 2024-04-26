@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Toast from "react-bootstrap/Toast";
 import styles from "../../css/Toast.module.css";
 
 function RegistrationToast(props) {
   const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      props.onDismiss(); 
+    }, 3200);
+
+    return () => clearTimeout(timer);
+  }, [props.onDismiss]); 
 
   return (
     <Toast

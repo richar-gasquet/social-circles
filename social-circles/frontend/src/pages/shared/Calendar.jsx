@@ -4,6 +4,7 @@ import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import moment from 'moment';
 import UserHeader from '../../components/headers/UserHeader';
 import AdminHeader from '../../components/headers/AdminHeader.jsx';
+import Loading from '../../components/loading-component/loading.jsx';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -64,15 +65,7 @@ function ReactCalendar() {
         )
       }
       {isQuerying ? (
-        <div className="col-12 d-flex justify-content-center" style = {{paddingTop: '7em'}}>
-          <div
-            className="spinner-border mt-5"
-            role="status"
-            style={{ width: "10rem", height: "10rem" }}
-          >
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
+        <Loading />
       ) : (
         <>
           <div className="height600" style = {{paddingTop: '9em'}}>

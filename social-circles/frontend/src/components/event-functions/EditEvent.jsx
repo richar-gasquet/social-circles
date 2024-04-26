@@ -2,8 +2,10 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import AlertBox from "../shared-components/AlertBox";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
 import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function EditEvent(props) {
   const [eventName, setEventName] = useState(props.eventName);
@@ -48,21 +50,18 @@ function EditEvent(props) {
         if (request.ok) {
           setAlert({
             type: "success",
-            header: "Edit successful!",
             text: `${eventName} was successfully updated.`,
           });
           props.updateEvents(props.event_id, eventData);
         } else {
           setAlert({
             type: "danger",
-            header: "Edit failed!",
             text: `${eventName} could not be updated.`,
           });
         }
       } catch (error) {
         setAlert({
           type: "danger",
-          header: "Edit error!",
           text: `We could not connect to the server while updating ${eventName}.`,
         });
       } finally {
@@ -71,7 +70,6 @@ function EditEvent(props) {
     } else {
       setAlert({
         type: "warning",
-        header: "Missing changes!",
         text: "Please update one or more fields.",
       });
     }
@@ -84,12 +82,17 @@ function EditEvent(props) {
       </Modal.Header>
       <Modal.Body>
         {alert && (
-          <AlertBox
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            handleClose={() => setAlert(null)}
-          ></AlertBox>
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">

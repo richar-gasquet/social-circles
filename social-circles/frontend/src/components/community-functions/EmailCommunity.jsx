@@ -1,60 +1,69 @@
-import { useState } from "react"
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import AlertBox from "../shared-components/AlertBox";
-import styles from '../../css/Modal.module.css';
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
+import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function EmailCommunity(props) {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+
+  const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim().length > 0) {
       try {
-          const request = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/get-community-emails`,
-            {
-                credentials: "include",
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({group_id : props.group_id})
-            }
-          );
-          if (request.ok) {
-            setAlert({
-              type: "success",
-              header: "Fetched emails succesfully!",
-              text: "You will be redirected shortly."
-            });
-              const data = await request.json();
-              const encoded_subject = encodeURIComponent(String(subject));
-              const encoded_msg = encodeURIComponent(String(message));
-              const mailToLink = "mailto:" + String(data.results) + "?subject=" + encoded_subject + "&body=" + encoded_msg;
-              window.open(mailToLink);
-          } else {
-            setAlert({
-              type: "danger",
-              header: "Fetching emails failed!",
-              text: "The community's emails could not be fetched.."
-          });
+        setIsQuerying(true);
+        const request = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/get-community-emails`,
+          {
+            credentials: "include",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ group_id: props.group_id }),
           }
-        } catch (error) {
+        );
+        if (request.ok) {
           setAlert({
-                type: "danger",
-                header: "Fetching emails error!",
-                text: "We could not connect to the server while fetching the community's emails."
+            type: "success",
+            text: "You will be redirected shortly.",
+          });
+          const data = await request.json();
+          const encoded_subject = encodeURIComponent(String(subject));
+          const encoded_msg = encodeURIComponent(String(message));
+          const mailToLink =
+            "mailto:" +
+            String(data.results) +
+            "?subject=" +
+            encoded_subject +
+            "&body=" +
+            encoded_msg;
+          window.open(mailToLink);
+        } else {
+          setAlert({
+            type: "danger",
+            text: `We could not fetch the user emails for ${props.name}.`,
           });
         }
+      } catch (error) {
+        setAlert({
+          type: "danger",
+          text: "We could not connect to the server while fetching the community's emails.",
+        });
+      } finally {
+        setIsQuerying(false);
+      }
     } else {
       setAlert({
         type: "warning",
-        header: "Missing fields",
-        text: "Please fill out the subject line and email message."
+        text: "Please fill out the subject line and email message.",
       });
     }
   };
@@ -62,7 +71,9 @@ function EmailCommunity(props) {
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
-        <Modal.Title className={`${styles.modalTitle}`}>Email Community: {props.groupName} </Modal.Title>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Email Community: {props.groupName}{" "}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
@@ -71,11 +82,11 @@ function EmailCommunity(props) {
             header={alert.header}
             text={alert.text}
             wantTimer={false}
-            handleClose={() => setAlert(null)}>
-          </AlertBox>
+            handleClose={() => setAlert(null)}
+          ></AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
-        <Form.Group className={`mb-2`} controlId="subject">
+          <Form.Group className={`mb-2`} controlId="subject">
             <Form.Label>Subject</Form.Label>
             <Form.Control
               type="text"
@@ -94,10 +105,19 @@ function EmailCommunity(props) {
               onChange={(e) => setMessage(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Cancel
           </Button>
-          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
             Submit
           </Button>
         </Form>

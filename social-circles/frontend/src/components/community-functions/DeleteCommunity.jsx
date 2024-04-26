@@ -1,16 +1,19 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import AlertBox from "../shared-components/AlertBox";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
 import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css"
 
 function DeleteCommunity(props) {
   const [isQuerying, setIsQuerying] = useState(false);
+  const [isFinalized, setIsFinalized] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async () => {
-    setIsQuerying(true);
     try {
+      setIsQuerying(true);
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/delete-community`,
         {
@@ -26,23 +29,21 @@ function DeleteCommunity(props) {
       if (request.ok) {
         setAlert({
           type: "success",
-          header: "Deletion successful!",
           text: `${props.name} was successfully deleted.`
         });
         setTimeout(() => {
           props.fetchCommunities();
-        }, 1500);
+        }, 3000);
+        setIsFinalized(true);
       } else {
         setAlert({
           type: "danger",
-          header: "Deletion failed!",
           text: `${props.name} could not be deleted.`
         });
       }
     } catch (error) {
       setAlert({
         type: "danger",
-        header: "Deletion error!",
         text: `We could not connect to the server while deleting ${props.name}.`,
       });
     } finally {
@@ -59,13 +60,17 @@ function DeleteCommunity(props) {
       </Modal.Header>
       <Modal.Body>
         {alert && (
-          <AlertBox
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            wantTimer={false}
-            handleClose={() => setAlert(null)}
-          ></AlertBox>
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <p>
           Are you sure you want to delete the community{" "}
@@ -82,7 +87,7 @@ function DeleteCommunity(props) {
           variant="danger"
           className={`${styles.modalBtn} ${styles.modalSubmit}`}
           onClick={handleSubmit}
-          disabled={isQuerying}
+          disabled={isQuerying || isFinalized}
         >
           Delete
         </Button>

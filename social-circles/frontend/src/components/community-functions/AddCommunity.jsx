@@ -2,8 +2,10 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import AlertBox from "../shared-components/AlertBox";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
 import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function AddCommunity(props) {
   const [groupName, setGroupName] = useState("");
@@ -15,14 +17,11 @@ function AddCommunity(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsQuerying(true);
     if (!groupName || !groupDesc || !imageLink) {
       setAlert({
         type: "warning",
-        header: "Missing fields!",
         text: "All fields must be filled.",
       });
-      setIsQuerying(false);
       return;
     }
 
@@ -32,6 +31,7 @@ function AddCommunity(props) {
       image: imageLink,
     };
     try {
+      setIsQuerying(true);
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/add-community`,
         {
@@ -46,7 +46,6 @@ function AddCommunity(props) {
       if (request.ok) {
         setAlert({
           type: "success",
-          header: "Addition successful!",
           text: `${groupName} was successfully added.`,
         });
         props.fetchCommunities();
@@ -56,14 +55,12 @@ function AddCommunity(props) {
       } else {
         setAlert({
           type: "danger",
-          header: "Addition failed!",
           text: `${groupName} could not be added.`,
         });
       }
     } catch (error) {
       setAlert({
         type: "danger",
-        header: "Addition error!",
         text: `We could not connect to the server while adding ${groupName}.`
       });
     } finally {
@@ -80,12 +77,17 @@ function AddCommunity(props) {
       </Modal.Header>
       <Modal.Body>
         {alert && (
-          <AlertBox
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            handleClose={() => setAlert(null)}
-          ></AlertBox>
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="groupName">
