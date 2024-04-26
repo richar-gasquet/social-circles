@@ -3,27 +3,33 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import AlertBox from "../shared-components/AlertBox";
-import styles from '../../css/Modal.module.css';
+import styles from "../../css/Modal.module.css";
 
 function AddCommunity(props) {
   const [groupName, setGroupName] = useState("");
   const [groupDesc, setGroupDesc] = useState("");
   const [imageLink, setImageLink] = useState("");
-  const [alert, setAlert] = useState(null)
+
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!groupName || !groupDesc) {
-      setAlert({type: "warning", 
-                header: "Missing fields!", 
-                text: "All fields must be filled." }); 
-      return; 
+    setIsQuerying(true);
+    if (!groupName || !groupDesc || !imageLink) {
+      setAlert({
+        type: "warning",
+        header: "Missing fields!",
+        text: "All fields must be filled.",
+      });
+      setIsQuerying(false);
+      return;
     }
 
     const communityData = {
-      group_name: groupName,
-      group_desc: groupDesc,
-      image_link: imageLink,
+      name: groupName,
+      desc: groupDesc,
+      image: imageLink,
     };
     try {
       const request = await fetch(
@@ -38,29 +44,39 @@ function AddCommunity(props) {
         }
       );
       if (request.ok) {
-        setAlert({type: "success", 
-                  header: "Addition successful!",
-                  text: "The community was successfully added." })
-        props.fetchCommunities()
+        setAlert({
+          type: "success",
+          header: "Addition successful!",
+          text: `${groupName} was successfully added.`,
+        });
+        props.fetchCommunities();
         setGroupName("");
         setGroupDesc("");
         setImageLink("");
       } else {
-        setAlert({type: "danger",  
-                  header: "Addition failed!",
-                  text: "The community could not be added." });
+        setAlert({
+          type: "danger",
+          header: "Addition failed!",
+          text: `${groupName} could not be added.`,
+        });
       }
     } catch (error) {
-      setAlert({type: "danger", 
-                header: "Addition error!",
-                text: "We could not connect to the server while adding the community." })
+      setAlert({
+        type: "danger",
+        header: "Addition error!",
+        text: `We could not connect to the server while adding ${groupName}.`
+      });
+    } finally {
+      setIsQuerying(false);
     }
   };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
-        <Modal.Title className={`${styles.modalTitle}`}>Add Community</Modal.Title>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Add Community
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
@@ -68,9 +84,8 @@ function AddCommunity(props) {
             type={alert.type}
             header={alert.header}
             text={alert.text}
-            wantTimer={false}
-            handleClose={() => setAlert(null)}>
-          </AlertBox>
+            handleClose={() => setAlert(null)}
+          ></AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="groupName">
@@ -104,10 +119,19 @@ function AddCommunity(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
             Submit
           </Button>
         </Form>

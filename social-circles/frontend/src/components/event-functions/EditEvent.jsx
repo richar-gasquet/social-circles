@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import AlertBox from "../shared-components/AlertBox";
-import styles from '../../css/Modal.module.css';
+import styles from "../../css/Modal.module.css";
 
 function EditEvent(props) {
   const [eventName, setEventName] = useState(props.eventName);
@@ -13,25 +13,26 @@ function EditEvent(props) {
   const [eventStart, setEventStart] = useState(props.start);
   const [eventEnd, setEventEnd] = useState(props.end);
 
+  const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const eventData = { event_id: props.event_id };
     if (eventName !== props.eventName && eventName.trim() !== "")
-      eventData.event_name = eventName;
+      eventData.name = eventName;
     if (eventDesc !== props.eventDesc && eventDesc.trim() !== "")
-      eventData.event_desc = eventDesc;
+      eventData.desc = eventDesc;
     if (imageLink !== props.imageLink && imageLink.trim() !== "")
-      eventData.image_link = imageLink;
+      eventData.image = imageLink;
     if (eventCapacity !== props.capacity && !isNaN(parseInt(eventCapacity)))
       eventData.capacity = parseInt(eventCapacity);
     if (eventStart !== props.start && eventStart)
       eventData.start_time = eventStart;
-    if (eventEnd !== props.end && eventEnd)
-      eventData.end_time = eventEnd;
+    if (eventEnd !== props.end && eventEnd) eventData.end_time = eventEnd;
 
     if (Object.keys(eventData).length > 1) {
+      setIsQuerying(true);
       try {
         const request = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/edit-event`,
@@ -48,33 +49,33 @@ function EditEvent(props) {
           setAlert({
             type: "success",
             header: "Edit successful!",
-            text: "The event was successfully updated."
+            text: `${eventName} was successfully updated.`,
           });
-        setTimeout(() => {
-          props.fetchEvents()
-        }, 1500)
+          props.updateEvents(props.event_id, eventData);
         } else {
           setAlert({
             type: "danger",
             header: "Edit failed!",
-            text: "The event could not be updated. Please try again or contact the webmasters."
+            text: `${eventName} could not be updated.`,
           });
         }
       } catch (error) {
         setAlert({
           type: "danger",
           header: "Edit error!",
-          text: "We could not connect to the server while updating the event."
+          text: `We could not connect to the server while updating ${eventName}.`,
         });
+      } finally {
+        setIsQuerying(false);
       }
     } else {
       setAlert({
         type: "warning",
         header: "Missing changes!",
-        text: "Please update one or more fields."
-    });
+        text: "Please update one or more fields.",
+      });
     }
-  }
+  };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
@@ -87,11 +88,10 @@ function EditEvent(props) {
             type={alert.type}
             header={alert.header}
             text={alert.text}
-            wantTimer={false}
-            handleClose={() => setAlert(null)}>
-          </AlertBox>
+            handleClose={() => setAlert(null)}
+          ></AlertBox>
         )}
-        <Form onSubmit={handleSubmit}> 
+        <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>
             <Form.Control
@@ -150,10 +150,19 @@ function EditEvent(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
             Submit
           </Button>
         </Form>
