@@ -1,26 +1,16 @@
-import { useEffect } from "react";
 import Alert from "react-bootstrap/Alert"
-import Button from "react-bootstrap/Button"
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function AlertBox(props) {
-  if (props.wantTimer) {
-    useEffect(() => {
-      const timer = setTimeout(() => props.handleClose(), 3000);
-      return () => clearTimeout(timer);
-  
-    }, [props.id, props.handleClose]);
-  }
-
   return (
-    <Alert variant={props.type} onClose={props.handleClose} className="container-fluid">
-      <Alert.Heading>{props.header}</Alert.Heading>
-      <p>{props.text}</p>
-      <hr />
-      <div>
-          <Button onClick={props.handleClose} variant={`outline-${props.type}`}>
-            Close me
-          </Button>
-      </div>
+    <Alert variant={props.type} className="container-fluid">
+      <Alert.Heading className="d-flex justify-content-between align-items-center">
+        {props.header}
+        <button onClick={props.handleClose} style={{ border: 'none', background: 'none', margin: '0'}}>
+          <i className="fa fa-close" aria-hidden="true"></i>
+        </button>
+      </Alert.Heading>
+      {props.text}
     </Alert>
   );
 }
