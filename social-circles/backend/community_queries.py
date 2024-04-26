@@ -151,15 +151,18 @@ def update_community(args: dict) -> None:
             values = []
             sql_query_base = "UPDATE communities SET "
             if group_name:
-                sql_query_base += "group_name = %s "
+                sql_query_base += "group_name = %s, "
                 values.append(group_name)
             if group_desc:
-                sql_query_base += "group_desc = %s "
+                sql_query_base += "group_desc = %s, "
                 values.append(group_desc)
             if image_link:
-                sql_query_base += "image_link = %s "
+                sql_query_base += "image_link = %s, "
                 values.append(image_link)
-            sql_query_base += "WHERE group_id = %s "
+
+            sql_query_base = sql_query_base[:-2]
+
+            sql_query_base += " WHERE group_id = %s "
             values.append(group_id)
 
             cursor.execute(sql_query_base, tuple(values))

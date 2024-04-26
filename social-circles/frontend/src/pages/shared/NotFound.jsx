@@ -9,7 +9,7 @@ function NotFound() {
   return (
     <>
       {isAdmin ? <AdminHeader /> : isAuth ? <UserHeader /> : <GuestHeader />}
-      <div className="container-fluid col-12 text-center pt-2">
+      <div className="container-fluid col-12 text-center" style={{paddingTop: '15em'}}>
         <h1>404</h1>
         <h2>Page Not Found</h2>
         <p>Sorry! The page you are looking for does not exist.</p>

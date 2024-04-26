@@ -1,10 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
+import Loading from "../loading-component/loading";
 
 function ProtectedRoute({ component: Component, ...rest }) {
   const { isAuth, isLoading } = useAuthContext();
   if (isLoading) {
-    return <div>Loading...</div>; // Or a more sophisticated loader/spinner
+    return <Loading/>; 
   }
 
   if (isAuth) {

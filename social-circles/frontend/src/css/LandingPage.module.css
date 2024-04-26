@@ -2,7 +2,6 @@
 
 .overallContainer {
     min-width: 500px;
-    scroll-snap-type: y mandatory;
     height: 100vh;
     overflow-y: scroll;
 }
@@ -75,6 +74,10 @@
 
 .carouselText {
     color: white;
+    text-align: left;
+    margin-left: -10em;
+    font-weight: bolder;
+    width: 35em;
 }
 
 .button {
@@ -92,6 +95,7 @@
 
 .startButton {
     background-color: var(--primary-color);
+    margin-left: -14.5em;
 }
 
 .startButton:hover, .startButton:focus{
@@ -110,16 +114,20 @@
     transition: background-color 0.6s;
 }
 
+.text {
+    font-size: 20px;
+    font-weight: 500;
+}
+
 .descContainer {
     min-height: 450px;
     scroll-snap-align: center;
-    border-bottom: solid 3px;
 }
 
 .danaContainer {
     min-height: 500px;
     scroll-snap-align: center;
-    border-bottom: solid 3px;
+    background-color: #F5EDED;
 }
 
 .danaImg {
