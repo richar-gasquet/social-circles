@@ -22,11 +22,6 @@ function GuestHeader() {
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
           <ul className={`navbar-nav ml-auto`}>
             <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/about" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
-                About Us
-              </NavLink>
-            </li>
-            <li className={`nav-item ${styles.navItem}`}>
               <NavLink to="/contact" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Contact
               </NavLink>
