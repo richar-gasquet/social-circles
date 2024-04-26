@@ -3,6 +3,7 @@ import { useUserContext } from '../../../contexts/UserContextHandler';
 import AdminHeader from '../../../components/headers/AdminHeader';
 import UserHeader from '../../../components/headers/UserHeader';
 import GuestHeader from '../../../components/headers/GuestHeader';
+import Loading from '../../../components/loading-component/loading';
 import styles from '../../../css/ProfileForm.module.css';
 import SessionTimeoutHandler from '../../../components/session-checker/SessionTimeoutHandler';
 
@@ -134,12 +135,7 @@ function Profile() {
     return (
       <>
       <Header />
-      <div className="col-12 d-flex justify-content-center">
-        <div className="spinner-border mt-5" role="status"
-          style={{ width: '10rem', height: '10rem'}}>
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
+      <Loading/>
       </>
     )
   }

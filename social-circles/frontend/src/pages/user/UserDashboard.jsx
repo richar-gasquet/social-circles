@@ -3,6 +3,7 @@ import { useUserContext } from '../../contexts/UserContextHandler';
 import UserHeader from "../../components/headers/UserHeader";
 import LogoutButton from '../../components/auth-components/LogoutButton';
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
+import Loading from "../../components/loading-component/loading";
 
 function UserDashboard() {
   const { userData, isLoading } = useUserContext();
@@ -10,12 +11,7 @@ function UserDashboard() {
     return (
       <>
       <UserHeader />
-      <div className="col-12 d-flex justify-content-center">
-        <div className="spinner-border mt-5" role="status"
-          style={{ width: '10rem', height: '10rem'}}>
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
+      <Loading/>
       </>
     )
   }

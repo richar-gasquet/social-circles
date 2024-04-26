@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import GuestHeader from "../../components/headers/GuestHeader.jsx";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler.jsx";
+import Loading from "../../components/loading-component/loading.jsx";
 
 
 function LoginPage() {
@@ -12,12 +13,7 @@ function LoginPage() {
       <>
       <SessionTimeoutHandler />
       <GuestHeader />
-      <div className="col-12 d-flex justify-content-center" style={{paddingTop: '20em'}}>
-        <div className="spinner-border mt-5" role="status"
-          style={{ width: '10rem', height: '10rem'}}>
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
+      <Loading/>
       </>
     )
   }
