@@ -4,7 +4,6 @@ import CardButton from './CardButton';
 import DeleteResource from '../resources-functions/DeleteResource';
 import EditResource from '../resources-functions/EditResource';
 import styles from '../../css/Card.module.css';
-import styles_two from '../../css/CardButton.module.css' 
 
 function ResourceCard(props) {
   const [showDeleteResource, setShowDeleteResource] = useState(false);
@@ -64,7 +63,6 @@ function ResourceCard(props) {
           isShown={showEditResource}
           handleClose={handleCloseEditResource}
           resource_id={props.resource_id}
-          image={props.image}
           resource={props.resource}
           disp_name={props.disp_name}
           descrip={props.descrip}
@@ -75,14 +73,12 @@ function ResourceCard(props) {
 }
 
 ResourceCard.propTypes = {
-  image: PropTypes.string,
   resource: PropTypes.string,
   disp_name: PropTypes.string,
   descrip: PropTypes.string,
 };
 
 ResourceCard.defaultProps = {
-  image: "https://via.placeholder.com/200",
   resource: "https://www.google.com/",
   disp_name: "Resource Name...",
   descrip: "Resource Description...",

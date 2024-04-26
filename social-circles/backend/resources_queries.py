@@ -28,19 +28,18 @@ def add_resources(args: dict) -> None:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            image = args.get('image')
             resource = args.get('resource')
             disp_name = args.get('disp_name')
             descrip = args.get('descrip')
             
-            values = (image, resource, disp_name, descrip)
+            values = (resource, disp_name, descrip)
             
             cursor.execute('''
                 INSERT INTO 
-                    resources (resource_id, image, resource,
+                    resources (resource_id, resource,
                                 disp_name, descrip)
                 VALUES
-                    (DEFAULT, %s, %s, %s, %s)              
+                    (DEFAULT, %s, %s, %s)              
             ''', values)
             
             connection.commit()
@@ -72,16 +71,12 @@ def update_resources(args: dict) -> None:
     try:
         with connection.cursor() as cursor:
             resource_id = args.get('resource_id')
-            image = args.get('image')
             resource = args.get('resource')
             disp_name = args.get('disp_name')
             descrip = args.get('descrip')
             
             sql_query_base = "UPDATE resources SET "
             values = []
-            if image:
-                sql_query_base += "image = %s "
-                values.append(image)
             if resource:
                 sql_query_base += "resource = %s "
                 values.append(resource)

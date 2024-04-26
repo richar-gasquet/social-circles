@@ -11,10 +11,9 @@ def get_resources():
         for resource in all_resources:
             resources_dict = {
                 'resource_id': resource[0],
-                'image': resource[1],
-                'resource': resource[2],
-                'disp_name': resource[3],
-                'descrip': resource[4],
+                'resource': resource[1],
+                'disp_name': resource[2],
+                'descrip': resource[3]
             }
             resources_list.append(resources_dict)
             
@@ -36,7 +35,6 @@ def add_resources():
             resource_data = flask.request.json
 
             resource_dict = {
-                'image' : resource_data['image'],
                 'resource' : resource_data['resource'],
                 'disp_name' : resource_data['disp_name'],
                 'descrip' : resource_data['descrip']
@@ -91,7 +89,6 @@ def update_resources():
 
             resource_dict = {
                 'resource_id' : resource_data.get('resource_id',''),
-                'image' : resource_data.get('image',''),
                 'resource' : resource_data.get('resource',''),
                 'disp_name' : resource_data.get('disp_name',''),
                 'descrip' : resource_data.get('descrip','')

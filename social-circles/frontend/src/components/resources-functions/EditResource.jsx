@@ -6,7 +6,6 @@ import AlertBox from "../shared-components/AlertBox";
 import styles from '../../css/Modal.module.css';
 
 function EditResource(props) {
-  const [image, setImage] = useState(props.image);
   const [resource, setResource] = useState(props.resource);
   const [dispName, setDispName] = useState(props.disp_name);
   const [descrip, setDescrip] = useState(props.descrip);
@@ -15,8 +14,6 @@ function EditResource(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const resourceData = { resource_id: props.resource_id };
-    if (image !== props.image && image.trim() !== "")
-      resourceData.image = image;
     if (resource !== props.resource && resource.trim() !== "")
       resourceData.resource = resource;
     if (dispName !== props.disp_name && dispName.trim() !== "")
@@ -85,15 +82,6 @@ function EditResource(props) {
           </AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className={`mb-2`} controlId="image">
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder={props.image}
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
           <Form.Group className={`mb-2`} controlId="resource">
             <Form.Label>Resource</Form.Label>
             <Form.Control

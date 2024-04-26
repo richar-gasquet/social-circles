@@ -5,7 +5,6 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
 function AddResource(props) {
-  const [image, setImage] = useState("");
   const [resource, setResource] = useState("");
   const [dispName, setDispName] = useState("");
   const [descrip, setDescrip] = useState("");
@@ -15,13 +14,12 @@ function AddResource(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!image && !resource && !dispName && !descrip) {
+    if (!resource && !dispName && !descrip) {
       setEmptyAlert(true); 
       return; 
     }
 
     const resourceData = {
-      image: image,
       resource: resource,
       disp_name: dispName,
       descrip: descrip
@@ -42,7 +40,6 @@ function AddResource(props) {
       if (request.ok) {
         setSuccessAlert(true);
         setErrorAlert(false);
-        setImage("");
         setResource("");
         setDispName("");
         setDescrip("");
@@ -77,15 +74,6 @@ function AddResource(props) {
           </Alert>
         )}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className={`mb-2`} controlId="image">
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter image link"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
           <Form.Group className={`mb-2`} controlId="resource">
             <Form.Label>Resource</Form.Label>
             <Form.Control

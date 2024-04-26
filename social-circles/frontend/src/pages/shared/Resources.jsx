@@ -76,7 +76,6 @@ function Resources() {
                   <div key={resource.resource_id} className="col-lg-12 mb-4">
                     <ResourceCard
                       resource_id={resource.resource_id}
-                      image={resource.image}
                       resource={resource.resource}
                       disp_name={resource.disp_name}
                       descrip={resource.descrip}
