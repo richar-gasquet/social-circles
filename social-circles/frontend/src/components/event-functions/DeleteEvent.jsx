@@ -33,7 +33,7 @@ function DeleteEvent(props) {
         });
         setTimeout(() => {
           props.fetchEvents();
-        }, 3000);
+        }, 2000);
         setIsFinalized(true);
       } else {
         setAlert({
