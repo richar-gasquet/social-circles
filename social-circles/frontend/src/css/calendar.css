@@ -11,6 +11,7 @@ button.rbc-btn {
   overflow: visible;
   text-transform: none;
   -webkit-appearance: button;
+  appearance: button;
   cursor: pointer;
 }
 
@@ -665,5 +666,3 @@ button.rbc-input::-moz-focus-inner {
   background-color: #74ad31;
   pointer-events: none;
 }
-
-/*# sourceMappingURL=calendar.css.map */
