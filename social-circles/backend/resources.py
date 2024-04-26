@@ -4,33 +4,28 @@ import resources_queries as res_db
 import user_queries as user_db
 
 def get_resources():
-    if 'email' in flask.session:
-        try:
-            all_resources = res_db.get_resources()
-            resources_list = []
+    try:
+        all_resources = res_db.get_resources()
+        resources_list = []
+        
+        for resource in all_resources:
+            resources_dict = {
+                'resource_id': resource[0],
+                'image': resource[1],
+                'resource': resource[2],
+                'disp_name': resource[3],
+                'descrip': resource[4],
+            }
+            resources_list.append(resources_dict)
             
-            for resource in all_resources:
-                resources_dict = {
-                    'resource_id': resource[0],
-                    'image': resource[1],
-                    'resource': resource[2],
-                    'disp_name': resource[3],
-                    'descrip': resource[4],
-                }
-                resources_list.append(resources_dict)
-                
-            return flask.jsonify({
-                'results' : resources_list
-            }), 200 # OK
-        except Exception as ex:
-            print(f'{sys.argv[0]}: {str(ex)}')
-            return flask.jsonify({
-                'message' : str(ex)
-            }), 500 # INTERNAL SERVER ERROR
-    else:
         return flask.jsonify({
-            'message' : 'User not authenticated.'
-        }), 401 # UNAUTHORIZED
+            'results' : resources_list
+        }), 200 # OK
+    except Exception as ex:
+        print(f'{sys.argv[0]}: {str(ex)}')
+        return flask.jsonify({
+            'message' : str(ex)
+        }), 500 # INTERNAL SERVER ERROR
 
 def add_resources():
     if 'email' in flask.session:
