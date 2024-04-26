@@ -2,16 +2,15 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
+import AlertBox from "../shared-components/AlertBox";
+import styles from '../../css/Modal.module.css';
 
 function EditResource(props) {
   const [image, setImage] = useState(props.image);
   const [resource, setResource] = useState(props.resource);
   const [dispName, setDispName] = useState(props.disp_name);
   const [descrip, setDescrip] = useState(props.descrip);
-  const [noChangeAlert, setNoChangeAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +25,6 @@ function EditResource(props) {
       resourceData.descrip = descrip;
 
     if (Object.keys(resourceData).length > 1) {
-      setNoChangeAlert(false);
       try {
         const request = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/edit-resources`,
@@ -40,20 +38,34 @@ function EditResource(props) {
           }
         );
         if (request.ok) {
-          setSuccessAlert(true);
-          setErrorAlert(false);
+          setAlert({
+              type: "success",
+              header: "Edit successful!",
+              text: "The community was successfully updated."
+          });
+          setTimeout(() => {
+            props.fetchAllResources()
+          }, 1500)
         } else {
-          setSuccessAlert(false);
-          setErrorAlert(true);
+          setAlert({
+            type: "danger",
+            header: "Edit failed!",
+            text: "The resource could not be updated."
+          });
         }
       } catch (error) {
-        setSuccessAlert(false);
-        setErrorAlert(true);
+        setAlert({
+          type: "danger",
+          header: "Edit error!",
+          text: "We could not connect to the server while updating the resource."
+        });
       }
     } else {
-      setNoChangeAlert(true);
-      setSuccessAlert(false);
-      setErrorAlert(false);
+      setAlert({
+        type: "warning",
+        header: "Missing changes!",
+        text: "Please update one or more fields."
+      });
     }
   }
 
@@ -63,19 +75,14 @@ function EditResource(props) {
         <Modal.Title>Edit Resource</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The resource was successfully updated!
-          </Alert>
-        )}
-        {errorAlert && (
-          <Alert variant="danger">
-            Error! The resource could not be updated. Try again or contact
-            technical support.
-          </Alert>
-        )}
-        {noChangeAlert && (
-          <Alert variant="warning">At least one field must be changed.</Alert>
+        {alert && (
+          <AlertBox
+            type={alert.type}
+            header={alert.header}
+            text={alert.text}
+            wantTimer={false}
+            handleClose={() => setAlert(null)}>
+          </AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="image">
@@ -114,10 +121,10 @@ function EditResource(props) {
               onChange={(e) => setDescrip(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
             Close
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
             Submit
           </Button>
         </Form>

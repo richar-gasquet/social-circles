@@ -262,6 +262,6 @@ def add_resources_route():
 def delete_resources_route():
     return resources.delete_resources()
 
-@app.route('/api/update-resources', methods = ['POST'])
+@app.route('/api/edit-resources', methods = ['POST'])
 def update_resources_route():
     return resources.update_resources()

@@ -95,11 +95,11 @@ def update_resources():
             resource_data = flask.request.json
 
             resource_dict = {
-                'resource_id' : resource_data['resource_id'],
-                'image' : resource_data['image'],
-                'resource' : resource_data['resource'],
-                'disp_name' : resource_data['disp_name'],
-                'descrip' : resource_data['descrip']
+                'resource_id' : resource_data.get('resource_id',''),
+                'image' : resource_data.get('image',''),
+                'resource' : resource_data.get('resource',''),
+                'disp_name' : resource_data.get('disp_name',''),
+                'descrip' : resource_data.get('descrip','')
             }
 
             res_db.update_resources(resource_dict)

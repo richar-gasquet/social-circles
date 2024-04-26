@@ -52,55 +52,56 @@ function Resources() {
       <UserHeader />
       <div className={`container-fluid p-5`}>
         <div className={`row container-fluid align-items-center`}>
+          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Resources</h1>
           {isAdmin && (
-              <div className="col d-flex justify-content-end">
-                <AddButton
-                  type="Add Resource"
-                  action={handleShowAddResource}>
-                </AddButton>
-              </div>
-            )}
+            <div className="col d-flex justify-content-end">
+              <AddButton
+                type="Add Resource"
+                action={handleShowAddResource}>
+              </AddButton>
+            </div>
+          )}
         </div>
-      </div>
-      <hr />
-      <div className={`row`}>
-        <div className={`col-lg-10 mt-3`}>
-          <div className={`row`}>
-            {isQuerying ? (
-              <div className="col-12 d-flex justify-content-center">
-                <div className="spinner-border mt-5" role="status"
-                  style={{ width: '10rem', height: '10rem'}}>
-                  <span className="sr-only">Loading...</span>
+        <hr />
+        <div className={`row justify-content-center`}>
+          <div className={`col-lg-10 mt-3`}>
+            <div className={`row ml-5 mr-5`}>
+              {isQuerying ? (
+                <div className="col-12 d-flex justify-content-center">
+                  <div className="spinner-border mt-5" role="status"
+                    style={{ width: '10rem', height: '10rem'}}>
+                    <span className="sr-only">Loading...</span>
+                  </div>
                 </div>
-              </div>
-            ) : resources.length > 0 ? (
-              resources.map((resource) => (
-                <div key={resource.resource_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
-                  <ResourceCard
-                    resource_id={resource.resource_id}
-                    image={resource.image}
-                    resource={resource.resource}
-                    disp_name={resource.disp_name}
-                    descrip={resource.descrip}
-                    isAdmin={isAdmin}
-                    fetchAllResources={fetchAllResources}>
-                  </ResourceCard>
-                </div>
-              ))
-            ) : (
-              <h3 className="col-12">
-                There are no available resources.
-              </h3>
-            )}
+              ) : resources.length > 0 ? (
+                resources.map((resource) => (
+                  <div key={resource.resource_id} className="col-lg-12 mb-4">
+                    <ResourceCard
+                      resource_id={resource.resource_id}
+                      image={resource.image}
+                      resource={resource.resource}
+                      disp_name={resource.disp_name}
+                      descrip={resource.descrip}
+                      isAdmin={isAdmin}
+                      fetchAllResources={fetchAllResources}>
+                    </ResourceCard>
+                  </div>
+                ))
+              ) : (
+                <h3 className="col-12">
+                  There are no available resources.
+                </h3>
+              )}
+            </div>
           </div>
         </div>
+        {showAddResource && isAdmin && (
+          <AddResource
+            isShown={showAddResource}
+            handleClose={handleCloseAddResource}>
+          </AddResource>
+        )}
       </div>
-      {showAddResource && isAdmin && (
-        <AddResource
-          isShown={showAddResource}
-          handleClose={handleCloseAddResource}>
-        </AddResource>
-      )}
     </>
   );
 }
