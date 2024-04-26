@@ -16,7 +16,6 @@ function Profile() {
   const [formErrors, setFormErrors] = useState({});
   const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
   const [welcomeModal, setWelcomeModal] = useState(false);
-  const [charLimitModal, setCharLimitModal] = useState({ show: false, field: "" });
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -135,19 +134,8 @@ function Profile() {
       // Check for character limits
       if (maxChar[field] && formData[field] && formData[field].length > maxChar[field]) {
         newErrors[field] = `Character limit of ${maxChar[field]} exceeded.`;
-        characterLimitExceeded = true;
       }
     });
-
-
-    
-      if (characterLimitExceeded) {
-        // Show the first field that exceeded character limit for user's convenience
-        const firstExceededField = Object.keys(newErrors).find(field => newErrors[field].includes('exceeded'));
-        setCharLimitModal({ show: true, field: firstExceededField });
-        setFormErrors(newErrors);
-        return; // Prevent form submission if any character limit is exceeded
-      }
 
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
@@ -442,20 +430,6 @@ function Profile() {
             </Button>
           </Modal.Footer>
         </Modal>
-        <Modal show={charLimitModal.show} onHide={() => setCharLimitModal({ ...charLimitModal, show: false })}>
-          <Modal.Header closeButton>
-            <Modal.Title>Character Limit Exceeded</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            You have exceeded the character limit for {charLimitModal.field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}.
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setCharLimitModal({ ...charLimitModal, show: false })}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
       </>
     );
   }
