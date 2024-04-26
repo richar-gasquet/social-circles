@@ -8,6 +8,7 @@ import users
 import events
 import communities
 import vistors
+import resources
 import user_queries as db
 import uuid
 from datetime import datetime, timezone
@@ -354,3 +355,23 @@ def clear_expired_sessions():
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
 scheduler.start()
+
+#----------------------------------------------------------------------
+
+# Routes for querying RESOURCES data from database
+
+@app.route('/api/get-resources', methods = ['GET'])
+def get_resources_route():
+    return resources.get_resources()
+
+@app.route('/api/add-resources', methods = ['POST'])
+def add_resources_route():
+    return resources.add_resources()
+
+@app.route('/api/delete-resources', methods = ['POST'])
+def delete_resources_route():
+    return resources.delete_resources()
+
+@app.route('/api/edit-resources', methods = ['POST'])
+def update_resources_route():
+    return resources.update_resources()
