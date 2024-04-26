@@ -65,21 +65,21 @@ function LandingPage() {
             />
             <h1>Social Circles</h1>
           </div>
-          <div className="d-flex justify-content-center align-items-center mt-4 pt-3">
+          <div className="d-flex justify-content-center align-items-center mt-5 pt-3">
             <NavLink to="/login">
-              <button type="button" className={`btn btn-primary mr-5 ${styles.button} ${styles.startButton}`}>
-                Get Started
+              <button type="button" className={`btn btn-primary mr-3 ${styles.button} ${styles.startButton}`}>
+                Sign In
               </button>
             </NavLink>
-            <NavLink to="/about">
-              <button type="button" className={`btn btn-outline-secondary ${styles.button} ${styles.learnButton}`}>
+            <a href="#descContainer">
+             <button type="button" className={`btn btn-outline-secondary ml-3 ${styles.button} ${styles.learnButton}`}>
                 Learn More
               </button>
-            </NavLink>
+            </a>
           </div>
         </div>
       </div>
-      <div className={`container-fluid py-5 px-5 d-flex flex-column justify-content-center ${styles.descContainer}`}>
+      <div id="descContainer" className={`container-fluid py-5 px-5 d-flex flex-column justify-content-center ${styles.descContainer}`}>
         <h1 className={`text-center ${styles.animated}`}>
           What is Social Circles?
         </h1>
