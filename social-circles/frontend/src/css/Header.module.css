@@ -6,6 +6,18 @@ header {
     box-shadow: 0px 0px 2px black;
 }
 
+.aSocial {
+    font-size: 30px;
+    color: black;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.aSocial:hover {
+    cursor: pointer;
+    text-decoration: none;
+    color: #E1525F;
+}
 
 .logo {
     max-width: 100px;
