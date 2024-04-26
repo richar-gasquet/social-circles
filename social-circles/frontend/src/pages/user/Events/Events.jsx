@@ -69,7 +69,7 @@ function Events() {
             ))}
           </ToastContainer>
         </div>
-        <div className={`row container-fluid align-items-center`}>
+        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '7em'}}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
               Upcoming Events

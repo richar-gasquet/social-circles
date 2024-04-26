@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
-import UserHeader from "../../../components/headers/UserHeader.jsx"
+import UserHeader from "../../../components/headers/UserHeader.jsx";
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
@@ -24,13 +24,11 @@ function MyEvents() {
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState(false);
 
-
   useEffect(() => {
     fetchEvents("/get-registered-events");
   }, []);
 
-  const fetchRegisteredEvents = () => 
-    fetchEvents("/get-registered-events");
+  const fetchRegisteredEvents = () => fetchEvents("/get-registered-events");
 
   const addRegistrationAlert = (type, header, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
@@ -56,7 +54,7 @@ function MyEvents() {
       <SessionTimeoutHandler />
       <Header />
       <div className={`container-fluid p-5`}>
-      {registrationAlerts.map((alert) => (
+        {registrationAlerts.map((alert) => (
           <AlertBox
             key={alert.id}
             type={alert.type}
@@ -66,9 +64,12 @@ function MyEvents() {
             handleClose={() => removeRegistrationAlert(alert.id)}
           ></AlertBox>
         ))}
-        <div className={`row container-fluid align-items-center`} style={{marginTop: '9em'}}>
+        <div
+          className={`row container-fluid align-items-center`}
+          style = {{paddingTop: '7em'}}
+        >
           <div className="col">
-            <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
+            <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
               My Events
             </h1>
           </div>
@@ -78,8 +79,8 @@ function MyEvents() {
                 type="Add Event"
                 action={() => {
                   setShowAddEvent(true);
-                }}>
-              </AddButton>
+                }}
+              ></AddButton>
             </div>
           )}
         </div>
@@ -90,14 +91,20 @@ function MyEvents() {
             <div className={`row`}>
               {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
-                  <div className="spinner-border mt-5" role="status"
-                    style={{ width: '10rem', height: '10rem'}}>
+                  <div
+                    className="spinner-border mt-5"
+                    role="status"
+                    style={{ width: "10rem", height: "10rem" }}
+                  >
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               ) : events.length > 0 ? (
                 events.map((event) => (
-                  <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
+                  <div
+                    key={event.event_id}
+                    className="col-lg-4 col-md-6 col-sm-12 mt-2"
+                  >
                     <EventCard
                       id={event.event_id}
                       name={event.name}
@@ -143,6 +150,5 @@ function MyEvents() {
     </>
   );
 }
-
 
 export default MyEvents;

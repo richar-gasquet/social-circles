@@ -71,10 +71,10 @@ function Communities() {
             handleClose={() => removeRegistrationAlert(alert.id)}
           ></AlertBox>
         ))}
-        <div className={`row container-fluid align-items-center`} style={{marginTop: '9em'}}>
+        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '7em'}}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
-              All Communities
+              My Communities
             </h1>
           </div>
           {isAdmin && (

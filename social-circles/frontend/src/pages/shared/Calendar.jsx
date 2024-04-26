@@ -42,7 +42,7 @@ function ReactCalendar() {
     } catch (error) {
       setAlert({type: "danger",  
                 header: "Calendar display not available!",
-                text: "We could not connect to the server. Refresh the page or contact the administrator.." });
+                text: "We could not connect to the server. Refresh the page or contact the administrator." });
     } finally {
       setQuerying(false);
     }
@@ -64,7 +64,7 @@ function ReactCalendar() {
         )
       }
       {isQuerying ? (
-        <div className="col-12 d-flex justify-content-center">
+        <div className="col-12 d-flex justify-content-center" style = {{paddingTop: '7em'}}>
           <div
             className="spinner-border mt-5"
             role="status"
@@ -75,7 +75,7 @@ function ReactCalendar() {
         </div>
       ) : (
         <>
-          <div className="height600">
+          <div className="height600" style = {{paddingTop: '9em'}}>
             <Calendar
               localizer={localizer}
               events={events}

@@ -41,7 +41,7 @@ function Events() {
       <SessionTimeoutHandler />
       <Header />
       <div className={`container-fluid p-5`}>
-        <div className={`row container-fluid align-items-center`} style={{marginTop: '9em'}}>
+        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '7em'}}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
               Past Events
