@@ -33,7 +33,7 @@ function DeleteCommunity(props) {
         });
         setTimeout(() => {
           props.fetchCommunities();
-        }, 3000);
+        }, 2000);
         setIsFinalized(true);
       } else {
         setAlert({
