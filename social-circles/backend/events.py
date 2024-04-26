@@ -127,10 +127,10 @@ def add_event():
 
             event_data = flask.request.json
             event_dict = {
-                'event_name' : html.escape(event_data['event_name']),
-                'capacity' : int(event_data['capacity']),
-                'event_desc' : html.escape(event_data['event_desc']),
-                'image_link' : html.escape(event_data['image_link']),
+                'event_name' : html.escape(event_data.get('name')),
+                'event_desc' : html.escape(event_data.get('desc')),
+                'image_link' : html.escape(event_data.get('image')),
+                'capacity' : int(event_data.get('capacity')),
                 'start_time' : parser.parse(event_data['start_time']),
                 'end_time' : parser.parse(event_data['end_time'])
             }
@@ -166,11 +166,11 @@ def edit_event():
                 end_time = parser.parse(end_time)
             
             event_dict = {
-                'event_id' : event_data.get('event_id', ''),
-                'event_name' : html.escape(event_data.get('event_name', '')),
-                'event_desc' : html.escape(event_data.get('event_desc', '')),
-                'image_link' : html.escape(event_data.get('image_link', '')),
-                'capacity' : event_data.get('capacity', ''),
+                'event_id' : event_data.get('event_id'),
+                'event_name' : html.escape(event_data.get('name', '')),
+                'event_desc' : html.escape(event_data.get('desc', '')),
+                'image_link' : html.escape(event_data.get('image', '')),
+                'capacity' : event_data.get('capacity'),
                 'start_time' : start_time,
                 'end_time' : end_time
             }
