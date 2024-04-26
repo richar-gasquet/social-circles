@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import AdminHeader from '../../components/headers/AdminHeader';
 import { useUserContext } from '../../contexts/UserContextHandler';
 import SessionTimeoutHandler from '../../components/session-checker/SessionTimeoutHandler';
-import Modal from 'react-bootstrap/Modal'; 
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend } from 'chart.js';
 import styles from '../../css/Buttons.module.css';
@@ -18,7 +19,7 @@ function AdminDashboard() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isFetching, setIsFetching] = useState(false);
-  const [blacklistedUsers, setBlacklistedUsers] = useState([]);
+  const [blockedUsers, setBlockedUsers] = useState([]);
   const [currentUsers, setCurrentUsers] = useState([]);
   const [rerender, setRerender] = useState(false);
   const [chartData, setChartData] = useState({
@@ -32,6 +33,24 @@ function AdminDashboard() {
       tension: 0.1
     }]
   });
+  const [alertModal, setAlertModal] = useState({ show: false, message: '' });
+  const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
+
+  // Function to show confirm modal
+  const showConfirmModal = (message, onConfirm) => {
+    setConfirmModal({ show: true, message, onConfirm });
+  };
+
+  // Function to show alert modal
+  const showAlertModal = (message) => {
+    setAlertModal({ show: true, message });
+  };
+
+  // Function to handle confirm actions
+  const handleConfirm = () => {
+    confirmModal.onConfirm();
+    setConfirmModal({ ...confirmModal, show: false }); // Hide modal after confirming
+  };
 
   const fetchCurrentUsers = async () => {
     try {
@@ -95,7 +114,6 @@ function AdminDashboard() {
   const filterUsers = (term) => {
     const lowerCaseTerm = term.toLowerCase();
     const filtered = allUsers.filter(user => {
-      console.log(user)
       return (
         (user.first_name && user.first_name.toLowerCase().includes(lowerCaseTerm)) ||
         (user.last_name && user.last_name.toLowerCase().includes(lowerCaseTerm)) ||
@@ -115,20 +133,20 @@ function AdminDashboard() {
 
 
   useEffect(() => {
-    const fetchBlacklistedUsers = async () => {
+    const fetchBlockedUsers = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-blacklisted-users`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-blocked-users`, {
           method: 'GET',
           credentials: 'include'
         });
         const data = await response.json();
-        setBlacklistedUsers(data);
+        setBlockedUsers(data);
       } catch (error) {
-        console.error('Error fetching blacklisted users:', error);
+        console.error('Error fetching blocked users:', error);
       }
     };
 
-    fetchBlacklistedUsers();
+    fetchBlockedUsers();
   }, []);
 
   const handleUserClick = (user) => {
@@ -139,52 +157,48 @@ function AdminDashboard() {
     setSelectedUser(null);
   };
 
-  const blacklistAndDeleteUser = () => {
+  const blockAndDeleteUser = () => {
     // Confirm with the admin before proceeding
-    const confirmAction = window.confirm("Are you sure you want to blacklist and delete this user? This action cannot be undone.");
+    showConfirmModal("Are you sure you want to block and delete this user? This action cannot be undone.", () => {
+        if (!selectedUser) return;  // Guard clause if no user is selected
     
-    if (confirmAction) {
-      if (!selectedUser) return;  // Guard clause if no user is selected
-  
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/blacklist-and-delete-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        credentials: 'include',  // Ensure cookies are sent with the request if sessions are used
-        body: JSON.stringify({ email: selectedUser.email })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          alert('User has been blacklisted and deleted.');
-          closePopup();
-          // Refresh the list of users or remove the user from the state
-          setAllUsers(allUsers.filter(user => user.email !== selectedUser.email));
-          setBlacklistedUsers([...blacklistedUsers, {
-            email: selectedUser.email,
-            first_name: selectedUser.first_name,
-            last_name: selectedUser.last_name
-          }]);
-        } else {
-          alert('Error: ' + data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error blacklisting and deleting user:', error);
-        alert('Failed to blacklist and delete the user.');
-      });
-    } else {
-      // If the user cancels, just close the confirmation and do nothing
-      console.log("User deletion cancelled.");
-    }
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/block-and-delete-user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          credentials: 'include',  // Ensure cookies are sent with the request if sessions are used
+          body: JSON.stringify({ email: selectedUser.email })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            showAlertModal('User has been blocked and deleted.');
+            closePopup();
+            // Use functional updates to ensure you are modifying the latest state
+            setAllUsers(prevUsers => prevUsers.filter(user => user.email !== selectedUser.email));
+            setFilteredUsers(prevUsers => prevUsers.filter(user => user.email !== selectedUser.email));
+            setBlockedUsers(prevBlocked => [...prevBlocked, {
+              email: selectedUser.email,
+              first_name: selectedUser.first_name,
+              last_name: selectedUser.last_name
+            }]);
+          } else {
+            showAlertModal('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error blocking and deleting user:', error);
+          showAlertModal('Failed to block and delete the user.');
+        });
+    });
   };
   
-  const removeUserFromBlacklist = async (email) => {
-    if (window.confirm("Are you sure you want to remove this user from the blacklist?")) {
+  const removeUserFromBlockedList = async (email) => {
+    showConfirmModal("Are you sure you want to remove this user from the block list?", async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/remove-user-from-blacklist`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/remove-user-from-block`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -194,16 +208,16 @@ function AdminDashboard() {
         });
         const data = await response.json();
         if (data.status === 'success') {
-          alert('User has been removed from the blacklist.');
-          setBlacklistedUsers(blacklistedUsers.filter(user => user.email !== email));
+          showAlertModal('User has been removed from the blocked list.');
+          setBlockedUsers(blockedUsers.filter(user => user.email !== email));
         } else {
-          alert('Error: ' + data.message);
+          showAlertModal('Error: ' + data.message);
         }
       } catch (error) {
-        console.error('Error removing user from blacklist:', error);
-        alert('Failed to remove the user from the blacklist.');
+        console.error('Error removing user from blocked list:', error);
+        showAlertModal('Failed to remove the user from the blocked list.');
       }
-    }
+    });
   };
 
   const handleLogout = (e) => {
@@ -228,7 +242,7 @@ function AdminDashboard() {
     <>
     <SessionTimeoutHandler />
     <AdminHeader />
-    <div style={{margin: '5%'}}>
+    <div style={{marginBottom: '5%', marginLeft: '5%', marginRight: '5%', paddingTop: '10em'}}>
       <div>
         <h2>Hello {userData.first_name} {userData.last_name}</h2>
         <br/>
@@ -260,12 +274,12 @@ function AdminDashboard() {
               )}
             </div>
             <div className='col-md-6'>
-              <h3>Blacklisted Users</h3>
+              <h3>Blocked Users</h3>
               <ul className='list-group' style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '20px', width: '50%' }}>
-                {blacklistedUsers.map(user => (
+                {blockedUsers.map(user => (
                   <li className={'list-group-item'} key={user.email} style={{padding: 'auto'}}>
                     {user.first_name} {user.last_name} 
-                    <button className={styles.smallSubmitButton} style={{marginLeft: '7%'}} onClick={() => removeUserFromBlacklist(user.email)}>Remove from Blacklist</button>
+                    <button className={styles.smallSubmitButton} style={{marginLeft: '7%'}} onClick={() => removeUserFromBlockedList(user.email)}>Remove from Blocked List</button>
                   </li>
                 ))}
               </ul>
@@ -295,11 +309,31 @@ function AdminDashboard() {
           <p><strong>Personal Identity:</strong> {selectedUser.personal_identity}</p>
       </Modal.Body>
       <Modal.Footer>
-        <button className={styles.submitButton} variant="danger" onClick={blacklistAndDeleteUser}>Blacklist and Delete</button>
+        <button className={styles.submitButton} variant="danger" onClick={blockAndDeleteUser}>Block and Delete</button>
         <button className={styles.cancelButton} variant="secondary" onClick={closePopup}>Close</button>
       </Modal.Footer>
     </Modal>
     )}
+    <Modal show={confirmModal.show} onHide={() => setConfirmModal({ ...confirmModal, show: false })}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Action</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{confirmModal.message}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setConfirmModal({ ...confirmModal, show: false })}>Cancel</Button>
+          <Button variant="danger" onClick={handleConfirm}>Confirm</Button>
+        </Modal.Footer>
+      </Modal>
+      {/* Alert Modal */}
+      <Modal show={alertModal.show} onHide={() => setAlertModal({ ...alertModal, show: false })}>
+        <Modal.Header closeButton>
+          <Modal.Title>Alert</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{alertModal.message}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setAlertModal({ ...alertModal, show: false })}>Close</Button>
+        </Modal.Footer>
+      </Modal>
   </>
   );
 }

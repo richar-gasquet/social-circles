@@ -13,6 +13,9 @@ function GuestHeader() {
         <NavLink to="/" className="navbar-brand">
           <img src={logo} alt="Social Circles Logo" className={`img-fluid ${styles.logo}`} />
         </NavLink>
+        <NavLink to="/" className="navbar-brand">
+          <a className={`${styles.aSocial}`}>Social Circles</a>
+        </NavLink>
         {/* MUST ADD ANIMATION FOR NAVBAR COLLAPSING */}
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHamburger"
                 aria-controls="navbarHamburger" aria-expanded={!isNavCollapsed ? true : false} aria-label="Toggle navigation"
@@ -21,11 +24,6 @@ function GuestHeader() {
         </button>
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
           <ul className={`navbar-nav ml-auto`}>
-            <li className={`nav-item ${styles.navItem}`}>
-              <NavLink to="/about" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
-                About Us
-              </NavLink>
-            </li>
             <li className={`nav-item ${styles.navItem}`}>
               <NavLink to="/contact" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Contact

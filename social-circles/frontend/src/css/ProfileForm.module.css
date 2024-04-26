@@ -6,15 +6,19 @@
   flex-wrap: wrap;
   margin-right: -15px;
   margin-left: -15px;
-  position: relative;
-  right: 15%;
-  
+  position: relative;  
+  padding: 3em;
 }
-
+.userLeft {
+  right: 5em;
+}
 .userInfo{
   position: relative;
-  left: 15%;
-  margin-top: 2%
+  margin-top: 1em;
+  padding-left: 3em;
+  padding-top: 2em;
+  padding-bottom: 2em;
+  width: fit-content;
 }
 
 .infoH3{

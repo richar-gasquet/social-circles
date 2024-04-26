@@ -251,7 +251,7 @@ def get_all_user_details() -> list:
     return all_user_details
 
 
-def blacklist_and_delete_user(email: str):
+def block_and_delete_user(email: str):
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -266,9 +266,9 @@ def blacklist_and_delete_user(email: str):
             if user_details is None:
                 raise ValueError("User not found.")
 
-            # Add user to blacklist
+            # Add user to block
             cursor.execute('''
-                INSERT INTO user_blacklist (first_name, last_name, email)
+                INSERT INTO blocked_users (first_name, last_name, email)
                 VALUES (%s, %s, %s)
             ''', (user_details[0], user_details[1], user_details[2]))
             # Commit changes
@@ -283,28 +283,28 @@ def blacklist_and_delete_user(email: str):
         put_connection(connection)
 
 
-def get_all_blacklisted_users():
+def get_all_blocked_users():
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
                 SELECT first_name, last_name, email
-                FROM user_blacklist
+                FROM blocked_users
             ''')
-            blacklisted_users = cursor.fetchall()
-            return [{'first_name': user[0], 'last_name': user[1], 'email': user[2]} for user in blacklisted_users]
+            blocked_users = cursor.fetchall()
+            return [{'first_name': user[0], 'last_name': user[1], 'email': user[2]} for user in blocked_users]
     except Exception as e:
         raise e
     finally:
         put_connection(connection)
 
 
-def remove_user_from_blacklist(email: str):
+def remove_user_from_block(email: str):
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
-                DELETE FROM user_blacklist
+                DELETE FROM blocked_users
                 WHERE email = %s
             ''', (email,))
             connection.commit()
@@ -314,19 +314,19 @@ def remove_user_from_blacklist(email: str):
     finally:
         put_connection(connection)
 
-def is_in_blacklist(email: str) -> bool:
+def is_in_block(email: str) -> bool:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
             cursor.execute('''
                 SELECT EXISTS(
-                    SELECT 1 FROM user_blacklist WHERE email = %s
+                    SELECT 1 FROM blocked_users WHERE email = %s
                 )
             ''', (email,))
-            is_blacklisted = cursor.fetchone()[0]
-            return is_blacklisted
+            is_blocked = cursor.fetchone()[0]
+            return is_blocked
     except Exception as e:
-        print(f"Error checking if user is in blacklist: {e}")
+        print(f"Error checking if user is in block: {e}")
         raise
     finally:
         put_connection(connection)

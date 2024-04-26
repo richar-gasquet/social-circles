@@ -3,6 +3,7 @@ import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx"
+import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
@@ -33,13 +34,14 @@ function Events() {
     fetchEvents("/get-past-events");
 
   const filteredEvents = searchEvents(events);
+  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>
       <SessionTimeoutHandler />
-      <UserHeader />
+      <Header />
       <div className={`container-fluid p-5`}>
-        <div className={`row container-fluid align-items-center`}>
+        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '7em'}}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>
               Past Events

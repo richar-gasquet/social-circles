@@ -6,12 +6,18 @@ import styles from '../../css/Header.module.css';
 function UserHeader() {
   // State to handle the collapse
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const handleLogout = (e) => {
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
+  };
 
   return (
     <header>
       <nav className={`navbar navbar-expand-md navbar-light ${styles.nav}`}>
         <NavLink to="/user-dashboard" className="navbar-brand">
           <img src={logo} alt="Social Circles Logo" className={`img-fluid ${styles.logo}`} />
+        </NavLink>
+        <NavLink to="/user-dashboard" className="navbar-brand">
+          <a className={`${styles.aSocial}`}>Social Circles</a>
         </NavLink>
         {/* MUST ADD ANIMATION FOR NAVBAR COLLAPSING */}
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHamburger"
@@ -48,6 +54,11 @@ function UserHeader() {
             <li className={`nav-item ${styles.navItem}`}>
               <NavLink to="/profile" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Profile
+              </NavLink>
+            </li>
+            <li className={`nav-item ${styles.navItem}`} onClick={handleLogout}>
+              <NavLink to="/" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+                Log Out
               </NavLink>
             </li>
           </ul>

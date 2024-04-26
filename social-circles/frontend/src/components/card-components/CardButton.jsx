@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import styles from "../../css/CardButton.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -10,13 +9,9 @@ function CardButton(props) {
       className={`btn btn-danger ${styles.button} ${props.className}`}
       title={props.message}
     >
-      <i className={props.icon}></i>
+      <i className={props.icon} aria-hidden="true"></i>
     </button>
   );
 }
 
 export default CardButton;
-
-CardButton.propTypes = {
-  action: PropTypes.func,
-};

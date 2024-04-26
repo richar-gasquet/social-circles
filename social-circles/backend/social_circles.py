@@ -215,45 +215,45 @@ def get_all_users():
             'message': 'Unauthorized access'
         }), 403  # Forbidden
     
-@app.route('/blacklist-and-delete-user', methods=['POST'])
-def blacklist_and_delete_user_route():
+@app.route('/block-and-delete-user', methods=['POST'])
+def block_and_delete_user_route():
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
         # Check if the session user is an admin or has appropriate permissions
         try:
             user_data = flask.request.json
-            user_email = user_data['email']  # Email of the user to be blacklisted and deleted
+            user_email = user_data['email']  # Email of the user to be blocked and deleted
 
-            db.blacklist_and_delete_user(user_email)
-            return flask.jsonify({'status': 'success', 'message': 'User has been blacklisted and deleted'}), 200
+            db.block_and_delete_user(user_email)
+            return flask.jsonify({'status': 'success', 'message': 'User has been blocked and deleted'}), 200
         except Exception as ex:
             return flask.jsonify({'status': 'error', 'message': str(ex)}), 500  # Internal Server Error
     else:
         return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
     
 
-@app.route('/get-blacklisted-users', methods=['GET'])
-def get_blacklisted_users():
+@app.route('/get-blocked-users', methods=['GET'])
+def get_blocked_users():
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
         try:
-            blacklisted_users = db.get_all_blacklisted_users()
-            return flask.jsonify(blacklisted_users), 200  # OK
+            blocked_users = db.get_all_blocked_users()
+            return flask.jsonify(blocked_users), 200  # OK
         except Exception as ex:
             print(ex)
-            return flask.jsonify({'status': 'error', 'message': 'Failed to fetch blacklisted users'}), 500  # Internal Server Error
+            return flask.jsonify({'status': 'error', 'message': 'Failed to fetch blocked users'}), 500  # Internal Server Error
     else:
         return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
 
 
-@app.route('/remove-user-from-blacklist', methods=['POST'])
-def remove_user_from_blacklist():
+@app.route('/remove-user-from-block', methods=['POST'])
+def remove_user_from_block():
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
         try:
             user_data = flask.request.json
-            db.remove_user_from_blacklist(user_data['email'])
-            return flask.jsonify({'status': 'success', 'message': 'User has been removed from the blacklist'}), 200
+            db.remove_user_from_block(user_data['email'])
+            return flask.jsonify({'status': 'success', 'message': 'User has been removed from the block'}), 200
         except Exception as ex:
             print(ex)
-            return flask.jsonify({'status': 'error', 'message': 'Failed to remove user from blacklist'}), 500  # Internal Server Error
+            return flask.jsonify({'status': 'error', 'message': 'Failed to remove user from block'}), 500  # Internal Server Error
     else:
         return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
 

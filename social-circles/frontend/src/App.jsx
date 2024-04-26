@@ -8,7 +8,6 @@ import ProtectedRoute from "./components/auth-components/ProtectedRoute.jsx";
 import NotFound from "./pages/shared/NotFound.jsx";
 import LandingPage from "./pages/guest/LandingPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
-import About from "./pages/shared/About.jsx";
 import Contact from "./pages/shared/Contact.jsx";
 import Resources from "./pages/shared/Resources.jsx";
 import UserDashboard from "./pages/user/UserDashboard.jsx";
@@ -30,7 +29,6 @@ function App() {
           {/* Guest routes */}
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/login" element={<LoginPage />} />
-          <Route exact path="/about" element={<About />} />
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/resources" element={<Resources />} />
 

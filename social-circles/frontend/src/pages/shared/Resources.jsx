@@ -1,6 +1,5 @@
 import { useAuthContext } from "../../contexts/AuthContextHandler";
 import UserHeader from "../../components/headers/UserHeader";
-import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import AddResource from "../../components/resources-functions/AddResource";
 import AddButton from "../../components/admin-functions/AddButton";
 import ResourceCard from "../../components/card-components/ResourcesCard";
@@ -49,8 +48,8 @@ function Resources() {
   return (
     <>
       <UserHeader />
-      <div className={`container-fluid p-5`}>
-        <div className={`row container-fluid align-items-center`}>
+      <div className={`container-fluid p-5 `} >
+        <div className={`row container-fluid align-items-center`} style={{paddingTop: '7em'}}>
           <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Resources</h1>
           {isAdmin && (
             <div className="col d-flex justify-content-end">

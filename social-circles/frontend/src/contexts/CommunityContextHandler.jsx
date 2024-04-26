@@ -47,13 +47,13 @@ function CommunityContextProvider({ children }) {
     }
   }, []);
 
-  const updateCommunitiesOnRegistration = useCallback((group_id, registered, new_count) => {
-    setCommunities(
-      communities.map((community) => {
-        if (community.group_id === group_id) {
-          return { ...community, isRegistered: registered, count: new_count };
+  const updateCommunities = useCallback((group_id, newCommunity, action) => {
+    setCommunities((prevCommunities) =>
+      prevCommunities.map((oldCommunity) => {
+        if (oldCommunity.group_id === group_id) {
+          return { ...oldCommunity, ...newCommunity };
         } else {
-          return community;
+          return oldCommunity;
         }
       })
     );
@@ -77,7 +77,7 @@ function CommunityContextProvider({ children }) {
         setQuery,
         setDisplayAlert,
         fetchCommunities,
-        updateCommunitiesOnRegistration,
+        updateCommunities,
         searchCommunities
     }}>
       {children}

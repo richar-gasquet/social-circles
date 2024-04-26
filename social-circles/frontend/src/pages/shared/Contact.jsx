@@ -7,9 +7,9 @@ function Contact() {
     <>
       <SessionTimeoutHandler />
       <GuestHeader />
-      <div className="container">
-        <div className="row justify-content-center my-5">
-          <div className="col-md-8">
+      <div className="container" >
+        <div className="row justify-content-center" >
+          <div className="col-md-8" style={{marginTop: '20em'}}>
             <h2 className="mb-4">Contact Social Circles</h2>
             <p>
               You can directly contact the administrator, Dana H. Moorhead at:

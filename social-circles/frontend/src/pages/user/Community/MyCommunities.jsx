@@ -3,12 +3,14 @@ import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useCommunityContext } from "../../../contexts/CommunityContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx";
+import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import CommunitiesAside from "../../../components/community-functions/CommunitiesAside.jsx";
 import CommunityCard from "../../../components/card-components/CommunityCard.jsx";
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import Loading from "../../../components/loading-component/loading.jsx";
 
 function Communities() {
   const {
@@ -52,11 +54,13 @@ function Communities() {
   };
   
   const filteredCommunities = searchCommunities(communities);
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
 
   return (
     <>
       <SessionTimeoutHandler />
-      <UserHeader />
+      <Header />
       <div className={`container-fluid p-5`}>
         {registrationAlerts.map((alert) => (
           <AlertBox
@@ -68,10 +72,10 @@ function Communities() {
             handleClose={() => removeRegistrationAlert(alert.id)}
           ></AlertBox>
         ))}
-        <div className={`row container-fluid align-items-center`}>
+        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '7em'}}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
-              All Communities
+              My Communities
             </h1>
           </div>
           {isAdmin && (
@@ -95,15 +99,7 @@ function Communities() {
             </SearchBar>
             <div className={`row`}>
               {isFetching ? (
-                <div className="col-12 d-flex justify-content-center">
-                  <div
-                    className="spinner-border mt-5"
-                    role="status"
-                    style={{ width: "10rem", height: "10rem" }}
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
+                <Loading />
               ) : filteredCommunities.length > 0 ? (
                 searchCommunities(communities).map((comm) => (
                   <div

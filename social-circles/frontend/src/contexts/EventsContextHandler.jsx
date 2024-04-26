@@ -47,20 +47,16 @@ function EventContextProvider({ children }) {
     }
   }, []);
 
-  const updateEventsOnRegistration = useCallback((event_id, registered, waitlisted, full, new_count) => {
+  const updateEvents = useCallback((event_id, newEvent) => {
     setEvents((prevEvents) =>
-      prevEvents.map((event) => {
-        if (event.event_id === event_id) {
-          return {
-            ...event, 
-            isRegistered: registered, 
-            isWaitlisted: waitlisted,
-            isFull: full, 
-            filled_spots: new_count};
+      prevEvents.map((oldEvent) => {
+        if (oldEvent.event_id === event_id) {
+          return { ...oldEvent, ...newEvent};
         } else {
-          return event;
+          return oldEvent
         }
       })
+  
     );
   }, [events]);
 
@@ -82,7 +78,7 @@ function EventContextProvider({ children }) {
         setQuery,
         setDisplayAlert,
         fetchEvents,
-        updateEventsOnRegistration,
+        updateEvents,
         searchEvents
     }}>
       {children}
