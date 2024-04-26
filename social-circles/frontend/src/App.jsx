@@ -30,7 +30,12 @@ function App() {
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/resources" element={<Resources />} />
+          <Route exact path="/resources" element={
+            <UserContextProvider>
+                <Resources />
+            </UserContextProvider>
+            } 
+          />
 
           {/* Member routes */}
           <Route

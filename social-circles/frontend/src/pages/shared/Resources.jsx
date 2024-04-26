@@ -1,11 +1,16 @@
 import { useAuthContext } from "../../contexts/AuthContextHandler";
+import { useUserContext } from '../../contexts/UserContextHandler';
+import Loading from "../../components/loading-component/loading";
 import UserHeader from "../../components/headers/UserHeader";
+import GuestHeader from "../../components/headers/GuestHeader";
+import AdminHeader from "../../components/headers/AdminHeader";
 import AddResource from "../../components/resources-functions/AddResource";
 import AddButton from "../../components/admin-functions/AddButton";
 import ResourceCard from "../../components/card-components/ResourcesCard";
 import React, { useState, useEffect } from 'react';
 
 function Resources() {
+  const {userData, isLoading} = useUserContext();
   const [resources, setResources] = useState([]);
   const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
@@ -45,9 +50,20 @@ function Resources() {
     fetchAllResources();
   };
 
+  if (isLoading) {
+    return (
+      <>
+      <Loading/>
+      </>
+    )
+  }
+  const Header = userData?.is_admin ? AdminHeader : (userData?.is_admin === false ? UserHeader : GuestHeader);
+
+  
+
   return (
     <>
-      <UserHeader />
+      <Header />
       <div className={`container-fluid p-5 `} >
         <div className={`row container-fluid align-items-center`} style={{paddingTop: '7em'}}>
           <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Resources</h1>
