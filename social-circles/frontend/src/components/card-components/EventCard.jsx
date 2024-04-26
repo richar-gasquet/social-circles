@@ -6,10 +6,26 @@ import EditEvent from "../event-functions/EditEvent";
 import DeleteEvent from "../event-functions/DeleteEvent";
 import styles from "../../css/Card.module.css";
 import EmailEventGroup from "../event-functions/EmailEvents";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function EventCard(props) {
   const formattedStart = new Date(props.start).toISOString().slice(0, 16);
   const formattedEnd = new Date(props.end).toISOString().slice(0, 16);
+
+  const localeOptions = {
+    weekday: 'short', 
+    year: 'numeric', 
+    month: 'short',
+    day: 'numeric',  
+    hour: '2-digit', 
+    minute: '2-digit',
+    second: '2-digit', 
+    timeZoneName: 'short'
+  };
+
+  const localStart = new Date(props.start).toLocaleString('en-us', localeOptions)
+  const localEnd = new Date(props.end).toLocaleString('en-us', localeOptions)
+
   const [showDeleteEvent, setShowDeleteEvent] = useState(false);
   const [showEditEvent, setShowEditEvent] = useState(false);
   const [showEmailEvent, setShowEmailEvent] = useState(false);
@@ -197,16 +213,20 @@ function EventCard(props) {
       </div>
       <div className={`card-body d-flex flex-column`}>
         <h2 className={`card-title ${styles.cardTitle}`}>{props.name}</h2>
-        <h4 className={`card-subtitle mb-2 ${styles.cardSubtitle}`}>
+        <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
+          <i className="fa-solid fa-user pr-2 py-1"></i>
           {props.filled}/{props.capacity} registered
-        </h4>
+        </h5>
+        <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
+          <i class="fa-solid fa-location-dot pr-2 py-1"></i>
+          {props.location}
+        </h5>
         <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>
         <h6 className={`${styles.cardTime}`}>
-          <strong>Start: </strong>
-          {formattedStart}
+          <i class="fa-solid fa-clock pr-2 py-1"></i>
+          {localStart} —
           <br />
-          <strong>End: </strong>
-          {formattedEnd}
+          {localEnd}
         </h6>
         <div className={``}>
           {!props.isPastEvent && (
@@ -229,9 +249,11 @@ function EventCard(props) {
           event_id={props.id}
           eventName={props.name}
           eventDesc={props.desc}
-          imageLink={props.image}
           capacity={props.capacity}
           filled={props.filled}
+          location={props.location}
+          isDanaEvent={props.isDanaEvent}
+          imageLink={props.image}
           start={formattedStart}
           end={formattedEnd}
           isRegistered={props.isRegistered}

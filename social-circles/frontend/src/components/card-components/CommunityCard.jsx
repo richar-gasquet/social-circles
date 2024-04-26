@@ -5,6 +5,7 @@ import EditCommunity from "../community-functions/EditCommunity";
 import DeleteCommunity from "../community-functions/DeleteCommunity";
 import EmailCommunity from "../community-functions/EmailCommunity";
 import styles from "../../css/Card.module.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function CommunityCard(props) {
   const [showDeleteComm, setShowDeleteComm] = useState(false);
@@ -124,7 +125,8 @@ function CommunityCard(props) {
         </div>
         <div className={`card-body d-flex flex-column`}>
           <h2 className={`card-title ${styles.cardTitle}`}>{props.name}</h2>
-          <h4 className={`card-subtitle mb-2 ${styles.cardSubtitle}`}>
+          <h4 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
+            <i className="fa-solid fa-user pr-2 py-1"></i>
             {props.count} members
           </h4>
           <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>

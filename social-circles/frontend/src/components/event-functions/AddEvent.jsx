@@ -9,8 +9,10 @@ import toastStyles from "../../css/Toast.module.css";
 
 function AddEvent(props) {
   const [eventName, setEventName] = useState("");
-  const [capacity, setCapacity] = useState("");
   const [eventDesc, setEventDesc] = useState("");
+  const [capacity, setCapacity] = useState("");
+  const [location, setLocation] = useState("");
+  const [isDanaEvent, setIsDanaEvent] = useState(false);
   const [imageLink, setImageLink] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -21,7 +23,8 @@ function AddEvent(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
-      !eventName || !capacity  || !eventDesc || !imageLink || !startTime || !endTime
+      !eventName || !capacity  || !eventDesc || !location || 
+      !isDanaEvent || !imageLink || !startTime || !endTime 
     ) {
       setAlert({
         type: "warning",
@@ -42,8 +45,10 @@ function AddEvent(props) {
     const eventData = {
       name: eventName,
       desc: eventDesc,
-      image: imageLink,
       capacity: capacity,
+      location: location,
+      isDanaEvent: isDanaEvent,
+      image: imageLink,
       start_time: startTime,
       end_time: endTime,
     };
@@ -68,8 +73,10 @@ function AddEvent(props) {
         });
         props.fetchEvents();
         setEventName("");
-        setCapacity("");
         setEventDesc("");
+        setCapacity("");
+        setLocation("");
+        setIsDanaEvent(false);
         setImageLink("");
         setStartTime("");
         setEndTime("");
@@ -121,15 +128,6 @@ function AddEvent(props) {
               maxLength={150}
             ></Form.Control>
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="capacity">
-            <Form.Label>Capacity</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter the event capacity"
-              value={capacity}
-              onChange={(e) => setCapacity(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
           <Form.Group className={`mb-2`} controlId="eventDesc">
             <Form.Label>Event Description</Form.Label>
             <Form.Control
@@ -140,6 +138,36 @@ function AddEvent(props) {
               onChange={(e) => setEventDesc(e.target.value)}
               maxLength={800}
             ></Form.Control>
+          </Form.Group>
+          <Form.Group className={`mb-2`} controlId="capacity">
+            <Form.Label>Capacity</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter the event capacity"
+              value={capacity}
+              onChange={(e) => setCapacity(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className={`mb-2`} controlId="location">
+            <Form.Label>Event Location</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              placeholder="Enter an event location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              maxLength={200}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className={`mb-2`} controlId="isDanaEvent">
+            <Form.Label>Event With Dana</Form.Label>
+            <Form.Check
+              type="checkbox"
+              checked={isDanaEvent}
+              label="Is this an event Dana will participate in/host?"
+              onChange={(e) => setIsDanaEvent(e.target.checked)}
+              className={`pl-4`}
+            />
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="startTime">
             <Form.Label>Start Time</Form.Label>

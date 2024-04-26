@@ -30,9 +30,11 @@ def get_available_events():
                     'capacity': event[5],
                     'filled_spots': event[6],
                     'image': event[7],
-                    'isRegistered' : event[8],
-                    'isWaitlisted' : event[9],
-                    'isFull' : event[10]
+                    'location': event[8],
+                    'isDanaEvent' : event[9],
+                    'isRegistered' : event[10],
+                    'isWaitlisted' : event[11],
+                    'isFull' : event[12]
                 }
                 events_list.append(event_dict)
                 
@@ -66,8 +68,10 @@ def get_registered_events():
                     'capacity': event[5],
                     'filled_spots': event[6],
                     'image': event[7],
-                    'isRegistered' : event[8],
-                    'inPast' : event[9]
+                    'location' : event[8],
+                    'isDanaEvent' : event[9],
+                    'isRegistered' : event[10],
+                    'inPast' : event[11]
                 }
                 events_list.append(event_dict)
                 
@@ -101,7 +105,8 @@ def get_past_events():
                     'capacity': event[5],
                     'filled_spots': event[6],
                     'image' : event[7],
-                    'isRegistered' : event[8]
+                    'location' : event[8],
+                    'isRegistered' : event[9]
                 }
                 events_list.append(event_dict)
                 
@@ -129,8 +134,10 @@ def add_event():
             event_dict = {
                 'event_name' : html.escape(event_data.get('name')),
                 'event_desc' : html.escape(event_data.get('desc')),
-                'image_link' : html.escape(event_data.get('image')),
                 'capacity' : int(event_data.get('capacity')),
+                'location' : html.escape(event_data.get('location')),
+                'isDanaEvent' : bool(event_data.get('isDanaEvent')),
+                'image_link' : html.escape(event_data.get('image')),
                 'start_time' : parser.parse(event_data['start_time']),
                 'end_time' : parser.parse(event_data['end_time'])
             }
@@ -160,17 +167,19 @@ def edit_event():
             event_data = flask.request.json
             start_time = event_data.get('start_time', '')
             if start_time:
-                start_time = parser.parse(start_time)
+                start_time = parser.parse(start_time).isoformat()
             end_time = event_data.get('end_time', '')
             if end_time:
-                end_time = parser.parse(end_time)
+                end_time = parser.parse(end_time).isoformat()
             
             event_dict = {
                 'event_id' : event_data.get('event_id'),
                 'event_name' : html.escape(event_data.get('name', '')),
                 'event_desc' : html.escape(event_data.get('desc', '')),
+                'capacity' : event_data.get('capacity', ''),
                 'image_link' : html.escape(event_data.get('image', '')),
-                'capacity' : event_data.get('capacity'),
+                'location' : html.escape(event_data.get('location', '')),
+                'isDanaEvent' : bool(event_data.get('isDanaEvent', '')),
                 'start_time' : start_time,
                 'end_time' : end_time
             }

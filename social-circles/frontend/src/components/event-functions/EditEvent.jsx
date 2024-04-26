@@ -10,8 +10,10 @@ import toastStyles from "../../css/Toast.module.css";
 function EditEvent(props) {
   const [eventName, setEventName] = useState(props.eventName);
   const [eventDesc, setEventDesc] = useState(props.eventDesc);
+  const [capacity, setCapacity] = useState(props.capacity);
+  const [location, setLocation] = useState(props.location);
+  const [isDanaEvent, setIsDanaEvent] = useState(props.isDanaEvent);
   const [imageLink, setImageLink] = useState(props.imageLink);
-  const [eventCapacity, setEventCapacity] = useState(props.capacity);
   const [eventStart, setEventStart] = useState(props.start);
   const [eventEnd, setEventEnd] = useState(props.end);
 
@@ -25,10 +27,14 @@ function EditEvent(props) {
       eventData.name = eventName;
     if (eventDesc !== props.eventDesc && eventDesc.trim() !== "")
       eventData.desc = eventDesc;
+    if (capacity !== props.capacity && !isNaN(parseInt(capacity)))
+      eventData.capacity = parseInt(capacity);
+    if (location !== props.location && location.trim() !== "")
+      eventData.location = location;
+    if (isDanaEvent !== props.isDanaEvent)
+      eventData.isDanaEvent = isDanaEvent;
     if (imageLink !== props.imageLink && imageLink.trim() !== "")
       eventData.image = imageLink;
-    if (eventCapacity !== props.capacity && !isNaN(parseInt(eventCapacity)))
-      eventData.capacity = parseInt(eventCapacity);
     if (eventStart !== props.start && eventStart)
       eventData.start_time = eventStart;
     if (eventEnd !== props.end && eventEnd) eventData.end_time = eventEnd;
@@ -116,14 +122,35 @@ function EditEvent(props) {
               maxLength={800}
             ></Form.Control>
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="eventCapacity">
+          <Form.Group className={`mb-2`} controlId="capacity">
             <Form.Label>Event Capacity</Form.Label>
             <Form.Control
               type="number"
               placeholder={props.capacity}
-              value={eventCapacity}
-              onChange={(e) => setEventCapacity(e.target.value)}
+              value={capacity}
+              onChange={(e) => setCapacity(e.target.value)}
             ></Form.Control>
+          </Form.Group>
+          <Form.Group className={`mb-2`} controlId="location">
+            <Form.Label>Event Location</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              placeholder={props.location}
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              maxLength={200}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className={`mb-2`} controlId="isDanaEvent">
+            <Form.Label>Event With Dana</Form.Label>
+            <Form.Check
+              type="checkbox"
+              checked={isDanaEvent}
+              label="Is this an event Dana will participate in/host?"
+              onChange={(e) => setIsDanaEvent(e.target.checked)}
+              className={`pl-4`}
+            />
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="eventStart">
             <Form.Label>Event Start Time</Form.Label>

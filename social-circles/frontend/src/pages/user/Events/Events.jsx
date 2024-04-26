@@ -112,11 +112,13 @@ function Events() {
                       id={event.event_id}
                       name={event.name}
                       desc={event.desc}
-                      start={event.start_time}
-                      end={event.end_time}
                       capacity={event.capacity}
                       filled={event.filled_spots}
+                      location={event.location}
+                      isDanaEvent={event.isDanaEvent}
                       image={event.image}
+                      start={event.start_time}
+                      end={event.end_time}
                       isRegistered={event.isRegistered}
                       isWaitlisted={event.isWaitlisted}
                       isFull={event.isFull}

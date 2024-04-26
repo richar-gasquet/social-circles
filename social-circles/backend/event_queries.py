@@ -32,7 +32,8 @@ def get_available_events(email) -> list:
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
                     e.start_time, e.end_time, e.capacity, 
-                    e.filled_spots, e.image_link,
+                    e.filled_spots, e.image_link, e.location, 
+                    e.is_dana_event,
                     (e_reg.user_id IS NOT NULL) as is_registered,
                     (e_wait.user_id IS NOT NULL) as is_waitlisted,
                     (e.filled_spots >= e.capacity) as is_full
@@ -89,7 +90,8 @@ def get_registered_events(email: str) -> list:
                 SELECT DISTINCT
                         e.event_id, e.event_name, e.event_desc, 
                         e.start_time, e.end_time, e.capacity, 
-                        e.filled_spots, e.image_link,
+                        e.filled_spots, e.image_link, e.location, 
+                        e.is_dana_event,
                         TRUE as is_registered,
                         (e.end_time < CURRENT_TIMESTAMP) as in_past
                 FROM   
@@ -138,7 +140,7 @@ def get_past_events(email) -> list:
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
                     e.start_time, e.end_time, e.capacity, 
-                    e.filled_spots, e.image_link,
+                    e.filled_spots, e.image_link, e.location,
                     (e_reg.user_id IS NOT NULL) as is_registered
                 FROM 
                     events e
@@ -166,21 +168,25 @@ def add_event(args: dict) -> None:
     try:
         with connection.cursor() as cursor:
             event_name = args.get('event_name')
-            capacity = args.get('capacity')
             event_desc = args.get('event_desc')
+            capacity = args.get('capacity')
+            location = args.get('location')
+            is_dana_event = args.get('isDanaEvent')
             image_link = args.get('image_link')
-            start_time = args.get('start_time').isoformat()
-            end_time = args.get('end_time').isoformat()
+            start_time = args.get('start_time')
+            end_time = args.get('end_time')
             
-            values = (event_name, capacity, event_desc, image_link,
-                      start_time, end_time)
+            values = (event_name, event_desc, capacity, location,
+                      is_dana_event, image_link, start_time,
+                      end_time)
             
             cursor.execute('''
                 INSERT INTO 
-                    events(event_id, event_name, capacity, filled_spots, 
-                           event_desc, image_link, start_time, end_time)
+                    events (event_id, event_name, event_desc, capacity, 
+                            location, is_dana_event, filled_spots, 
+                            image_link, start_time, end_time)                        
                 VALUES 
-                    (DEFAULT, %s, %s, 0, %s, %s, %s, %s);               
+                    (DEFAULT, %s, %s, %s, %s, %s, 0, %s, %s, %s);               
             ''', values)
             connection.commit()
     except Exception:
@@ -196,34 +202,43 @@ def update_event(args: dict) -> None:
             event_id = args.get('event_id')
             event_name = args.get('event_name')
             event_desc = args.get('event_desc')
+            capacity = args.get('capacity')
+            location = args.get('location')
+            is_dana_event = args.get('isDanaEvent')
             image_link = args.get('image_link')
-            event_capacity = args.get('capacity')
             start_time = args.get('start_time')
             end_time = args.get('end_time')
             
             sql_query_base = "UPDATE events SET "
             values = []
+            # deleted commas, might need to bring back
             if event_name:
                 sql_query_base += "event_name = %s, "
                 values.append(event_name)
             if event_desc:
                 sql_query_base += "event_desc = %s, "
                 values.append(event_desc)
+            if capacity:
+                sql_query_base += "capacity = %s, "
+                values.append(capacity)
+            if location:
+                sql_query_base += "location = %s, "
+                values.append(location)
+            if is_dana_event:
+                sql_query_base += "is_dana_event = %s, "
+                values.append(is_dana_event)
             if image_link:
                 sql_query_base += "image_link = %s, "
                 values.append(image_link)
-            if event_capacity:
-                sql_query_base += "capacity = %s, "
-                values.append(event_capacity)
             if start_time:
                 sql_query_base += "start_time = %s, "
-                values.append(start_time.isoformat())
+                values.append(start_time)
             if end_time:
                 sql_query_base += "end_time = %s, "
-                values.append(end_time.isoformat())
-
+                values.append(end_time)
+                
             sql_query_base = sql_query_base[:-2]
-            
+
             sql_query_base += " WHERE event_id = %s"
             values.append(event_id)
 
