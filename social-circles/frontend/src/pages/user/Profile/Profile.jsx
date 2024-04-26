@@ -11,7 +11,7 @@ import SessionTimeoutHandler from '../../../components/session-checker/SessionTi
 
 
 function Profile() {
-  const { userData, isLoading} = useUserContext();
+  const {userData, isLoading} = useUserContext();
   const [editMode, setEditMode] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
@@ -213,9 +213,6 @@ function Profile() {
 
   const pronounsOptions = ['He/His', 'She/Her', 'They/Them', 'Other'];
   const maritalStatusOptions = ['Single', 'Married', 'Divorced', 'Widowed', 'Other'];
-
-
-  
 
   // Determine which header to use based on whether is_admin is undefined
   const Header = userData.is_admin ? AdminHeader : (userData.is_admin === false ? UserHeader : GuestHeader);

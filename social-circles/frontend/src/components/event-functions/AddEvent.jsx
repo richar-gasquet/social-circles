@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import AlertBox from "../shared-components/AlertBox";
-import styles from '../../css/Modal.module.css';
+import styles from "../../css/Modal.module.css";
 
 function AddEvent(props) {
   const [eventName, setEventName] = useState("");
@@ -13,34 +13,42 @@ function AddEvent(props) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  const [alert, setAlert] = useState(null)
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!eventName || !capacity || !eventDesc || !startTime || !endTime) {
-      setAlert({type: "warning", 
-                header: "Missing fields!", 
-                text: "All fields must be filled." }); 
-      return; 
+    if (
+      !eventName || !capacity  || !eventDesc || !imageLink || !startTime || !endTime
+    ) {
+      setAlert({
+        type: "warning",
+        header: "Missing fields!",
+        text: "All fields must be filled.",
+      });
+      return;
     }
 
     if (capacity < 0) {
-      setAlert({type: "warning", 
-                header: "Invalid capacity!", 
-                text: "Capacity must be greater than 0." }); 
-      return; 
+      setAlert({
+        type: "warning",
+        header: "Invalid capacity!",
+        text: "Capacity must be greater than 0.",
+      });
+      return;
     }
 
     const eventData = {
-      event_name: eventName,
+      name: eventName,
+      desc: eventDesc,
+      image: imageLink,
       capacity: capacity,
-      event_desc: eventDesc,
-      image_link: imageLink,
       start_time: startTime,
-      end_time: endTime
+      end_time: endTime,
     };
 
     try {
+      setIsQuerying(true);
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/add-event`,
         {
@@ -53,9 +61,11 @@ function AddEvent(props) {
         }
       );
       if (request.ok) {
-        setAlert({type: "success", 
-                  header: "Addition successful!",
-                  text: "The event was successfully added." })
+        setAlert({
+          type: "success",
+          header: "Addition successful!",
+          text: `${eventName} was successfully added.`,
+        });
         props.fetchEvents();
         setEventName("");
         setCapacity("");
@@ -64,21 +74,29 @@ function AddEvent(props) {
         setStartTime("");
         setEndTime("");
       } else {
-        setAlert({type: "danger",  
-                  header: "Addition failed!",
-                  text: "The event could not be added." });
+        setAlert({
+          type: "danger",
+          header: "Addition failed!",
+          text: `${eventName} could not be added.`,
+        });
       }
     } catch (error) {
-      setAlert({type: "danger", 
-                header: "Addition error!",
-                text: "We could not connect to the server while adding the community." })
+      setAlert({
+        type: "danger",
+        header: "Addition error!",
+        text: `We could not connect to the server while adding ${eventName}.`,
+      });
+    } finally {
+      setIsQuerying(false);
     }
   };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
-        <Modal.Title className={`${styles.modalTitle}`}>Add Event</Modal.Title>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Add Event
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
@@ -86,9 +104,8 @@ function AddEvent(props) {
             type={alert.type}
             header={alert.header}
             text={alert.text}
-            wantTimer={false}
-            handleClose={() => setAlert(null)}>
-          </AlertBox>
+            handleClose={() => setAlert(null)}
+          ></AlertBox>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">
@@ -98,6 +115,7 @@ function AddEvent(props) {
               placeholder="Enter event name"
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
+              maxLength={150}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="capacity">
@@ -117,15 +135,7 @@ function AddEvent(props) {
               placeholder="Enter an event description"
               value={eventDesc}
               onChange={(e) => setEventDesc(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group className={`mb-2`} controlId="imageLink">
-            <Form.Label>Image Link</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter an event image link (png/jpg)"
-              value={imageLink}
-              onChange={(e) => setImageLink(e.target.value)}
+              maxLength={800}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="startTime">
@@ -146,10 +156,29 @@ function AddEvent(props) {
               onChange={(e) => setEndTime(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
+          <Form.Group className={`mb-2`} controlId="imageLink">
+            <Form.Label>Image Link</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter an event image link (png/jpg)"
+              value={imageLink}
+              onChange={(e) => setImageLink(e.target.value)}
+              maxLength={200}
+            ></Form.Control>
+          </Form.Group>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
             Submit
           </Button>
         </Form>

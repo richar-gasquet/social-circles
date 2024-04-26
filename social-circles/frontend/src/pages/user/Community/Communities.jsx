@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useCommunityContext } from "../../../contexts/CommunityContextHandler.jsx";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../../../components/shared-components/RegistrationToast.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx";
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
@@ -10,6 +12,7 @@ import AddCommunity from "../../../components/community-functions/AddCommunity.j
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import styles from "../../../css/Toast.module.css"
 
 function Communities() {
   const {
@@ -18,10 +21,10 @@ function Communities() {
     fetchCommunities,
     displayAlert,
     setDisplayAlert,
-    updateCommunitiesOnRegistration,
+    updateCommunities,
     query,
     setQuery,
-    searchCommunities
+    searchCommunities,
   } = useCommunityContext();
   const { isAdmin } = useAuthContext();
 
@@ -35,21 +38,15 @@ function Communities() {
   const fetchAllCommunities = () =>
     fetchCommunities("/api/get-available-communities");
 
-  const addRegistrationAlert = (type, header, text) => {
+  const addRegistrationAlert = (type, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
-      const newRegistrationAlert = { id: Date.now(), type, header, text };
+      const newRegistrationAlert = { id: Date.now(), type, text };
       if (prevRegistrationAlerts.length >= 3) {
         return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
       } else {
         return [newRegistrationAlert, ...prevRegistrationAlerts];
       }
     });
-  };
-
-  const removeRegistrationAlert = (id) => {
-    setRegistrationAlerts((prevRegistrationAlerts) =>
-      prevRegistrationAlerts.filter((alert) => alert.id !== id)
-    );
   };
 
   const filteredCommunities = searchCommunities(communities);
@@ -60,17 +57,21 @@ function Communities() {
       <SessionTimeoutHandler />
       <Header />
       <div className={`container-fluid p-5`}>
-        {registrationAlerts.map((alert) => (
-          <AlertBox
-            key={alert.id}
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            wantTimer={true}
-            handleClose={() => removeRegistrationAlert(alert.id)}
-          ></AlertBox>
-        ))}
-        <div className={`row container-fluid align-items-center`} style={{marginTop: '9em'}}>
+        <div className="position-relative">
+          <ToastContainer
+            className={`p-3 ${styles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            {registrationAlerts.map((alert) => (
+              <RegistrationToast
+                key={alert.id}
+                type={alert.type}
+                text={alert.text}
+              />
+            ))}
+          </ToastContainer>
+        </div>
+        <div className={`row container-fluid align-items-center`}>
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
               All Communities
@@ -91,10 +92,7 @@ function Communities() {
         <div className={`row`}>
           <CommunitiesAside />
           <div className={`col-lg-10 mt-3`}>
-            <SearchBar
-              query={query}
-              setQuery={setQuery}>
-            </SearchBar>
+            <SearchBar query={query} setQuery={setQuery}></SearchBar>
             <div className={`row`}>
               {isFetching ? (
                 <div className="col-12 d-flex justify-content-center">
@@ -121,7 +119,7 @@ function Communities() {
                       isRegistered={comm.isRegistered}
                       isAdmin={isAdmin}
                       fetchCommunities={fetchAllCommunities}
-                      updateCommunities={updateCommunitiesOnRegistration}
+                      updateCommunities={updateCommunities}
                       addRegistrationAlert={addRegistrationAlert}
                     />
                   </div>
@@ -131,7 +129,6 @@ function Communities() {
                   type={displayAlert.type}
                   header={displayAlert.header}
                   text={displayAlert.text}
-                  wantTimer={false}
                   handleClose={() => setDisplayAlert(null)}
                 ></AlertBox>
               ) : (
