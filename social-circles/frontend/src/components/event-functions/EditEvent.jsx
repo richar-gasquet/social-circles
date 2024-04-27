@@ -23,21 +23,43 @@ function EditEvent(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const eventData = { event_id: props.event_id };
-    if (eventName !== props.eventName && eventName.trim() !== "")
+    if (eventName !== props.eventName)
       eventData.name = eventName;
-    if (eventDesc !== props.eventDesc && eventDesc.trim() !== "")
+    if (eventDesc !== props.eventDesc)
       eventData.desc = eventDesc;
     if (capacity !== props.capacity && !isNaN(parseInt(capacity)))
       eventData.capacity = parseInt(capacity);
-    if (location !== props.location && location.trim() !== "")
+    if (location !== props.location)
       eventData.location = location;
     if (isDanaEvent !== props.isDanaEvent)
       eventData.isDanaEvent = isDanaEvent;
-    if (imageLink !== props.imageLink && imageLink.trim() !== "")
-      eventData.image = imageLink;
-    if (eventStart !== props.start && eventStart)
+    if (imageLink !== props.imageLink) {
+      try {
+        new URL(imageLink)
+        eventData.image = imageLink;
+      } catch (error) {
+        setAlert({
+          type: "warning",
+          text: "Image link must be a valid URL.",
+        });
+        return;
+      }
+    }
+    if (eventStart !== props.start)
       eventData.start_time = eventStart;
-    if (eventEnd !== props.end && eventEnd) eventData.end_time = eventEnd;
+    if (eventEnd !== props.end) 
+      eventData.end_time = eventEnd;
+
+    if (
+      !eventName.trim() || !capacity.trim()  || !eventDesc.trim() || 
+      !location.trim() || !imageLink.trim() || !eventStart || !eventEnd 
+    ) {
+      setAlert({
+        type: "warning",
+        text: "All fields must be filled.",
+      });
+      return;
+    }
 
     if (Object.keys(eventData).length > 1) {
       setIsQuerying(true);

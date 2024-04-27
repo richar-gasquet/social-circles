@@ -23,8 +23,8 @@ function AddEvent(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
-      !eventName || !capacity  || !eventDesc || !location || 
-      !isDanaEvent || !imageLink || !startTime || !endTime 
+      !eventName.trim() || !capacity.trim()  || !eventDesc.trim() || 
+      !location.trim() || !imageLink.trim() || !startTime || !endTime 
     ) {
       setAlert({
         type: "warning",
@@ -38,6 +38,16 @@ function AddEvent(props) {
         type: "warning",
         header: "Invalid capacity!",
         text: "Capacity must be greater than 0.",
+      });
+      return;
+    }
+
+    try {
+      new URL(imageLink)
+    } catch (error) {
+      setAlert({
+        type: "warning",
+        text: "Image link must be a valid URL.",
       });
       return;
     }

@@ -17,7 +17,10 @@ function AddCommunity(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!groupName || !groupDesc || !imageLink) {
+
+    setAlert(null);
+
+    if (!groupName.trim() || !groupDesc.trim() || !imageLink.trim()) {
       setAlert({
         type: "warning",
         text: "All fields must be filled.",

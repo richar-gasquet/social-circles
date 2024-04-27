@@ -17,12 +17,15 @@ function EditCommunity(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setAlert(null);
+
     const communityData = { group_id: props.group_id };
-    if (groupName !== props.name && groupName.trim() !== "")
+    if (groupName !== props.name)
       communityData.name = groupName;
-    if (groupDesc !== props.desc && groupDesc.trim() !== "")
+    if (groupDesc !== props.desc)
       communityData.desc = groupDesc;
-    if (imageLink !== props.image && imageLink.trim() !== "")
+    if (imageLink !== props.image)
       try {
         new URL(imageLink)
         communityData.image = imageLink
@@ -33,6 +36,14 @@ function EditCommunity(props) {
         });
         return;
       }
+
+    if ((!groupName.trim() || !groupDesc.trim() || !imageLink.trim())) {
+      setAlert({
+        type: "warning",
+        text: "All fields must be filled."
+      })
+    }
+      
     if (Object.keys(communityData).length > 1) {
       try {
         setIsQuerying(true);
