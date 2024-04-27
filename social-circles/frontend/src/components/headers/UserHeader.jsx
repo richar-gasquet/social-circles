@@ -16,8 +16,8 @@ function UserHeader() {
         <NavLink to="/user-dashboard" className="navbar-brand">
           <img src={logo} alt="Social Circles Logo" className={`img-fluid ${styles.logo}`} />
         </NavLink>
-        <NavLink to="/user-dashboard" className="navbar-brand">
-          <a className={`${styles.aSocial}`}>Social Circles</a>
+        <NavLink to="/user-dashboard" className={`${styles.aSocial} navbar-brand`}>
+          Social Circles
         </NavLink>
         {/* MUST ADD ANIMATION FOR NAVBAR COLLAPSING */}
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHamburger"
