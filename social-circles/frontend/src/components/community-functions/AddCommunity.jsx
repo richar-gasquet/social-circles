@@ -25,6 +25,16 @@ function AddCommunity(props) {
       return;
     }
 
+    try {
+      new URL(imageLink)
+    } catch (error) {
+      setAlert({
+        type: "warning",
+        text: "Image link must be a valid URL.",
+      });
+      return;
+    }
+
     const communityData = {
       name: groupName,
       desc: groupDesc,

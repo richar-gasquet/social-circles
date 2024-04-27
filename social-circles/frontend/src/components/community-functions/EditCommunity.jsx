@@ -23,7 +23,16 @@ function EditCommunity(props) {
     if (groupDesc !== props.desc && groupDesc.trim() !== "")
       communityData.desc = groupDesc;
     if (imageLink !== props.image && imageLink.trim() !== "")
-      communityData.image = imageLink;
+      try {
+        new URL(imageLink)
+        communityData.image = imageLink
+      } catch (error) {
+        setAlert({
+          type: "warning",
+          text: "Image link must be a valid URL.",
+        });
+        return;
+      }
     if (Object.keys(communityData).length > 1) {
       try {
         setIsQuerying(true);

@@ -8,7 +8,7 @@ function RegistrationToast(props) {
   useEffect(() => {
     const timer = setTimeout(() => {
       props.onDismiss(); 
-    }, 3200);
+    }, 3080);
 
     return () => clearTimeout(timer);
   }, [props.onDismiss]); 
