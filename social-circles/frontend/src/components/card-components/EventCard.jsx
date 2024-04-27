@@ -181,8 +181,24 @@ function EventCard(props) {
     }
   };
 
+  const handleCardClick = (e) => {
+    if (!e.target.closest('.edit-event-modal') && !e.target.closest('.delete-event-modal')
+              && !e.target.closest('.email-event-modal') && !e.target.closest('.register-button')) {
+      window.open(`/events/${props.id}`, "_blank");
+    }
+  };
+
+  const handleButtonClick = (e, action) => {
+    e.stopPropagation();
+    action();
+  };
+
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className={`card h-100 ${styles.card}`}>
+    <div className={`card h-100 ${styles.card}`} onClick={handleCardClick}>
       <div className={styles.cardImgTopContainer}>
         <img
           className={`card-img-top ${styles.cardImgTop}`}
@@ -193,18 +209,18 @@ function EventCard(props) {
           <div className={`${styles.cardButtons}`}>
             <CardButton
               className="mb-2"
-              action={() => setShowEditEvent(true)}
+              action={(e) => { e.stopPropagation(); setShowEditEvent(true); }}
               message="Edit Event"
               icon="fas fa-edit"
             ></CardButton>
             <CardButton
               className="mb-2"
-              action={() => setShowDeleteEvent(true)}
+              action={(e) => { e.stopPropagation(); setShowDeleteEvent(true); }}
               message="Delete Event"
               icon="fas fa-trash"
             ></CardButton>
             <CardButton
-              action={() => setShowEmailEvent(true)}
+              action={(e) => { e.stopPropagation(); setShowEmailEvent(true); }}
               message="Email Event Attendees"
               icon="fas fa-envelope"
             ></CardButton>
@@ -228,24 +244,25 @@ function EventCard(props) {
           <br />
           {localEnd}
         </h6>
-        <div className={``}>
+        <div className="register-button">
           {!props.isPastEvent && (
             <EventRegisterButton
               isRegistered={props.isRegistered}
               isFull={props.isFull}
               isWaitlisted={props.isWaitlisted}
               isDisabled={isQuerying}
-              handleRegister={handleRegistration}
-              handleCancelRegistration={handleCancelRegistration}
-              handleCancelWaitlist={handleCancelWaitlist}
+              handleRegister={(e) => handleButtonClick(e, handleRegistration)}
+              handleCancelRegistration={(e) => handleButtonClick(e, handleCancelRegistration)}
+              handleCancelWaitlist={(e) => handleButtonClick(e, handleCancelWaitlist)}
             />
           )}
         </div>
       </div>
       {showEditEvent && props.isAdmin && (
+        <div className="edit-event-modal" onClick={stopPropagation}>
         <EditEvent
           isShown={showEditEvent}
-          handleClose={() => setShowEditEvent(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowEditEvent(false); }}
           event_id={props.id}
           eventName={props.name}
           eventDesc={props.desc}
@@ -259,24 +276,30 @@ function EventCard(props) {
           isRegistered={props.isRegistered}
           updateEvents={props.updateEvents}
         ></EditEvent>
+        </div>
       )}
       {showDeleteEvent && props.isAdmin && (
+        <div className="delete-event-modal" onClick={stopPropagation}>
         <DeleteEvent
           isShown={showDeleteEvent}
-          handleClose={() => setShowDeleteEvent(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowDeleteEvent(false); }}
           event_id={props.id}
           name={props.name}
           fetchEvents={props.fetchEvents}
         ></DeleteEvent>
+        </div>
       )}
+
       {showEmailEvent && props.isAdmin && (
+        <div className="email-event-modal" onClick={stopPropagation}>
         <EmailEventGroup
           isShown={showEmailEvent}
-          handleClose={() => setShowEmailEvent(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowEmailEvent(false); }}
           event_id={props.id}
           name={props.name}
           fetchEvents={props.fetchEvents}
         ></EmailEventGroup>
+        </div>
       )}
     </div>
   );

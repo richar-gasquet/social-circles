@@ -303,6 +303,18 @@ def delete_event_registration_route():
 def delete_event_waitlist_route():
     return events.delete_event_waitlist()
 
+@app.route('/unregister-user', methods = ['POST'])    
+def unregister_user_route():
+    return events.unregister_user()
+
+@app.route('/api/get-one-event-info', methods = ['GET'])
+def get_one_event_info():
+    return events.get_one_event_info()
+
+@app.route('/api/get-users-for-event', methods = ['GET'])
+def get_users_for_event():
+    return events.get_users_for_event()
+
 @app.route('/api/get-event-emails', methods = ['POST'])
 def email_event_route():
     return events.get_event_emails()

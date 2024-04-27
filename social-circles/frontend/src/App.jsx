@@ -20,6 +20,8 @@ import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
 import EventContextProvider from "./contexts/EventsContextHandler.jsx";
 import ReactCalendar from "./pages/shared/Calendar.jsx";
+import EventPage from "./pages/user/Events/EventPage.jsx";
+
 
 function App() {
   return (
@@ -63,6 +65,13 @@ function App() {
             <ProtectedRoute component={Events} />
             </EventContextProvider>
           }
+          />
+          
+           <Route path="/events/:eventId" element={
+              <EventContextProvider>
+            <ProtectedRoute component={EventPage} />
+            </EventContextProvider>
+            }
           />
           <Route
             exact path="/my-events"

@@ -409,6 +409,68 @@ def get_event_emails(event_id: int) -> list:
         put_connection(connection)
 
     return event_emails
+
+def get_one_event_info(event_id):
+    event_info = {}
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor: 
+            # Get all upcoming  events' info from event table
+            cursor.execute('''
+                SELECT *
+                FROM events
+                WHERE event_id = %s;
+            ''', (event_id, ))
+
+            event_info = cursor.fetchall()
+    except Exception:
+        raise
+    finally:
+        put_connection(connection)
+    print(event_info)
+    return event_info[0]
+
+def get_users_for_event(event_id):
+    rows = []
+    user_ids= []
+    user_info = []
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor: 
+            # Get all users registered for the event 
+            # from the event_registrations table
+            cursor.execute('''
+                SELECT *
+                FROM event_registrations
+                WHERE event_id = %s;
+            ''', (event_id, ))
+            rows = cursor.fetchall()
+
+            if rows:
+                for row in rows:
+                    user_ids.append(row[1])
+                # return {
+                #     "user_ids": user_ids
+                # }
+            sql_query_base = "SELECT * FROM users WHERE "
+
+            i = 0
+            for _ in user_ids:
+                if (i == 0):
+                    sql_query_base += "user_id = %s"
+                else:
+                    sql_query_base += " OR user_id = %s"
+                i = i + 1
+            cursor.execute(sql_query_base, tuple(user_ids))
+            user_info = cursor.fetchall()
+            return user_info
+
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        put_connection(connection)
+    return user_info
         
 # ---------------------------------------------------------------------
 # Queries/Helper functions for WAITLIST functionality
