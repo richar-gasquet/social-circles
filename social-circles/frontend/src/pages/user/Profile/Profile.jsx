@@ -8,7 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import styles from '../../../css/ProfileForm.module.css';
 import SessionTimeoutHandler from '../../../components/session-checker/SessionTimeoutHandler';
-
+import logo from "../../../assets/social-circles-logo.png";
 
 function Profile() {
   const {userData, isLoading} = useUserContext();
@@ -376,7 +376,7 @@ function Profile() {
           <div className={styles.profileRow}>
             <div className={`col-md-6 ${styles.userLeft}`}>
               <div className={styles.profilePicWrap}>
-                <img src={userData.picture} alt="Profile" className={styles.profilePic} referrerPolicy="no-referrer"/>
+                <img src={userData.picture ? userData.picture :  logo} alt="Profile Photo" className={styles.profilePic} referrerPolicy="no-referrer"/>
               </div>
               <h3 className={styles.name}>{userData.first_name} {userData.last_name}</h3>
               <div className={styles.buttonWrap}>

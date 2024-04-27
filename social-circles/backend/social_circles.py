@@ -30,17 +30,29 @@ Session(app)
 REACT_FRONTEND = os.environ.get('REACT_FRONTEND')
 flask_cors.CORS(app, supports_credentials=True, resources={r"/*": {"origins": REACT_FRONTEND}})
 
+last_session_init_time = None
+session_init_lock_timeout = timedelta(seconds=1)  # Timeout to prevent re-init
+
 #----------------------------------------------------------------------
 
 # Routes for authentication and authorization
 
 @app.before_request
 def make_session_permanent():
+    global last_session_init_time
+    now = datetime.now(timezone.utc)
+
     flask.session.permanent = True  # Make the session permanent so that it uses the configured expiration
-    flask.session['session_start'] = datetime.now(timezone.utc)
+
     if 'visited' not in flask.session:
+        if last_session_init_time is not None and (now - last_session_init_time) < session_init_lock_timeout:
+            return  # If the last init was very recent, skip this initialization
+
+        flask.session['session_start'] = now
         flask.session['visited'] = True
         flask.session['session_id'] = str(uuid.uuid4())
+        last_session_init_time = now  # Update the last initialization time
+
         vistors.log_visit(flask.session['session_id'])
 
 
@@ -354,10 +366,6 @@ def clear_expired_sessions():
     with app.app_context():
         vistors.delete_expired_sessions_from_database()
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
-scheduler.start()
-
 #----------------------------------------------------------------------
 
 # Routes for querying RESOURCES data from database
@@ -377,3 +385,10 @@ def delete_resources_route():
 @app.route('/api/edit-resources', methods = ['POST'])
 def update_resources_route():
     return resources.update_resources()
+
+
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
+scheduler.start()

@@ -27,17 +27,7 @@ def current_visitors():
     finally:
         put_connection(connection)
 
-def delete_user_session_from_database(session_id):
-    if session_id:
-        connection = get_connection()
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM visitor_logs WHERE session_id = %s", (session_id,))
-                connection.commit()
-        except Exception:
-            raise
-        finally:
-            put_connection(connection)
+
 
 def delete_expired_sessions_from_database():
     connection = get_connection()

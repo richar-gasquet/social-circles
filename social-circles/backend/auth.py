@@ -102,9 +102,17 @@ def callback():
 #----------------------------------------------------------------------
 
 def logout():
-    session_id = flask.session.get('session_id')
-    vistors.delete_user_session_from_database(session_id)
-    flask.session.clear()
+    # This will remove all other keys except for 'session_id', 'visited', 'session_start'
+    # Define a set of keys that we want to preserve
+    keys_to_preserve = {'session_id', 'visited', 'session_start'}
+
+    # Collect keys that are not in the keys_to_preserve set
+    keys_to_delete = [key for key in flask.session.keys() if key not in keys_to_preserve]
+
+    # Delete the keys that are not preserved
+    for key in keys_to_delete:
+        flask.session.pop(key, None)
+
     return flask.redirect(f'{REACT_FRONTEND}')
 
 #----------------------------------------------------------------------
