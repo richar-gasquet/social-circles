@@ -47,7 +47,7 @@ function CommunityContextProvider({ children }) {
     }
   }, []);
 
-  const updateCommunities = useCallback((group_id, newCommunity, action) => {
+  const updateCommunities = useCallback((group_id, newCommunity) => {
     setCommunities((prevCommunities) =>
       prevCommunities.map((oldCommunity) => {
         if (oldCommunity.group_id === group_id) {
