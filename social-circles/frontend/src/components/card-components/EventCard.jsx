@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import CardButton from "./CardButton";
-import RegisterButton from "../user-functions/RegisterButton";
+import EventRegisterButton from "../user-functions/EventRegisterButton";
 import EditEvent from "../event-functions/EditEvent";
 import DeleteEvent from "../event-functions/DeleteEvent";
 import styles from "../../css/Card.module.css";
@@ -230,7 +230,7 @@ function EventCard(props) {
         </h6>
         <div className={``}>
           {!props.isPastEvent && (
-            <RegisterButton
+            <EventRegisterButton
               isRegistered={props.isRegistered}
               isFull={props.isFull}
               isWaitlisted={props.isWaitlisted}
@@ -238,7 +238,7 @@ function EventCard(props) {
               handleRegister={handleRegistration}
               handleCancelRegistration={handleCancelRegistration}
               handleCancelWaitlist={handleCancelWaitlist}
-            ></RegisterButton>
+            />
           )}
         </div>
       </div>

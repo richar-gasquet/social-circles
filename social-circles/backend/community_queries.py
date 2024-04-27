@@ -50,6 +50,8 @@ def get_all_communities(email) -> list:
                 ON 
                     comm.group_id = comm_reg.group_id 
                     AND comm_reg.user_id = %s
+                ORDER BY
+                    comm.member_count DESC
             ''', (user_id, ))
             
             all_communities = cursor.fetchall()
@@ -104,6 +106,8 @@ def get_registered_communities(email) -> list:
                     comm.group_id = comm_reg.group_id 
                 WHERE
                     comm_reg.user_id = %s
+                ORDER BY
+                    comm.member_count DESC
             ''', (user_id, ))
             
             registered_communities = cursor.fetchall()

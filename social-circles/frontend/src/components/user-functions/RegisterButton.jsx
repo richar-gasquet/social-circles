@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/Button";
 
-function RegisterButton(props) {
+function EventRegisterButton(props) {
   const buttonText = props.isWaitlisted 
     ? "Leave Waitlist"
     : props.isRegistered ? "Cancel Registration"
@@ -25,4 +25,4 @@ function RegisterButton(props) {
   );
 }
 
-export default RegisterButton;
+export default EventRegisterButton;

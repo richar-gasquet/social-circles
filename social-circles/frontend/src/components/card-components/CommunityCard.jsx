@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CardButton from "./CardButton";
-import RegisterButton from "../user-functions/RegisterButton";
+import CommunityRegisterButton from "../user-functions/CommunityRegisterButton";
 import EditCommunity from "../community-functions/EditCommunity";
 import DeleteCommunity from "../community-functions/DeleteCommunity";
 import EmailCommunity from "../community-functions/EmailCommunity";
@@ -131,10 +131,8 @@ function CommunityCard(props) {
           </h4>
           <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>
           <div className={``}>
-            <RegisterButton
+            <CommunityRegisterButton
               isRegistered={props.isRegistered}
-              isFull={false}
-              isWaitlisted={false}
               isDisabled={isQuerying}
               handleRegister={handleRegistration}
               handleCancelRegistration={handleCancelRegistration}
