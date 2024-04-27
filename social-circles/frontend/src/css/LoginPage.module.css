@@ -7,7 +7,7 @@
   }
   
   .welcomeContainer {
-    background-image: linear-gradient(140deg, #EADEDB 0%, #ecdddd 50%, #F5EDED 75%);
+    background-image: linear-gradient(140deg, #EADEDB 0%, #e4cece 50%, #F5EDED 75%);
     flex: 1 1 50%;
     padding-top: 20em;
     padding-left: 12%;
