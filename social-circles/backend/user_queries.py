@@ -82,7 +82,7 @@ def add_user(args: dict) -> None:
             for field in ['first_name', 'last_name', 'email', 'address', 
                           'preferred_name', 'pronouns', 'phone_number', 
                           'marital_status', 'family_circumstance', 
-                          'community_status', 'interests', 'personal_identity']:
+                          'community_status', 'interests', 'personal_identity', 'profile_photo']:
                 if args.get(field):
                     columns.append(field)
                     values.append(args[field])
@@ -136,7 +136,8 @@ def update_user(args: dict):
                 'family_circumstance': 'family_circumstance',
                 'community_status': 'community_status',
                 'interests': 'interests',
-                'personal_identity': 'personal_identity'
+                'personal_identity': 'personal_identity',
+                'profile_photo' : 'profile_photo'
             }
 
             # Filtering out empty values and preparing SQL parts

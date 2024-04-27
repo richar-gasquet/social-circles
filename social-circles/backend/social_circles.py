@@ -120,7 +120,8 @@ def add_user_data():
                 'family_circumstance': user_data.get('family_circumstance', '')[:50],
                 'community_status': user_data.get('community_status', '')[:50],
                 'interests': user_data.get('interests', '')[:50],
-                'personal_identity': user_data.get('personal_identity', '')[:50]
+                'personal_identity': user_data.get('personal_identity', '')[:50],
+                'profile_photo' : flask.session['picture']
             }
             db.add_user(user_dict)
             return flask.jsonify({
@@ -157,7 +158,8 @@ def update_user_data():
                 'family_circumstance': user_data.get('family_circumstance', 'N/A')[:50] if user_data.get('family_circumstance') != '' else 'N/A',
                 'community_status': user_data.get('community_status', 'N/A')[:50] if user_data.get('community_status') != '' else 'N/A',
                 'interests': user_data.get('interests', 'N/A')[:50] if user_data.get('interests') != '' else 'N/A',
-                'personal_identity': user_data.get('personal_identity', 'N/A')[:50] if user_data.get('personal_identity') != '' else 'N/A'
+                'personal_identity': user_data.get('personal_identity', 'N/A')[:50] if user_data.get('personal_identity') != '' else 'N/A',
+                'profile_photo' :  flask.session['picture']
             }
             
             db.update_user(user_dict)
