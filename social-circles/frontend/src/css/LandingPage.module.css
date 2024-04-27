@@ -1,7 +1,7 @@
 @import url('../index.css');
 
 .overallContainer {
-    min-width: 500px;
+    min-width: 100%;
     height: 100vh;
     overflow-y: scroll;
 }
@@ -9,13 +9,14 @@
 .carouselContainer {
     padding: 0; 
     position: relative;
-    background: linear-gradient(to right, black, 25%, rgba(0, 0, 0, 0.65), 75%, black);
-    scroll-snap-align: center;
+    background: linear-gradient(to right, black, 20%, rgba(0, 0, 0, 0.7), 80%, black);
     height: 100vh;
+    width: 100vw;
     border-bottom: solid 3px;
 }
 
 .carouselImg {
+    width: 100%;
     height: 100vh;
     object-fit: cover;
 }
@@ -26,7 +27,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, black, 25%, rgba(0, 0, 0, 0.65), 75%, black);
+    background: linear-gradient(to right, black, 20%, rgba(0, 0, 0, 0.7), 80%, black);
     z-index: 1;
 }
 
@@ -49,68 +50,60 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    text-align: center;
 }
 
-.textOverlay h2 {
-    font-size: 2.7rem;
-    animation: fadeIn 1.0s;
+.logo {
+    max-width: 150px;
+    opacity: 0;
+    animation: fadeIn 1.5s forwards;
+    animation-delay: 0.5s;
 }
 
 .textOverlay h1{
     font-size: 4.3rem;
     opacity: 0;
     animation: fadeIn 1.5s forwards;
-    animation-delay: 1.0s;
+    animation-delay: 0.5s;
     text-wrap: nowrap;
 }
 
-.logo {
-    max-width: 250px;
+.textOverlay h4 {
     opacity: 0;
     animation: fadeIn 1.5s forwards;
-    animation-delay: 1.0s;
+    animation-delay: 1.2s;
+}
+
+.getStartedText {
+    opacity: 0;
+    animation: fadeIn 1.5s forwards;
+    animation-delay: 1.7s;
 }
 
 .carouselText {
     color: white;
     text-align: left;
-    margin-left: -10em;
     font-weight: bolder;
     width: 35em;
 }
 
-.button {
-    height: 60px;
-    width: 160px;
-    border: none;
-    font-size: 1.2rem;
-
-    opacity: 0;
-    animation: fadeIn 1.0s forwards;
-    animation-delay: 1.5s;
-
-    transition: background-color 0.6s;
-}
 
 .startButton {
     background-color: var(--primary-color);
-    margin-left: -14.5em;
+
+    height: 60px;
+    width: 160px;
+    border: none;
+    font-size: 1.5rem;
+
+    opacity: 0;
+    animation: fadeIn 1.0s forwards;
+    animation-delay: 1.7s;
+
+    transition: background-color 0.6s;
 }
 
 .startButton:hover, .startButton:focus{
     background-color: rgb(210, 31, 0);
-    transition: background-color 0.6s;
-}
-
-.learnButton {
-    background-color: rgb(255, 255, 255);
-    color: black;
-}
-
-.learnButton:hover, .learnButton:focus{
-    background-color: rgb(214, 213, 213);
-    color: black;
     transition: background-color 0.6s;
 }
 
@@ -121,12 +114,10 @@
 
 .descContainer {
     min-height: 450px;
-    scroll-snap-align: center;
 }
 
 .danaContainer {
     min-height: 500px;
-    scroll-snap-align: center;
     background-color: #F5EDED;
 }
 
@@ -137,9 +128,13 @@
     object-fit: cover;
 }
 
+.quoteContainer{
+    min-height: 300px;
+}
+
 .joinContainer {
     min-height: 200px;
-    scroll-snap-align: center;
+    background-color: #F5EDED;
 }
 
 .joinText {
