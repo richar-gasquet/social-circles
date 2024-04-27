@@ -244,7 +244,6 @@ function Profile() {
   if (isLoading) {
     return (
       <>
-      <Header />
       <Loading/>
       </>
     )
