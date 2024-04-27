@@ -71,7 +71,6 @@ function LandingPage() {
               or 
             </h5>
           </div>
-          <br />
           <NavLink to="/login">
             <button
               type="button"
