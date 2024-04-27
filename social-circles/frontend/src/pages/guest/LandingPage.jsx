@@ -57,13 +57,6 @@ function LandingPage() {
           className={`text-center ${styles.textOverlay} ${styles.carouselText}`}
           style={{ paddingTop: "7em" }}
         >
-          <div>
-            <img
-              src={logo}
-              alt="Social Circles Logo"
-              className={`img-fluid ${styles.logo}`}
-            />
-          </div>
           <h1>Social Circles</h1>
           <h4>
             Empowering Princeton's Marginalized Communities Through Connection
@@ -74,11 +67,8 @@ function LandingPage() {
             <h5 >
               Scroll Below to Learn More 
             </h5>
-            <h6>
-              or 
-            </h6>
             <h5>
-              Click the Button to Get Started
+              or 
             </h5>
           </div>
           <br />
