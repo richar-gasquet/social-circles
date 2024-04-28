@@ -8,6 +8,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend } from 'chart.js';
 import styles from '../../css/Buttons.module.css';
 import dashstyles from '../../css/AdminDash.module.css'
+import Loading from '../../components/loading-component/loading';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend);
 
@@ -229,11 +230,7 @@ function AdminDashboard() {
     return (
       <>
         <AdminHeader />
-        <div className="col-12 d-flex justify-content-center">
-          <div className="spinner-border mt-5" role="status" style={{ width: '10rem', height: '10rem' }}>
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
+        <Loading/>
       </>
     )
   }
