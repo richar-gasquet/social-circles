@@ -7,6 +7,7 @@ import styles from '../../../css/Buttons.module.css';
 import Modal from 'react-bootstrap/Modal'; 
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import EventRegisterButton from '../../../components/user-functions/EventRegisterButton.jsx';
 import logo from "../../../assets/social-circles-logo.png"
 
 
@@ -19,6 +20,21 @@ function EventPage() {
     const { isAdmin } = useAuthContext();
 
     const Header = isAdmin ? AdminHeader : UserHeader;
+
+    const [eventData, setEventData] = useState({
+        isRegistered: false,
+        isFull: false,
+        isWaitlisted: false,
+        filled_spots: 0
+      });
+    
+      useEffect(() => {
+        const storedEventData = JSON.parse(localStorage.getItem('eventData'));
+        if (storedEventData) {
+          setEventData(storedEventData);
+          localStorage.removeItem('eventData'); // Clean up local storage after use
+        }
+      }, []);
 
     const cardBodyStyle = {
         padding: '0.5rem'  // Adjust padding as needed
@@ -75,7 +91,7 @@ function EventPage() {
         const getEventInfo = async () => {
             try {
                 const request = await fetch(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/get-one-event-info?event_id=${eventId}`,
+                    `${import.meta.env.VITE_BACKEND_URL}/api/get-one-event-info-with-user-status?event_id=${eventId}`,
                     {
                         credentials: "include",
                     }
@@ -84,6 +100,15 @@ function EventPage() {
                     const data = await request.json();
                     console.log(data.results)
                     setEvent(data.results);
+                    console.log(data.results.is_registered);
+                    setEventData(currentData => ({
+                        ...currentData,
+                        isRegistered: data.results.is_registered,
+                        isFull: data.results.is_full,
+                        isWaitlisted: data.results.is_waitlisted,
+                        filled_spots: data.results.filled_spots
+                    }));
+                    console.log(eventData);
                 } else {
                     setDisplayAlert({
                         type: "danger",
@@ -135,6 +160,170 @@ function EventPage() {
         getUsersForEvent();
     }, [eventId]);
 
+    const [isQuerying, setIsQuerying] = useState(false);
+
+    const handleRegistration = async () => {
+      setIsQuerying(true);
+      try {
+        const request = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/add-event-registration`,
+          {
+            credentials: "include",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ event_id: eventId }),
+          }
+        );
+        if (request.ok) {
+          const data = await request.json();
+          if (data.status === "waitlist") {
+            setDisplayAlert({
+              type: "success",
+              text: `You have joined the waitlist for ${event.event_name}.`
+            });
+
+            const updated = {
+                ...eventData,
+                isRegistered: false,
+                isWaitlisted: true,
+                isFull: true,
+                filled_spots: event.filled_spots,
+              };
+
+              setEventData(updated);
+
+          } else {
+            setDisplayAlert({
+                type: "success",
+                text: `You have registered for ${event.event_name}.`
+              });
+
+            const updated = {
+                ...eventData,
+                isRegistered: true,
+                isWaitlisted: false,
+                isFull: event.filled_spots + 1 >= event.capacity,
+                filled_spots: event.filled_spots + 1,
+            };
+            event.filled_spots = event.filled_spots + 1;
+            console.log(updated)
+            setEventData(updated);
+
+          }
+        } else {
+          const data = await request.json();
+          if (data.message === "waitlist_error") {
+            setDisplayAlert({
+                type: "danger",
+                text: `We couldn't register you for the wailist for ${event.event_name}.\n Try again or contact the administrator.`
+              });
+          } else {
+            setDisplayAlert({
+                type: "danger",
+                text: `We couldn't register you for ${event.event_name}.\n Try again or contact the administrator.`
+              });
+          }
+        }
+      } catch (error) {
+        setDisplayAlert({
+            type: "danger",
+            text: `We couldn't connect to the server.\n Try again or contact the administrator.`
+          });
+      } finally {
+        setIsQuerying(false);
+      }
+    };
+  
+    const handleCancelRegistration = async () => {
+        setIsQuerying(true);
+        try {
+          const request = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/delete-event-registration`,
+            {
+              credentials: "include",
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ event_id: eventId }),
+            }
+          );
+          if (request.ok) {
+            const updated = {
+              ...eventData,
+              isRegistered: false,
+              isWaitlisted: false,
+              isFull: event.filled_spots - 1 >= event.capacity,
+              filled_spots: event.filled_spots - 1,
+            };
+            event.filled_spots = event.filled_spots - 1;
+            setEventData(updated);
+      
+            setDisplayAlert({
+              type: "success",
+              text: `You have cancelled your registration for ${event.event_name}.`
+            });
+      
+          } else {
+            setDisplayAlert({
+              type: "danger",
+              text: `We couldn't cancel your membership for ${event.event_name}.\n Try again or contact the administrator.`
+            });
+          }
+        } catch (error) {
+          setDisplayAlert({
+              type: "danger",
+              text: `We couldn't cancel your membership for ${event.event_name}.\n The server is most likely down.`
+            });
+        } finally {
+          setIsQuerying(false);
+        }
+      };
+      
+  
+    const handleCancelWaitlist = async () => {
+      setIsQuerying(true);
+      try {
+        const request = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/delete-event-waitlist`,
+          {
+            credentials: "include",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ event_id: eventId }),
+          }
+        );
+        if (request.ok) {
+          setDisplayAlert({
+            type: "success",
+            text: `You have left the waitlist for ${event.event_name}.`
+          });
+
+        } else {
+          setDisplayAlert({
+            type: "danger",
+            text: `We couldn't cancel your waitlist spot for ${event.event_name}.\n Try again or contact the administrator.`
+          });
+        }
+      } catch (error) {
+        setDisplayAlert({
+            type: "danger",
+            text: `We couldn't cancel your waitlist spot for ${event.event_name}.\n The server is most likely down.`
+          });
+      } finally {
+        setIsQuerying(false);
+      }
+    };
+
+    const handleButtonClick = (e, action) => {
+        e.stopPropagation();
+        action();
+      };
+
     return (
         <>
             <SessionTimeoutHandler />
@@ -156,6 +345,20 @@ function EventPage() {
                 ) : (
                     <p>No event details available.</p>
                 )}
+                {console.log(eventData.isRegistered)}
+                    <div className="register-button">
+                        {eventData && (
+                            <EventRegisterButton
+                            isRegistered={eventData.isRegistered}
+                            isFull={eventData.isFull}
+                            isWaitlisted={eventData.isWaitlisted}
+                            isDisabled={isQuerying}
+                            handleRegister={(e) => handleButtonClick(e, handleRegistration)}
+                            handleCancelRegistration={(e) => handleButtonClick(e, handleCancelRegistration)}
+                            handleCancelWaitlist={(e) => handleButtonClick(e, handleCancelWaitlist)}
+                            />
+                        )}
+                    </div>
                 
             </div >
                 
