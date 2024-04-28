@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import styles from '../../css/AddButton.module.css'
 
 function AddButton(props) {
@@ -11,8 +10,3 @@ function AddButton(props) {
 }
 
 export default AddButton
-
-AddButton.propTypes = {
-    type: PropTypes.string,
-    action: PropTypes.func
-}

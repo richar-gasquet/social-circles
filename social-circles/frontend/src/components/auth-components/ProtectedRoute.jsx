@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
-import Loading from "../loading-component/loading";
+import Loading from "../shared-components/LoadingSpinner";
 
 function ProtectedRoute({ component: Component, ...rest }) {
   const { isAuth, isLoading } = useAuthContext();

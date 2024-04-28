@@ -10,8 +10,9 @@ function EventContextProvider({ children }) {
   const [displayAlert, setDisplayAlert] = useState(null);
   const [query, setQuery] = useState("");
   const [searchParam] = useState(["name", "desc"]);
-  const location = useLocation();
 
+
+  const location = useLocation();
   useEffect(() => {
     setDisplayAlert(null)
     setQuery("");

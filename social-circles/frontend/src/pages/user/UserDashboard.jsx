@@ -3,7 +3,7 @@ import { useUserContext } from '../../contexts/UserContextHandler';
 import UserHeader from "../../components/headers/UserHeader";
 import LogoutButton from '../../components/auth-components/LogoutButton';
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
-import Loading from "../../components/loading-component/loading";
+import Loading from "../../components/shared-components/LoadingSpinner";
 
 function UserDashboard() {
   const { userData, isLoading } = useUserContext();
