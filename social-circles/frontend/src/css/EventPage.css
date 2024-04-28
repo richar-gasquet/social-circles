@@ -18,7 +18,7 @@
 }
 
 .position {
-    padding-top: 10em;
+    padding-top: 2em;
 }
 
 hr {
@@ -27,9 +27,10 @@ hr {
 }
 
 .event-details h1, .event-details h2, .event-details img {
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.event-details-col {
-    padding-bottom: 20px;
+.event-desc {
+    font-size: 20px;
 }

@@ -36,10 +36,6 @@ function EventPage() {
         }
       }, []);
 
-    const cardBodyStyle = {
-        padding: '0.5rem'  // Adjust padding as needed
-    };
-
     const handleUserClick = (user) => {
         setSelectedUser(user);
     };
@@ -326,17 +322,17 @@ function EventPage() {
             {/* Event info container */}
             <div className="container position" >
                 {event ? (
-                    <div className='event-details'>
+                    <div className='event-info mt-5 postiion'>
                         <h1>{event.event_name}</h1>
                         <img src={event.image_link} alt={event.event_name} />
-                        <div className="row">
-                            <div className="col-md-3 event-details-col mb-0">
-                                <div className="d-flex">
+                        <div className="row mt-4 postiion">
+                            <div className="col-md-3 mb-0">
+                                <div className="d-flex mb-2">
                                     <div className="icon-container me-2">
                                         <i className='fas fa-clock'>&nbsp;</i>
                                     </div>
                                     <div>
-                                        <p className="mb-0"><strong>Start:</strong> {new Date(event.start_time).toLocaleString()}</p>
+                                        <p className="mb-2"><strong>Start:</strong> {new Date(event.start_time).toLocaleString()}</p>
                                         <p className="mb-0"><strong>End:</strong> {new Date(event.end_time).toLocaleString()}</p>
                                     </div>
                                 </div>
@@ -344,17 +340,33 @@ function EventPage() {
                             <div className="col-md-3 mb-0">
                                 <div className='d-flex'>
                                     <div className="icon-container me-2">
-                                        <i className='fas fa-map-marker-alt'>&nbsp;&nbsp;</i>
+                                        <i className='fas fa-map-marker-alt'>&ensp;</i>
                                     </div>
-                                    <p><strong>Location:</strong> {event.location}</p>
+                                    <p className='mb-2'><strong>Location:</strong> {event.location}</p>
+                                </div>
+                            </div>
+                            <div className="col-md-3 mb-0">
+                                <div className='d-flex'>
+                                    <div className="icon-container me-2">
+                                        <i className='fas fa-user'>&ensp;</i>
+                                    </div>
+                                    <p className='mb-2'><strong>Registered: </strong>{event.filled_spots} out of {event.capacity}</p>
+                                </div>
+                            </div>
+                            <div className="col-md-3 mb-0">
+                                <div className='d-flex'>
+                                    <div className="icon-container me-2">
+                                        <i className='fas fa-exclamation-circle'>&nbsp;</i>
+                                    </div>
+                                    <p className='mb-2'><p><strong>Event with Dana?: </strong>{event.is_dana_event ? <span>Yes</span> : <span>No</span>}</p></p>
                                 </div>
                             </div>
                         </div>
-
-                        <h2>Event Details</h2>
-                        <p>{event.event_desc}</p>
-                        <p>{event.filled_spots} out of {event.capacity}</p>
-                        <p>Dana Event?: {event.is_dana_event ? <p>Yes</p> : <p>No</p>}</p>
+                        <div className='event-details mt-5 postiion'> 
+                            <h2>Event Details</h2>
+                            <p className='event-desc'>{event.event_desc}</p>
+                        </div>
+                        
                     </div>
                 ) : (
                     <p>No event details available.</p>
@@ -375,7 +387,7 @@ function EventPage() {
                 
             </div >
             {/* Users grid container */}
-            <div className="container mt-4 position">
+            <div className="container mt-5 position">
                 <h4> Registered Users </h4>
                 {usersForEvent && usersForEvent.length > 0 ? (
                     <div className="row">
