@@ -1,11 +1,11 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import Button from "react-bootstrap/Button";
 import CardButton from "./CardButton";
 import EventRegisterButton from "../user-functions/EventRegisterButton";
 import EditEvent from "../event-functions/EditEvent";
 import DeleteEvent from "../event-functions/DeleteEvent";
-import styles from "../../css/Card.module.css";
 import EmailEventGroup from "../event-functions/EmailEvents";
+import styles from "../../css/Card.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function EventCard(props) {
@@ -229,7 +229,7 @@ function EventCard(props) {
           {localEnd}
         </h6>
         <div className={``}>
-          {!props.isPastEvent && (
+          {!props.isPastEvent ? (
             <EventRegisterButton
               isRegistered={props.isRegistered}
               isFull={props.isFull}
@@ -239,6 +239,10 @@ function EventCard(props) {
               handleCancelRegistration={handleCancelRegistration}
               handleCancelWaitlist={handleCancelWaitlist}
             />
+          ) : (
+            <Button variant="secondary" disabled>
+              Passed
+            </Button>
           )}
         </div>
       </div>
@@ -281,25 +285,5 @@ function EventCard(props) {
     </div>
   );
 }
-
-EventCard.propTypes = {
-  name: PropTypes.string,
-  desc: PropTypes.string,
-  start: PropTypes.string,
-  end: PropTypes.string,
-  capacity: PropTypes.number,
-  filled: PropTypes.number,
-  image: PropTypes.string,
-};
-
-EventCard.defaultProps = {
-  name: "No Event Name",
-  desc: "No Event Description",
-  start: "N/A",
-  end: "N/A",
-  capacity: 0,
-  filled: 0,
-  image: "https://via.placeholder.com/200",
-};
 
 export default EventCard;
