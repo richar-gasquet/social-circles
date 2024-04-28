@@ -410,25 +410,42 @@ def get_event_emails(event_id: int) -> list:
 
     return event_emails
 
-def get_one_event_info(event_id):
+def get_one_event_info_with_user_status(event_id: int, user_email: str):
     event_info = {}
     connection = get_connection()
-    try: 
-        with connection.cursor() as cursor: 
-            # Get all upcoming  events' info from event table
+    try:
+        with connection.cursor() as cursor:
+            # First, get the user_id from the user_email
             cursor.execute('''
-                SELECT *
-                FROM events
-                WHERE event_id = %s;
-            ''', (event_id, ))
+                SELECT user_id FROM users WHERE email = %s;
+            ''', (user_email,))
+            user_result = cursor.fetchone()
+            if not user_result:
+                return event_info  # No such user
 
-            event_info = cursor.fetchall()
-    except Exception:
-        raise
+            user_id = user_result[0]
+
+            # Now, fetch the event details along with registration and waitlist status
+            cursor.execute('''
+                SELECT 
+                    e.event_id, e.event_name, e.event_desc, e.start_time, e.end_time,
+                    e.capacity, e.filled_spots, e.image_link, e.location, e.is_dana_event,
+                    (SELECT COUNT(*) FROM event_registrations er WHERE er.event_id = e.event_id AND er.user_id = %s) > 0 AS is_registered,
+                    (SELECT COUNT(*) FROM event_waitlists ew WHERE ew.event_id = e.event_id AND ew.user_id = %s) > 0 AS is_waitlisted,
+                    e.filled_spots >= e.capacity AS is_full
+                FROM 
+                    events e
+                WHERE 
+                    e.event_id = %s;
+            ''', (user_id, user_id, event_id))
+
+            event_info = cursor.fetchone()
+    except Exception as ex:
+        print("Error fetching event info:", ex)
     finally:
         put_connection(connection)
-    print(event_info)
-    return event_info[0]
+    return event_info
+
 
 def get_users_for_event(event_id):
     rows = []

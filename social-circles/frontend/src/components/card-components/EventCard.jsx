@@ -184,7 +184,14 @@ function EventCard(props) {
   const handleCardClick = (e) => {
     if (!e.target.closest('.edit-event-modal') && !e.target.closest('.delete-event-modal')
               && !e.target.closest('.email-event-modal') && !e.target.closest('.register-button')) {
-      window.open(`/events/${props.id}`, "_blank");
+      const eventData = {
+        isRegistered: props.isRegistered,
+        isFull: props.isFull,
+        isWaitlisted: props.isWaitlisted,
+        filled_spots: props.filled
+      };
+      localStorage.setItem('eventData', JSON.stringify(eventData));
+      window.open(`/events/${props.id}`, '_blank');
     }
   };
 

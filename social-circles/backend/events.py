@@ -323,7 +323,7 @@ def get_event_emails():
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
     
-def get_one_event_info():
+def get_one_event_info_with_user_status():
     if 'email' in flask.session:
         try:
             event_id = flask.request.args.get('event_id')
@@ -331,18 +331,22 @@ def get_one_event_info():
                 return flask.jsonify({
                     'message' : 'event_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
-            event_info = event_db.get_one_event_info(event_id)
+            event_info = event_db.get_one_event_info_with_user_status(event_id, flask.session['email'])
 
             event_info_dict = {
+                'event_id': event_info[0],
                 'event_name': event_info[1],
-                'capacity': event_info[2],
-                'filled_spots': event_info[3],
-                'event_desc': event_info[4],
-                'image_link': event_info[5],
-                'start_time': event_info[6],
-                'end_time': event_info[7],
+                'event_desc': event_info[2],
+                'start_time': event_info[3],
+                'end_time': event_info[4],
+                'capacity': event_info[5],
+                'filled_spots': event_info[6],
+                'image_link': event_info[7],
                 'location': event_info[8],
-                'is_dana_event': event_info[9]
+                'is_dana_event': event_info[9],
+                'is_registered': event_info[10],
+                'is_waitlisted': event_info[11],
+                'is_full': event_info[12]
             }
 
             return flask.jsonify({

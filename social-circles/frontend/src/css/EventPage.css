@@ -18,7 +18,11 @@
 }
 
 .position {
-    padding-top: 10em;
+    padding-top: 2em;
+}
+
+.spacing-from-header {
+    padding-top: 7.5em
 }
 
 hr {
@@ -26,10 +30,21 @@ hr {
     border-top: 3px solid rgba(0, 0, 0, 0.1);
 }
 
-.event-details h1, .event-details h2, .event-details img {
+.event-info h1, .event-info h2, .event-info img {
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.event-details-col {
-    padding-bottom: 20px;
+.admin-hover-effect {
+    transition: transform 0.15s;
+}
+
+.admin-hover-effect:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+
+.event-desc {
+    font-size: 20px;
 }
