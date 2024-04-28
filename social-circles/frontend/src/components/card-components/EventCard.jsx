@@ -191,7 +191,7 @@ function EventCard(props) {
         filled_spots: props.filled
       };
       localStorage.setItem('eventData', JSON.stringify(eventData));
-      window.location.href = `/events/${props.id}`;
+      window.open(`/events/${props.id}`, '_blank');
     }
   };
 

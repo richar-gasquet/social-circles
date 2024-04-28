@@ -37,7 +37,9 @@ function EventPage() {
       }, []);
 
     const handleUserClick = (user) => {
+      if (isAdmin) {
         setSelectedUser(user);
+      }
     };
     
       const closePopup = () => {
@@ -310,6 +312,8 @@ function EventPage() {
       }
     };
 
+    
+
     const handleButtonClick = (e, action) => {
         e.stopPropagation();
         action();
@@ -393,7 +397,7 @@ function EventPage() {
                     <div className="row">
                         {usersForEvent.map(user => (
                             <div className="col-12 col-sm-6 col-md-3 col-lg-3 mb-4" key={user.user_id}>
-                                <div className="card square" onClick={() => handleUserClick(user)}>
+                                <div className={`card square ${isAdmin ? 'admin-hover-effect' : ''}`} onClick={() => handleUserClick(user)}>
                                     <div className="card-body square-content">
                                         <img src={user.profile_photo ? user.profile_photo : logo} alt="Profile Photo" width="100px"/>
                                         <p className="card-title">{user.first_name} {user.last_name}</p>
@@ -405,31 +409,33 @@ function EventPage() {
                 ) : (
                     <p>No users registered for this event.</p>
                 )}
-                {selectedUser && (
-                <Modal show={selectedUser !== null} onHide={closePopup}>
-                <Modal.Header closeButton>
-                    <Modal.Title>User Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p><strong>First Name:</strong> {selectedUser.first_name}</p>
-                    <p><strong>Last Name:</strong> {selectedUser.last_name}</p>
-                    <p><strong>Email:</strong> {selectedUser.email}</p>
-                    <p><strong>Phone Nmber:</strong> {selectedUser.phone_number}</p>
-                    <p><strong>Address:</strong> {selectedUser.address}</p>
-                    <p><strong>Preferred Name:</strong> {selectedUser.preferred_name}</p>
-                    <p><strong>Pronouns:</strong> {selectedUser.pronouns}</p>
-                    <p><strong>Marital Status:</strong> {selectedUser.marital_status}</p>
-                    <p><strong>Family Circumstance:</strong> {selectedUser.family_circumstance}</p>
-                    <p><strong>Community Status:</strong> {selectedUser.community_status}</p>
-                    <p><strong>Interests:</strong> {selectedUser.interests}</p>
-                    <p><strong>Personal Identity:</strong> {selectedUser.personal_identity}</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className={styles.submitButton} variant="danger" onClick={unregisterUser}>Remove User</button>
-                    <button className={styles.cancelButton} variant="secondary" onClick={closePopup}>Close</button>
-                </Modal.Footer>
-                </Modal>
-                )}
+                {selectedUser && isAdmin && (
+                    <Modal show={selectedUser !== null} onHide={closePopup} backdrop='static' keyboard={false}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>User Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p><strong>First Name:</strong> {selectedUser.first_name}</p>
+                        <p><strong>Last Name:</strong> {selectedUser.last_name}</p>
+                        <p><strong>Email:</strong> {selectedUser.email}</p>
+                        <p><strong>Phone Nmber:</strong> {selectedUser.phone_number}</p>
+                        <p><strong>Address:</strong> {selectedUser.address}</p>
+                        <p><strong>Preferred Name:</strong> {selectedUser.preferred_name}</p>
+                        <p><strong>Pronouns:</strong> {selectedUser.pronouns}</p>
+                        <p><strong>Marital Status:</strong> {selectedUser.marital_status}</p>
+                        <p><strong>Family Circumstance:</strong> {selectedUser.family_circumstance}</p>
+                        <p><strong>Community Status:</strong> {selectedUser.community_status}</p>
+                        <p><strong>Interests:</strong> {selectedUser.interests}</p>
+                        <p><strong>Personal Identity:</strong> {selectedUser.personal_identity}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        {isAdmin && (
+                            <button className={styles.submitButton} variant="danger" onClick={unregisterUser}>Remove User</button>
+                        )}
+                        <button className={styles.cancelButton} variant="secondary" onClick={closePopup}>Close</button>
+                    </Modal.Footer>
+                    </Modal>
+                    )}
             </div>
         </>
     );
