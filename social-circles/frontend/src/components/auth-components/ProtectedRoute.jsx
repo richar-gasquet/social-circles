@@ -5,7 +5,11 @@ import Loading from "../loading-component/loading";
 function ProtectedRoute({ component: Component, ...rest }) {
   const { isAuth, isLoading } = useAuthContext();
   if (isLoading) {
-    return <Loading/>; 
+    return (
+      <>
+        <Loading/>
+      </>
+    ); 
   }
 
   if (isAuth) {

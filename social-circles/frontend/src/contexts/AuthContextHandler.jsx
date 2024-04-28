@@ -43,9 +43,6 @@ function AuthProvider({ children }) {
         }
       // Coult not connect to server at all
       } catch (error) {
-        /* Should definitely redirect to another page in which we show that we 
-        could not absolutely connect to the backend */
-        console.error("Authentication check failed", error);
         setAuth(false);
         setAdmin(false);
         localStorage.setItem('isAuth', 'false');

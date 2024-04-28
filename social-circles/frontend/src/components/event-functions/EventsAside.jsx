@@ -13,15 +13,15 @@ function EventsAside() {
                 </li>
                 <li className={`nav-item`}>
                   <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 
+                    to="/dana-events">Events with Dana</NavLink>
+                </li>
+                <li className={`nav-item`}>
+                  <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 
                     to="/past-events">Past Events</NavLink>
                 </li>
                 <li className={`nav-item`}>
                   <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 
                     to="/my-events">My Events</NavLink>
-                </li>
-                <li className={`nav-item`}>
-                  <NavLink className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`} 
-                    to="/events-with-dana">Events with Dana</NavLink>
                 </li>
               </ul>
             </aside>

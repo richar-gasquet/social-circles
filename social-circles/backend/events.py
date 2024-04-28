@@ -51,6 +51,44 @@ def get_available_events():
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
         
+def get_dana_events():
+    if 'email' in flask.session:
+        try:
+            email = flask.session['email']
+            dana_events = event_db.get_dana_events(email)
+            events_list = []
+            
+            for event in dana_events:
+                event_dict = {
+                    'event_id': event[0],
+                    'name': event[1],
+                    'desc': event[2],
+                    'start_time': event[3],
+                    'end_time': event[4],
+                    'capacity': event[5],
+                    'filled_spots': event[6],
+                    'image': event[7],
+                    'location': event[8],
+                    'isDanaEvent' : event[9],
+                    'isRegistered' : event[10],
+                    'isWaitlisted' : event[11],
+                    'isFull' : event[12]
+                }
+                events_list.append(event_dict)
+                
+            return flask.jsonify({
+                'results' : events_list
+            }), 200 # OK
+        except Exception as ex:
+            print(f'events.py: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
+        
 def get_registered_events():
     if 'email' in flask.session:
         try:

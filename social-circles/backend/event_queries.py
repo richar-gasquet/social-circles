@@ -62,6 +62,65 @@ def get_available_events(email) -> list:
         put_connection(connection)
         
     return all_events
+
+def get_dana_events(email) -> list:
+    dana_events = []
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor: 
+            # Retrieve user information from their email
+            cursor.execute('''
+                SELECT
+                    user_id
+                FROM
+                    users
+                WHERE
+                    users.email = %s               
+            ''', (email, ))
+            user_info = cursor.fetchone()
+            
+            if not user_info:
+                return dana_events
+            
+            # Retrieve user's user_id at index 0
+            user_id = user_info[0]
+            
+            # Get all upcoming  events' info from event table
+            cursor.execute('''
+                SELECT DISTINCT
+                    e.event_id, e.event_name, e.event_desc, 
+                    e.start_time, e.end_time, e.capacity, 
+                    e.filled_spots, e.image_link, e.location, 
+                    e.is_dana_event,
+                    (e_reg.user_id IS NOT NULL) as is_registered,
+                    (e_wait.user_id IS NOT NULL) as is_waitlisted,
+                    (e.filled_spots >= e.capacity) as is_full
+                FROM 
+                    events e
+                LEFT JOIN 
+                    event_registrations e_reg
+                    ON
+                        e.event_id = e_reg.event_id
+                        AND e_reg.user_id = %s
+                LEFT JOIN
+                    event_waitlists e_wait
+                    ON
+                        e.event_id = e_wait.event_id
+                        AND e_wait.user_id = %s
+                WHERE
+                    e.end_time > CURRENT_TIMESTAMP AND
+                    e.is_dana_event = true
+                ORDER BY
+                    e.start_time ASC
+            ''', (user_id, user_id, ))
+            
+            all_events = cursor.fetchall()
+    except Exception:
+        raise
+    finally:
+        put_connection(connection)
+        
+    return all_events
         
 def get_registered_events(email: str) -> list:
     registered_events = []

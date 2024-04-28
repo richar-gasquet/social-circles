@@ -283,6 +283,10 @@ def get_current_visitors():
 @app.route('/get-available-events', methods = ['GET'])
 def get_available_events_route():
     return events.get_available_events()
+
+@app.route('/get-dana-events', methods = ['GET'])
+def get_dana_events_route():
+    return events.get_dana_events()
         
 @app.route('/get-registered-events', methods = ['GET'])
 def get_registered_events_route():

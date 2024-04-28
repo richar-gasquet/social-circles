@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import Events from "./pages/user/Events/Events.jsx";
 import MyEvents from "./pages/user/Events/MyEvents.jsx";
 import PastEvents from "./pages/user/Events/PastEvents.jsx";
+import DanaEvents from "./pages/user/Events/DanaEvents.jsx";
 import Communities from "./pages/user/Community/Communities.jsx";
 import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
@@ -63,6 +64,13 @@ function App() {
             <ProtectedRoute component={Events} />
             </EventContextProvider>
           }
+          />
+          <Route
+            exact path="/dana-events"
+            element={
+              <EventContextProvider>
+                <ProtectedRoute component={DanaEvents} />
+                </EventContextProvider>  }
           />
           <Route
             exact path="/my-events"
