@@ -324,7 +324,7 @@ function EventPage() {
             <SessionTimeoutHandler />
             <Header />
             {/* Event info container */}
-            <div className="container position" >
+            <div className="container spacing-from-header" >
                 {event ? (
                     <div className='event-info mt-5 postiion'>
                         <h1>{event.event_name}</h1>
