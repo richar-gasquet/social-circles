@@ -130,7 +130,7 @@ function CommunityCard(props) {
             {props.count} members
           </h4>
           <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>
-          <div className={``}>
+          <div>
             <CommunityRegisterButton
               isRegistered={props.isRegistered}
               isDisabled={isQuerying}
