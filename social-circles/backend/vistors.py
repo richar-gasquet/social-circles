@@ -21,11 +21,12 @@ def current_visitors():
         with connection.cursor() as cursor:
             cursor.execute("SELECT COUNT(DISTINCT session_id) FROM visitor_logs WHERE timestamp > (CURRENT_TIMESTAMP - INTERVAL '24 hours')")
             count = cursor.fetchone()[0]
-            return {'current_visitors': count}
     except Exception:
         raise
     finally:
         put_connection(connection)
+        
+    return {'current_visitors': count}
 
 
 
