@@ -22,8 +22,10 @@ function AddEvent(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setAlert(null);
+
     if (
-      !eventName.trim() || !capacity.trim()  || !eventDesc.trim() || 
+      !eventName.trim() || !eventDesc.trim() || 
       !location.trim() || !imageLink.trim() || !startTime || !endTime 
     ) {
       setAlert({

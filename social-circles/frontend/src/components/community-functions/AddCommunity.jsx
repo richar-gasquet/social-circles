@@ -17,7 +17,6 @@ function AddCommunity(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setAlert(null);
 
     if (!groupName.trim() || !groupDesc.trim() || !imageLink.trim()) {

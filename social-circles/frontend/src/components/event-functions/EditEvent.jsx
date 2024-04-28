@@ -22,6 +22,8 @@ function EditEvent(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setAlert(null);
+
     const eventData = { event_id: props.event_id };
     if (eventName !== props.eventName)
       eventData.name = eventName;
@@ -51,7 +53,7 @@ function EditEvent(props) {
       eventData.end_time = eventEnd;
 
     if (
-      !eventName.trim() || !capacity.trim()  || !eventDesc.trim() || 
+      !eventName.trim()  || !eventDesc.trim() || 
       !location.trim() || !imageLink.trim() || !eventStart || !eventEnd 
     ) {
       setAlert({
@@ -215,7 +217,7 @@ function EditEvent(props) {
             type="submit"
             disabled={isQuerying}
           >
-            Submit
+            Save
           </Button>
         </Form>
       </Modal.Body>

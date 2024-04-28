@@ -17,7 +17,6 @@ function EditCommunity(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setAlert(null);
 
     const communityData = { group_id: props.group_id };
@@ -152,7 +151,7 @@ function EditCommunity(props) {
             type="submit"
             disabled={isQuerying}
           >
-            Submit
+            Save
           </Button>
         </Form>
       </Modal.Body>

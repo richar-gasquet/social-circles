@@ -12,6 +12,8 @@ function DeleteEvent(props) {
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async () => {
+    setAlert(null);
+
     try {
       setIsQuerying(true);
       const request = await fetch(
