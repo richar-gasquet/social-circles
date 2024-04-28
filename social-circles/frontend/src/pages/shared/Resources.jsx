@@ -49,7 +49,7 @@ function Resources() {
     setShowAddResource(false);
     fetchAllResources();
   };
-    console.log(userData)
+  
   const Header = isAdmin ? AdminHeader : (userData.is_admin === null ? GuestHeader : UserHeader);
   
   if (isLoading) {
