@@ -4,7 +4,6 @@ import GuestHeader from "../../components/headers/GuestHeader";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import Carousel from "react-bootstrap/Carousel";
 import danaImg from "../../assets/dana.webp";
-import logo from "../../assets/social-circles-logo.png";
 import styles from "../../css/LandingPage.module.css";
 
 function LandingPage() {
@@ -58,6 +57,7 @@ function LandingPage() {
           style={{ paddingTop: "7em" }}
         >
           <h1>Social Circles</h1>
+          <br />
           <h4>
             Empowering Princeton's Marginalized Communities Through Connection
             and Support
@@ -102,7 +102,7 @@ function LandingPage() {
                 platform designed to foster <strong>connection and
                 support for historically marginalized groups </strong> in <strong>Princeton, New Jersey.</strong>{' '}
                 We believe that we can make a <strong>difference</strong> by creating inclusive spaces for those
-                who often face challenges accessing social groups.
+                who often face challenges accessing such social groups.
               </p>
             </div>
           </div>
