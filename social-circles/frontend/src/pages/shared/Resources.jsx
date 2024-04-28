@@ -17,7 +17,6 @@ function Resources() {
   const [showAddResource, setShowAddResource] = useState(false);
 
   const { isAdmin } = useAuthContext();
-  const { isUser } = useUserContext();
 
   useEffect(() => {
     fetchAllResources()
@@ -50,8 +49,8 @@ function Resources() {
     setShowAddResource(false);
     fetchAllResources();
   };
-
-  const Header = isAdmin ? AdminHeader : (isUser === false ? UserHeader : GuestHeader);
+    console.log(userData)
+  const Header = isAdmin ? AdminHeader : (userData.is_admin === null ? GuestHeader : UserHeader);
   
   if (isLoading) {
     return (
