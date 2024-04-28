@@ -11,12 +11,18 @@ function AddResource(props) {
   const [emptyAlert, setEmptyAlert] = useState(false);
   const [successAlert, setSuccessAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
+  const [urlIssueAlert, setUrlIssueAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!resource && !dispName && !descrip) {
       setEmptyAlert(true); 
       return; 
+    }
+
+    if(!resource.startsWith("https://")){
+      setUrlIssueAlert(true);
+      return;
     }
 
     const resourceData = {
@@ -73,9 +79,14 @@ function AddResource(props) {
             All fields must be filled.
           </Alert>
         )}
+        {urlIssueAlert && (
+          <Alert variant="warning">
+            Resource URL must start with "https://"
+          </Alert>
+        )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="resource">
-            <Form.Label>Resource</Form.Label>
+            <Form.Label>Resource URL Link</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter the resource link"

@@ -14,8 +14,17 @@ function EditResource(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const resourceData = { resource_id: props.resource_id };
-    if (resource !== props.resource && resource.trim() !== "")
+    if (resource !== props.resource && resource.trim() !== ""){
+      if(!resource.startsWith("https://")){
+        setAlert({
+          type: "warning",
+          header: "URL Link Issue",
+          text: "Resource URL must start with 'https://'"
+        });
+        return;
+      }
       resourceData.resource = resource;
+    }
     if (dispName !== props.disp_name && dispName.trim() !== "")
       resourceData.disp_name = dispName;
     if (descrip !== props.descrip && descrip.trim() !== "")
@@ -38,7 +47,7 @@ function EditResource(props) {
           setAlert({
               type: "success",
               header: "Edit successful!",
-              text: "The community was successfully updated."
+              text: "The resource was successfully updated."
           });
           setTimeout(() => {
             props.fetchAllResources()
