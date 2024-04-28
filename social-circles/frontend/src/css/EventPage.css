@@ -1,7 +1,7 @@
 .square {
-    width: 75px;  /* Make sure the width fills the container */
-    padding: 75px; /* Padding-top as a percentage of the container's width makes the height equal to width */
-    position: relative; /* Allows absolute positioning for content inside */
+    width: 75px;
+    padding: 75px;
+    position: relative;
     margin: 5px;
 }
 
@@ -19,4 +19,17 @@
 
 .position {
     padding-top: 10em;
+}
+
+hr {
+    border: none;
+    border-top: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.event-details h1, .event-details h2, .event-details img {
+    margin-bottom: 20px;
+}
+
+.event-details-col {
+    padding-bottom: 20px;
 }

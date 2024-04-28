@@ -332,14 +332,34 @@ function EventPage() {
             <div className="container position" >
                 {console.log(event)}
                 {event ? (
-                    <div>
-                        <h2>{event.event_name}</h2>
+                    <div className='event-details'>
+                        <h1>{event.event_name}</h1>
                         <img src={event.image_link} alt={event.event_name} />
+                        <div className="row">
+                            <div className="col-md-3 event-details-col mb-0">
+                                <div className="d-flex">
+                                    <div className="icon-container me-2">
+                                        <i className='fas fa-clock'>&nbsp;</i>
+                                    </div>
+                                    <div>
+                                        <p className="mb-0"><strong>Start:</strong> {new Date(event.start_time).toLocaleString()}</p>
+                                        <p className="mb-0"><strong>End:</strong> {new Date(event.end_time).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-3 mb-0">
+                                <div className='d-flex'>
+                                    <div className="icon-container me-2">
+                                        <i className='fas fa-map-marker-alt'>&nbsp;&nbsp;</i>
+                                    </div>
+                                    <p><strong>Location:</strong> {event.location}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Event Details</h2>
                         <p>{event.event_desc}</p>
-                        <p>Start: {new Date(event.start_time).toLocaleString()}</p>
-                        <p>End: {new Date(event.end_time).toLocaleString()}</p>
                         <p>{event.filled_spots} out of {event.capacity}</p>
-                        <p>Location: {event.location}</p>
                         <p>Dana Event?: {event.is_dana_event ? <p>Yes</p> : <p>No</p>}</p>
                     </div>
                 ) : (
@@ -361,7 +381,6 @@ function EventPage() {
                     </div>
                 
             </div >
-                
             {/* Users grid container */}
             <div className="container mt-4 position">
                 <h4> Registered Users </h4>
