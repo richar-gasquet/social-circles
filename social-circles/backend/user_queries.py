@@ -6,7 +6,6 @@ import psycopg2
 from database import get_connection, put_connection
 
 def get_user_details(email: str) -> list:
-    user_details = []
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -21,28 +20,27 @@ def get_user_details(email: str) -> list:
             
             user_row = cursor.fetchone()
             
-            if user_row:
-                return {
-                    'first_name' : user_row[1],
-                    'last_name' : user_row[2],
-                    'email': user_row[3],
-                    'is_admin': user_row[4],  
-                    'address' : user_row[5],
-                    'preferred_name' : user_row[6],
-                    'pronouns' : user_row[7],
-                    'phone_number' : user_row[8],
-                    'marital_status' : user_row[9],
-                    'family_circumstance' : user_row[10],
-                    'community_status' : user_row[11],
-                    'interests' : user_row[12],
-                    'personal_identity' : user_row[13]
-                }
     except Exception:
         raise
     finally:
         put_connection(connection)
     
-    return user_details
+    if user_row:
+        return {
+            'first_name' : user_row[1],
+            'last_name' : user_row[2],
+            'email': user_row[3],
+            'is_admin': user_row[4],  
+            'address' : user_row[5],
+            'preferred_name' : user_row[6],
+            'pronouns' : user_row[7],
+            'phone_number' : user_row[8],
+            'marital_status' : user_row[9],
+            'family_circumstance' : user_row[10],
+            'community_status' : user_row[11],
+            'interests' : user_row[12],
+            'personal_identity' : user_row[13]
+        }
 
 # Get user authorization (regular user / admin)
 def get_user_authorization(email: str) -> bool:
@@ -293,11 +291,12 @@ def get_all_blocked_users():
                 FROM blocked_users
             ''')
             blocked_users = cursor.fetchall()
-            return [{'first_name': user[0], 'last_name': user[1], 'email': user[2]} for user in blocked_users]
     except Exception as e:
         raise e
     finally:
         put_connection(connection)
+
+    return [{'first_name': user[0], 'last_name': user[1], 'email': user[2]} for user in blocked_users]
 
 
 def remove_user_from_block(email: str):
@@ -325,9 +324,10 @@ def is_in_block(email: str) -> bool:
                 )
             ''', (email,))
             is_blocked = cursor.fetchone()[0]
-            return is_blocked
     except Exception as e:
         print(f"Error checking if user is in block: {e}")
         raise
     finally:
         put_connection(connection)
+
+    return is_blocked
