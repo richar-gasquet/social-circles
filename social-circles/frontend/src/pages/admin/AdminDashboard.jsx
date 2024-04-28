@@ -5,12 +5,11 @@ import SessionTimeoutHandler from '../../components/session-checker/SessionTimeo
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend } from 'chart.js';
 import styles from '../../css/Buttons.module.css';
 import dashstyles from '../../css/AdminDash.module.css'
 import Loading from '../../components/loading-component/loading';
+import ReactApexChart from 'react-apexcharts';
 
-ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Legend);
 
 
 function AdminDashboard() {
@@ -23,19 +22,54 @@ function AdminDashboard() {
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [currentUsers, setCurrentUsers] = useState([]);
   const [rerender, setRerender] = useState(false);
-  const [chartData, setChartData] = useState({
-    labels: [], // This will hold time intervals or dates
-    datasets: [{
-      label: 'Current Users',
-      data: [], // Array of user counts
-      fill: false,
-      backgroundColor: 'rgb(0, 150, 255)',
-      borderColor: 'rgba(75, 192, 192, 0.2)',
-      tension: 0.1
-    }]
-  });
   const [alertModal, setAlertModal] = useState({ show: false, message: '' });
   const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
+
+  const [chartData, setChartData] = useState({
+    series: [{
+      name: 'Current Users',
+      data: []
+    }],
+    options: {
+      chart: {
+        type: 'line',
+        height: 350,
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth'
+      },
+      title: {
+        text: 'User Activity Over Time',
+        align: 'left'
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+          opacity: 0.5
+        },
+      },
+      xaxis: {
+        categories: [],
+        type: 'datetime',
+        title: {
+          text: 'Day'
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Number of Users'
+        },
+        min: 0,
+        tickAmount: 5
+      }
+    },
+  });
 
   // Function to show confirm modal
   const showConfirmModal = (message, onConfirm) => {
@@ -53,31 +87,41 @@ function AdminDashboard() {
     setConfirmModal({ ...confirmModal, show: false }); // Hide modal after confirming
   };
 
+  useEffect(() => {
+    fetchCurrentUsers();
+    const interval = setInterval(() => {
+      fetchCurrentUsers();  // Fetch new data at a set interval
+    }, 60000);  // 60 seconds
+
+    return () => clearInterval(interval);  // Clean up the interval on component unmount
+  }, []);
+
   const fetchCurrentUsers = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/current_visitors`, {
         method: 'GET',
         credentials: 'include'
       });
-      const data = await response.json();
-      console.log(data);
-      updateChartData(data.current_visitors);
+      if(response.ok) { 
+        const data = await response.json();
+        console.log(data);
+        const newTime = new Date().toISOString();
+        const newSeriesData = chartData.series[0].data.concat({ x: newTime, y: data.current_visitors });
+        const newXaxisCategories = chartData.options.xaxis.categories.concat(newTime);
+        setChartData(prevChartData => ({
+          ...prevChartData,
+          series: [{ ...prevChartData.series[0], data: newSeriesData }],
+          options: {
+            ...prevChartData.options,
+            xaxis: { ...prevChartData.options.xaxis, categories: newXaxisCategories }
+          }
+        }));
+      }
     } catch (error) {
       console.error('Error fetching current users:', error);
     }
   };
 
-  const updateChartData = (currentCount) => {
-    const newTime = new Date().toLocaleTimeString();
-    const newChartData = { ...chartData };
-    newChartData.labels.push(newTime);
-    newChartData.datasets[0].data.push(currentCount);
-    if (newChartData.labels.length > 10) { // Limit data points
-      newChartData.labels.shift();
-      newChartData.datasets[0].data.shift();
-    }
-    setChartData(newChartData);
-  };
 
   // Button click handler to force redraw
   const handleRedraw = () => {
@@ -245,12 +289,13 @@ function AdminDashboard() {
         <br/>
         <div>
           <div style={{outline: '#F5EDED solid 10px', borderRadius: '1%', padding: '2%'}}>
-            <h3 style={{marginLeft: '5%'}}>Website Analytics</h3>
-            <h4 style={{marginLeft: '5%'}}>Current Users on Site</h4>
-            <div style={{ width: '75%', margin: 'auto'}}>
-              <Line data={chartData} redraw={rerender}/>
-              <button className={styles.submitButton} style={{marginTop: '2%'}} onClick={handleRedraw}>Redraw Graph</button>
-            </div>
+            <h3 style={{marginLeft: '0%'}}>Website Analytics</h3>
+            <ReactApexChart
+              options={chartData.options}
+              series={chartData.series}
+              type="line"
+              height={350}
+            />
           </div>
           <hr style={{marginTop: '5%'}}/>
           <div className='row' style={{marginTop: '5%', marginBottom: '3%', padding: '2%', outline: '#F5EDED solid 10px', borderRadius: '1%'}}>
