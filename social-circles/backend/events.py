@@ -332,7 +332,6 @@ def get_one_event_info_with_user_status():
                     'message' : 'event_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
             event_info = event_db.get_one_event_info_with_user_status(event_id, flask.session['email'])
-            print(event_info)
 
             event_info_dict = {
                 'event_id': event_info[0],

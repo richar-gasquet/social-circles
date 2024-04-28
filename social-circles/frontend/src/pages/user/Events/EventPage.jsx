@@ -98,9 +98,7 @@ function EventPage() {
                 );
                 if (request.ok) {
                     const data = await request.json();
-                    console.log(data.results)
                     setEvent(data.results);
-                    console.log(data.results.is_registered);
                     setEventData(currentData => ({
                         ...currentData,
                         isRegistered: data.results.is_registered,
@@ -108,7 +106,6 @@ function EventPage() {
                         isWaitlisted: data.results.is_waitlisted,
                         filled_spots: data.results.filled_spots
                     }));
-                    console.log(eventData);
                 } else {
                     setDisplayAlert({
                         type: "danger",
@@ -139,7 +136,6 @@ function EventPage() {
                 );
                 if (request.ok) {
                     const data = await request.json();
-                    console.log(data.results)
                     setUsersForEvent(data.results);
                 } else {
                     setDisplayAlert({
@@ -208,7 +204,6 @@ function EventPage() {
                 filled_spots: event.filled_spots + 1,
             };
             event.filled_spots = event.filled_spots + 1;
-            console.log(updated)
             setEventData(updated);
 
           }
@@ -330,7 +325,6 @@ function EventPage() {
             <Header />
             {/* Event info container */}
             <div className="container position" >
-                {console.log(event)}
                 {event ? (
                     <div className='event-details'>
                         <h1>{event.event_name}</h1>
@@ -365,7 +359,6 @@ function EventPage() {
                 ) : (
                     <p>No event details available.</p>
                 )}
-                {console.log(eventData.isRegistered)}
                     <div className="register-button">
                         {eventData && (
                             <EventRegisterButton
