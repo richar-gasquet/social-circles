@@ -9,8 +9,8 @@ import CommunityCard from "../../../components/card-components/CommunityCard.jsx
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
+import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
-import Loading from "../../../components/loading-component/loading.jsx";
 
 function Communities() {
   const {

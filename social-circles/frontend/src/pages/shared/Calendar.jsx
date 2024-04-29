@@ -4,7 +4,7 @@ import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import moment from 'moment';
 import UserHeader from '../../components/headers/UserHeader';
 import AdminHeader from '../../components/headers/AdminHeader.jsx';
-import Loading from '../../components/loading-component/loading.jsx';
+import Loading from '../../components/shared-components/LoadingSpinner.jsx';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);

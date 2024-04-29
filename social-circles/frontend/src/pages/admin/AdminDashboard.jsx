@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { Line } from 'react-chartjs-2';
 import styles from '../../css/Buttons.module.css';
 import dashstyles from '../../css/AdminDash.module.css'
-import Loading from '../../components/loading-component/loading';
+import Loading from '../../components/shared-components/LoadingSpinner';
 import ReactApexChart from 'react-apexcharts';
 
 
