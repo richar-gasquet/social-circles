@@ -218,12 +218,12 @@ function EventCard(props) {
           {props.filled}/{props.capacity} registered
         </h5>
         <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
-          <i class="fa-solid fa-location-dot pr-2 py-1"></i>
+          <i className="fa-solid fa-location-dot pr-2 py-1"></i>
           {props.location}
         </h5>
         <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>
         <h6 className={`${styles.cardTime}`}>
-          <i class="fa-solid fa-clock pr-2 py-1"></i>
+          <i className="fa-solid fa-clock pr-2 py-1"></i>
           {localStart} —
           <br />
           {localEnd}
