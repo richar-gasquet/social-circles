@@ -152,7 +152,7 @@ function EventPage() {
         };
 
         getUsersForEvent();
-    }, [eventId]);
+    }, [eventId, eventData]);
 
     const [isQuerying, setIsQuerying] = useState(false);
 

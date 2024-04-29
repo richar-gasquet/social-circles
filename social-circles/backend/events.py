@@ -239,11 +239,12 @@ def add_event_registration():
                 }), 200 # OK
             else:
                 event_db.add_event_registration(email, event_id)
-                send_confirmation_email(email, event_id, "registration")
+                # send_confirmation_email(email, event_id, "registration")
                 return flask.jsonify({
                     'status' : 'registered'
                 }), 200 # OK
         except Exception as ex:
+            # print(type(ex))
             print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)

@@ -466,21 +466,21 @@ def get_users_for_event(event_id):
             if rows:
                 for row in rows:
                     user_ids.append(row[1])
-                # return {
-                #     "user_ids": user_ids
-                # }
-            sql_query_base = "SELECT * FROM users WHERE "
+                
+                sql_query_base = "SELECT * FROM users WHERE "
 
-            i = 0
-            for _ in user_ids:
-                if (i == 0):
-                    sql_query_base += "user_id = %s"
-                else:
-                    sql_query_base += " OR user_id = %s"
-                i = i + 1
-            cursor.execute(sql_query_base, tuple(user_ids))
-            user_info = cursor.fetchall()
-            return user_info
+                i = 0
+                for _ in user_ids:
+                    if (i == 0):
+                        sql_query_base += "user_id = %s"
+                    else:
+                        sql_query_base += " OR user_id = %s"
+                    i = i + 1
+                cursor.execute(sql_query_base, tuple(user_ids))
+                user_info = cursor.fetchall()
+                return user_info
+            else:
+                return []
 
     except Exception:
         connection.rollback()
