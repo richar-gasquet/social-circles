@@ -22,6 +22,7 @@ def get_available_events(email) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return all_events
             
             # Retrieve user's user_id at index 0
@@ -80,6 +81,7 @@ def get_dana_events(email) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return dana_events
             
             # Retrieve user's user_id at index 0
@@ -139,6 +141,7 @@ def get_registered_events(email: str) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return registered_events
             
             # Retrieve user's user_id at index 0
@@ -198,6 +201,7 @@ def get_past_events(email) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return past_events
             
             # Retrieve user's user_id at index 0
@@ -483,6 +487,7 @@ def get_one_event_info_with_user_status(event_id: int, user_email: str):
             ''', (user_email,))
             user_result = cursor.fetchone()
             if not user_result:
+                put_connection(connection)
                 return event_info  # No such user
 
             user_id = user_result[0]
@@ -540,9 +545,8 @@ def get_users_for_event(event_id):
                     i = i + 1
                 cursor.execute(sql_query_base, tuple(user_ids))
                 user_info = cursor.fetchall()
-                return user_info
             else:
-                return []
+                pass
 
     except Exception:
         connection.rollback()
