@@ -362,7 +362,7 @@ function EventPage() {
                                     <div className="icon-container me-2">
                                         <i className='fas fa-exclamation-circle'>&nbsp;</i>
                                     </div>
-                                    <p className='mb-2'><p><strong>Event with Dana?: </strong>{event.is_dana_event ? <span>Yes</span> : <span>No</span>}</p></p>
+                                    <p className='mb-2'><strong>Event with Dana?: </strong>{event.is_dana_event ? <span>Yes</span> : <span>No</span>}</p>
                                 </div>
                             </div>
                         </div>
