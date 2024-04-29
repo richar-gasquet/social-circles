@@ -1,42 +1,32 @@
-#----------------------------------------------------------------------
-# vistors.py: SQL Queries for Social Circles Vistors_log
-#----------------------------------------------------------------------
-import psycopg2
-from database import get_connection, put_connection
+import flask
+import vistor_queries as vistor_db
+import user_queries as user_db
+
 
 def log_visit(session_id):
-    connection = get_connection()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO visitor_logs (session_id) VALUES (%s)", (session_id,))
-            connection.commit()
-    except Exception:
-        raise
-    finally:
-        put_connection(connection)
+    vistor_db.log_visit(session_id)
 
 def current_visitors():
-    connection = get_connection()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT COUNT(DISTINCT session_id) FROM visitor_logs WHERE timestamp > (CURRENT_TIMESTAMP - INTERVAL '24 hours')")
-            count = cursor.fetchone()[0]
-    except Exception:
-        raise
-    finally:
-        put_connection(connection)
-        
-    return {'current_visitors': count}
+    if 'email' in flask.session:
+        try:
+            is_admin = user_db.get_user_authorization(flask.session['email'])
+            if not is_admin:
+                raise Exception("User is not authorized!")
+            
+            return flask.jsonify(vistor_db.current_visitors()), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not Auth'
+        }), 401 # unauthorized
 
 
 
 def delete_expired_sessions_from_database():
-    connection = get_connection()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM visitor_logs WHERE timestamp < CURRENT_TIMESTAMP")
-            connection.commit()
-    except Exception:
-        raise
-    finally:
-        put_connection(connection)
+    vistor_db.delete_expired_sessions_from_database()
