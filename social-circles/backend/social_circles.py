@@ -10,6 +10,7 @@ import communities
 import vistors
 import resources
 import user_queries as db
+import user_dashboard
 import uuid
 from datetime import datetime, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -390,8 +391,24 @@ def delete_resources_route():
 def update_resources_route():
     return resources.update_resources()
 
+#----------------------------------------------------------------------
+# Routes for querying USER DASHBOARD data from database
 
+@app.route('/api/get-announcements', methods = ['GET'])
+def get_announcements_route():
+    return user_dashboard.get_announcements()
 
+@app.route('/api/add-announcements', methods = ['POST'])
+def add_announcements_route():
+    return user_dashboard.add_announcements()
+
+@app.route('/api/delete-announcements', methods = ['POST'])
+def delete_announcements_route():
+    return user_dashboard.delete_announcements()
+
+@app.route('/api/edit-announcements', methods = ['POST'])
+def update_announcements_route():
+    return user_dashboard.update_announcements()
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
