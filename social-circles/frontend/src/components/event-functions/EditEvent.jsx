@@ -14,8 +14,8 @@ function EditEvent(props) {
   const [location, setLocation] = useState(props.location);
   const [isDanaEvent, setIsDanaEvent] = useState(props.isDanaEvent);
   const [imageLink, setImageLink] = useState(props.imageLink);
-  const [eventStart, setEventStart] = useState(props.start);
-  const [eventEnd, setEventEnd] = useState(props.end);
+  const [startTime, setStartTime] = useState(props.start);
+  const [endTime, setEndTime] = useState(props.end);
 
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
@@ -47,21 +47,37 @@ function EditEvent(props) {
         return;
       }
     }
-    if (eventStart !== props.start)
-      eventData.start_time = eventStart;
-    if (eventEnd !== props.end) 
-      eventData.end_time = eventEnd;
+    if (startTime !== props.start)
+      eventData.start_time = startTime;
+    if (endTime !== props.end) 
+      eventData.end_time = endTime;
 
     if (
       !eventName || !eventName.trim() ||
       !eventDesc || !eventDesc.trim() ||
       !location || !location.trim() ||
       !imageLink || !imageLink.trim() ||
-      !eventStart || !eventEnd
+      !startTime || !endTime
     ) {
       setAlert({
         type: "warning",
         text: "All fields must be filled.",
+      });
+      return;
+    }
+
+    if (capacity < 0) {
+      setAlert({
+        type: "warning",
+        text: "Capacity must be greater than 0.",
+      });
+      return;
+    }
+
+    if (endTime < startTime) {
+      setAlert({
+        type: "warning",
+        text: "End time must be later than the start time",
       });
       return;
     }
@@ -180,22 +196,22 @@ function EditEvent(props) {
               className={`pl-4`}
             />
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="eventStart">
+          <Form.Group className={`mb-2`} controlId="startTime">
             <Form.Label>Event Start Time</Form.Label>
             <Form.Control
               type="datetime-local"
               placeholder={props.start}
-              value={eventStart}
-              onChange={(e) => setEventStart(e.target.value)}
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="eventEnd">
+          <Form.Group className={`mb-2`} controlId="endTime">
             <Form.Label>Event End Time</Form.Label>
             <Form.Control
               type="datetime-local"
               placeholder={props.end}
-              value={eventEnd}
-              onChange={(e) => setEventEnd(e.target.value)}
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="imageLink">

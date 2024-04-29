@@ -41,11 +41,18 @@ function AddEvent(props) {
     if (capacity < 0) {
       setAlert({
         type: "warning",
-        header: "Invalid capacity!",
         text: "Capacity must be greater than 0.",
       });
       return;
     }
+
+    if (endTime < startTime) {
+      setAlert({
+        type: "warning",
+        text: "End time must be later than the start time",
+      });
+      return;
+    } 
 
     try {
       new URL(imageLink)
