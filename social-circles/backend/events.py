@@ -283,6 +283,7 @@ def add_event_registration():
                     'status' : 'registered'
                 }), 200 # OK
         except Exception as ex:
+            # print(type(ex))
             print(f'events.py: {str(ex)}')
             return flask.jsonify({
                 'message' : str(ex)
@@ -361,6 +362,110 @@ def get_event_emails():
         return flask.jsonify({
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
+    
+def get_one_event_info_with_user_status():
+    if 'email' in flask.session:
+        try:
+            event_id = flask.request.args.get('event_id')
+            if event_id is None:
+                return flask.jsonify({
+                    'message' : 'event_id parameter is missing in the URL.'
+                }), 400 # BAD REQUEST
+            event_info = event_db.get_one_event_info_with_user_status(event_id, flask.session['email'])
+
+            event_info_dict = {
+                'event_id': event_info[0],
+                'event_name': event_info[1],
+                'event_desc': event_info[2],
+                'start_time': event_info[3],
+                'end_time': event_info[4],
+                'capacity': event_info[5],
+                'filled_spots': event_info[6],
+                'image_link': event_info[7],
+                'location': event_info[8],
+                'is_dana_event': event_info[9],
+                'is_registered': event_info[10],
+                'is_waitlisted': event_info[11],
+                'is_full': event_info[12]
+            }
+
+            return flask.jsonify({
+                'results' : event_info_dict
+            }), 200 # OK
+        except Exception as ex:
+            print(f'events.py: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
+    
+def unregister_user():
+    if 'email' in flask.session:
+        try:
+            event_data = flask.request.json
+            event_id = event_data.get('event_id')
+            email = event_data.get('email')
+
+            event_db.delete_event_registration(email, event_id)
+            promote_from_waitlist(event_id)
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200 # OK
+        except Exception as ex:
+            print(f'events.py: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
+
+def get_users_for_event():
+    if 'email' in flask.session:
+        try:
+            event_id = flask.request.args.get('event_id')
+            if event_id is None:
+                return flask.jsonify({
+                    'message' : 'event_id parameter is missing in the URL.'
+                }), 400 # BAD REQUEST
+            users = event_db.get_users_for_event(event_id)
+            users_list = []
+            for user in users:
+                user_dict = {
+                    'user_id' : user[0],
+                    'first_name': user[1],
+                    'last_name': user[2],
+                    'email': user[3],
+                    'is_admin': user[4],
+                    'address': user[5],
+                    'preferred_name': user[6],
+                    'pronouns': user[7],
+                    'phone_number': user[8],
+                    'marital_status': user[9],
+                    'family_circumstance': user[10],
+                    'community_status': user[11],
+                    'interests': user[12],
+                    'personal_identity': user[13],
+                    'profile_photo': user[14]
+                }
+                users_list.append(user_dict)
+
+            return flask.jsonify({
+                'results' : users_list
+            }), 200 # OK
+        except Exception as ex:
+            print(f'events.py: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
         
 # ---------------------------------------------------------------------
 # Helper functions for events back-end logic
@@ -397,6 +502,7 @@ def send_confirmation_email(receiver_email: str, event_id: int,
             "Best,\n"
             "Social Circles Team"
         )
+        
     if email_type == "waitlist_moved":
         msg['Subject'] = f"[Social Circles] You've been moved off the waitlist for {event_name}."
         body = (
@@ -408,13 +514,22 @@ def send_confirmation_email(receiver_email: str, event_id: int,
         )
         
     msg.attach(MIMEText(body, 'plain'))
-    
+
     context = ssl.create_default_context()
     port = 465
-    
+
     with smtplib.SMTP_SSL("smtp.gmail.com", port, 
                           context=context) as server:
+        print('hdioh')
+        print(sender)
+        print(sender_password)
         server.login(sender, sender_password)
+        print('hdioh')
+
         text = msg.as_string()
+        print('hdioh')
+
         server.sendmail(sender, receiver_email, text)
+        print('hdioh')
+
             

@@ -1,0 +1,50 @@
+.square {
+    width: 75px;
+    padding: 75px;
+    position: relative;
+    margin: 5px;
+}
+
+.square-content {
+    position: absolute;
+    top: 5;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.position {
+    padding-top: 2em;
+}
+
+.spacing-from-header {
+    padding-top: 7.5em
+}
+
+hr {
+    border: none;
+    border-top: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.event-info h1, .event-info h2, .event-info img {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.admin-hover-effect {
+    transition: transform 0.15s;
+}
+
+.admin-hover-effect:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+
+.event-desc {
+    font-size: 20px;
+}

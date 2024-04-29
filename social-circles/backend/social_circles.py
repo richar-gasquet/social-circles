@@ -169,6 +169,18 @@ def delete_event_registration_route():
 def delete_event_waitlist_route():
     return events.delete_event_waitlist()
 
+@app.route('/unregister-user', methods = ['POST'])    
+def unregister_user_route():
+    return events.unregister_user()
+
+@app.route('/api/get-one-event-info-with-user-status', methods = ['GET'])
+def get_one_event_info():
+    return events.get_one_event_info_with_user_status()
+
+@app.route('/api/get-users-for-event', methods = ['GET'])
+def get_users_for_event():
+    return events.get_users_for_event()
+
 @app.route('/api/get-event-emails', methods = ['POST'])
 def email_event_route():
     return events.get_event_emails()
@@ -209,6 +221,18 @@ def add_community_registration_route():
 @app.route('/api/delete-community-registration', methods = ['POST'])
 def delete_community_registration_route():
     return communities.delete_community_registration()
+
+# @app.route('/remove-user', methods = ['POST'])    
+# def remove_user_route():
+#     return communities.remove_user()
+
+# @app.route('/api/get-one-group-info', methods = ['GET'])
+# def get_one_group_info():
+#     return communities.get_one_group_info()
+
+# @app.route('/api/get-users-for-group', methods = ['GET'])
+# def get_users_for_group():
+#     return communities.get_users_for_group()
 
 @app.route('/api/get-community-emails', methods = ['POST'])
 def email_community_route():

@@ -21,6 +21,9 @@ import MyCommunities from "./pages/user/Community/MyCommunities.jsx";
 import Profile from "./pages/user/Profile/Profile.jsx";
 import EventContextProvider from "./contexts/EventsContextHandler.jsx";
 import ReactCalendar from "./pages/shared/Calendar.jsx";
+import EventPage from "./pages/user/Events/EventPage.jsx";
+// import CommunitiesPage from "./pages/user/Community/CommunitiesPage.jsx";
+
 
 function App() {
   return (
@@ -65,6 +68,13 @@ function App() {
             </EventContextProvider>
           }
           />
+          
+           <Route path="/events/:eventId" element={
+              <EventContextProvider>
+            <ProtectedRoute component={EventPage} />
+            </EventContextProvider>
+            }
+          />
           <Route
             exact path="/dana-events"
             element={
@@ -99,6 +109,12 @@ function App() {
               </CommunityContextProvider>
             }
           />
+          {/* <Route path="/communities/:groupId" element={
+               <CommunityContextProvider>
+            <ProtectedRoute component={CommunitiesPage} />
+            </CommunityContextProvider>
+            }
+          /> */}
           <Route
             exact
             path="/my-communities"
