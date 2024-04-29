@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -77,7 +78,7 @@ function EditEvent(props) {
     if (endTime < startTime) {
       setAlert({
         type: "warning",
-        text: "End time must be later than the start time",
+        text: "End time must be later than the start time,",
       });
       return;
     }
@@ -99,20 +100,20 @@ function EditEvent(props) {
         if (request.ok) {
           setAlert({
             type: "success",
-            text: `${eventName} was successfully updated.`,
+            text: `${he.decode(eventName)} was successfully updated.`,
           });
           props.updateEvents(props.event_id, eventData);
         } else {
           setAlert({
             type: "danger",
-            text: `${eventName} could not be updated.`,
+            text: `${he.decode(eventName)} could not be updated.`,
           });
         }
       } catch (error) {
         console.log(error)
         setAlert({
           type: "danger",
-          text: `We could not connect to the server while updating ${eventName}.`,
+          text: `We could not connect to the server while updating ${he.decode(eventName)}.`,
         });
       } finally {
         setIsQuerying(false);
@@ -149,8 +150,8 @@ function EditEvent(props) {
             <Form.Label>Event Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder={props.eventName}
-              value={eventName}
+              placeholder={he.decode(props.eventName)}
+              value={he.decode(eventName)}
               onChange={(e) => setEventName(e.target.value)}
               maxLength={150}
             ></Form.Control>
@@ -160,8 +161,8 @@ function EditEvent(props) {
             <Form.Control
               as="textarea"
               rows={5}
-              placeholder={props.eventDesc}
-              value={eventDesc}
+              placeholder={he.decode(props.eventDesc)}
+              value={he.decode(eventDesc)}
               onChange={(e) => setEventDesc(e.target.value)}
               maxLength={800}
             ></Form.Control>
@@ -180,8 +181,8 @@ function EditEvent(props) {
             <Form.Control
               as="textarea"
               rows={2}
-              placeholder={props.location}
-              value={location}
+              placeholder={he.decode(props.location)}
+              value={he.decode(location)}
               onChange={(e) => setLocation(e.target.value)}
               maxLength={200}
             ></Form.Control>
@@ -218,8 +219,8 @@ function EditEvent(props) {
             <Form.Label>Image Link</Form.Label>
             <Form.Control
               as="textarea"
-              placeholder={props.imageLink}
-              value={imageLink}
+              placeholder={he.decode(props.imageLink)}
+              value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}
               maxLength={200}
             ></Form.Control>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -60,19 +61,19 @@ function EditCommunity(props) {
         if (request.ok) {
           setAlert({
             type: "success",
-            text: `${groupName} was successfully updated.`,
+            text: `${he.decode(groupName)} was successfully updated.`,
           });
           props.updateCommunities(props.group_id, communityData);
         } else {
           setAlert({
             type: "danger",
-            text: `${groupName} could not be updated.`,
+            text: `${he.decode(groupName)} could not be updated.`,
           });
         }
       } catch (error) {
         setAlert({
           type: "danger",
-          text: `We could not connect to the server while updating ${groupName}.`,
+          text: `We could not connect to the server while updating ${he.decode(groupName)}.`,
         });
       } finally {
         setIsQuerying(false);
@@ -112,7 +113,7 @@ function EditCommunity(props) {
             <Form.Control
               type="text"
               placeholder={props.groupName}
-              value={groupName}
+              value={he.decode(groupName)}
               onChange={(e) => setGroupName(e.target.value)}
               maxLength={100}
             ></Form.Control>
@@ -123,7 +124,7 @@ function EditCommunity(props) {
               as="textarea"
               rows={5}
               placeholder={props.groupDesc}
-              value={groupDesc}
+              value={he.decode(groupDesc)}
               onChange={(e) => setGroupDesc(e.target.value)}
               maxLength={500}
             ></Form.Control>
@@ -133,7 +134,7 @@ function EditCommunity(props) {
             <Form.Control
               as="textarea"
               placeholder={props.imageLink}
-              value={imageLink}
+              value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}
               maxLength={200}
             ></Form.Control>

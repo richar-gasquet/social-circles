@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -49,7 +50,7 @@ function AddEvent(props) {
     if (endTime < startTime) {
       setAlert({
         type: "warning",
-        text: "End time must be later than the start time",
+        text: "End time must be later than the start time.,",
       });
       return;
     } 
@@ -91,7 +92,7 @@ function AddEvent(props) {
       if (request.ok) {
         setAlert({
           type: "success",
-          text: `${eventName} was successfully added.`,
+          text: `${he.decode(eventName)} was successfully added.`,
         });
         props.fetchEvents();
         setEventName("");
@@ -105,13 +106,13 @@ function AddEvent(props) {
       } else {
         setAlert({
           type: "danger",
-          text: `${eventName} could not be added.`,
+          text: `${he.decode(eventName)} could not be added.`,
         });
       }
     } catch (error) {
       setAlert({
         type: "danger",
-        text: `We could not connect to the server while adding ${eventName}.`,
+        text: `We could not connect to the server while adding ${he.decode(eventName)}.`,
       });
     } finally {
       setIsQuerying(false);
@@ -145,7 +146,7 @@ function AddEvent(props) {
             <Form.Control
               type="text"
               placeholder="Enter event name"
-              value={eventName}
+              value={he.decode(eventName)}
               onChange={(e) => setEventName(e.target.value)}
               maxLength={150}
             ></Form.Control>
@@ -156,7 +157,7 @@ function AddEvent(props) {
               as="textarea"
               rows={5}
               placeholder="Enter an event description"
-              value={eventDesc}
+              value={he.decode(eventDesc)}
               onChange={(e) => setEventDesc(e.target.value)}
               maxLength={800}
             ></Form.Control>
@@ -176,7 +177,7 @@ function AddEvent(props) {
               as="textarea"
               rows={2}
               placeholder="Enter an event location"
-              value={location}
+              value={he.decode(location)}
               onChange={(e) => setLocation(e.target.value)}
               maxLength={200}
             ></Form.Control>
@@ -214,7 +215,7 @@ function AddEvent(props) {
             <Form.Control
               type="text"
               placeholder="Enter an event image link (png/jpg)"
-              value={imageLink}
+              value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}
               maxLength={200}
             ></Form.Control>

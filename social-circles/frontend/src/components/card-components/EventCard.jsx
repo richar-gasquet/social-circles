@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import CardButton from "./CardButton";
 import EventRegisterButton from "../user-functions/EventRegisterButton";
@@ -51,7 +52,7 @@ function EventCard(props) {
         if (data.status === "waitlist") {
           props.addRegistrationAlert(
             "success",
-            `You have joined the waitlist for ${props.name}.`
+            `You have joined the waitlist for ${he.decode(props.name)}.`
           );
           const updatedCard = {
             isRegistered: false,
@@ -63,7 +64,7 @@ function EventCard(props) {
         } else {
           props.addRegistrationAlert(
             "success",
-            `You have registered for ${props.name}.`
+            `You have registered for ${he.decode(props.name)}.`
           );
           const updatedCard = {
             isRegistered: true,
@@ -78,13 +79,13 @@ function EventCard(props) {
         if (data.message === "waitlist_error") {
           props.addRegistrationAlert(
             "danger",
-            `We couldn't register you for the wailist for ${props.name}. 
+            `We couldn't register you for the wailist for ${he.decode(props.name)}. 
             Try again or contact the administrator.`
           );
         } else {
           props.addRegistrationAlert(
             "danger",
-            `We couldn't register you for ${props.name}. 
+            `We couldn't register you for ${he.decode(props.name)}. 
             Try again or contact the administrator.`
           );
         }
@@ -92,8 +93,8 @@ function EventCard(props) {
     } catch (error) {
       props.addRegistrationAlert(
         "danger",
-        `We couldn't connect to the server. 
-        Try again or contact the administrator.`
+        `We couldn't register you for ${he.decode(props.name)}. 
+        The server is most likely down.`
       );
     } finally {
       setIsQuerying(false);
@@ -117,20 +118,20 @@ function EventCard(props) {
       if (request.ok) {
         props.addRegistrationAlert(
           "success",
-          `You have cancelled your registration for ${props.name}.`
+          `You have cancelled your registration for ${he.decode(props.name)}.`
         );
         props.fetchEvents();
       } else {
         props.addRegistrationAlert(
           "danger",
-          `We couldn't cancel your membership for ${props.name}. 
+          `We couldn't cancel your membership for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
     } catch (error) {
       props.addRegistrationAlert(
         "danger",
-        `We couldn't cancel your membership for ${props.name}. 
+        `We couldn't cancel your membership for ${he.decode(props.name)}. 
         The server is most likely down.`
       );
     } finally {
@@ -155,7 +156,7 @@ function EventCard(props) {
       if (request.ok) {
         props.addRegistrationAlert(
           "success",
-          `You have left the waitlist for ${props.name}.`
+          `You have left the waitlist for ${he.decode(props.name)}.`
         );
         const updatedCard = {
           isRegistered: false,
@@ -166,14 +167,14 @@ function EventCard(props) {
       } else {
         props.addRegistrationAlert(
           "danger",
-          `We couldn't cancel your waitlist spot for ${props.name}. 
+          `We couldn't cancel your waitlist spot for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
     } catch (error) {
       props.addRegistrationAlert(
         "danger",
-        `We couldn't cancel your waitlist spot for ${props.name}. 
+        `We couldn't cancel your waitlist spot for ${he.decode(props.name)}. 
         The server is most likely down.`
       );
     } finally {
@@ -212,16 +213,20 @@ function EventCard(props) {
         )}
       </div>
       <div className={`card-body d-flex flex-column`}>
-        <h2 className={`card-title ${styles.cardTitle}`}>{props.name}</h2>
+        <h2 className={`card-title ${styles.cardTitle}`}>
+          {he.decode(props.name)}
+        </h2>
         <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
           <i className="fa-solid fa-user pr-2 py-1"></i>
           {props.filled}/{props.capacity} registered
         </h5>
         <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
           <i className="fa-solid fa-location-dot pr-2 py-1"></i>
-          {props.location}
+          {he.decode(props.location)}
         </h5>
-        <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>
+        <h6 className={`card-text ${styles.cardText}`}>
+          {he.decode(props.desc)}
+        </h6>
         <h6 className={`${styles.cardTime}`}>
           <i className="fa-solid fa-clock pr-2 py-1"></i>
           {localStart} —
