@@ -9,6 +9,7 @@ import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
+import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 
 function Events() {
@@ -18,9 +19,10 @@ function Events() {
     fetchEvents,
     displayAlert,
     setDisplayAlert,
+    updateEvents,
     query,
     setQuery,
-    searchEvents
+    searchEvents,
   } = useEventContext();
   const { isAdmin } = useAuthContext();
 
@@ -68,12 +70,7 @@ function Events() {
             </SearchBar>
             <div className={`row`}>
               {isFetching ? (
-                <div className="col-12 d-flex justify-content-center">
-                  <div className="spinner-border mt-5" role="status"
-                    style={{ width: '10rem', height: '10rem'}}>
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
+                <Loading />
               ) : filteredEvents.length > 0 ? (
                 filteredEvents.map((event) => (
                   <div key={event.event_id} className="col-lg-4 col-md-6 col-sm-12 mt-2">
@@ -81,14 +78,16 @@ function Events() {
                       id={event.event_id}
                       name={event.name}
                       desc={event.desc}
-                      start={event.start_time}
-                      end={event.end_time}
                       capacity={event.capacity}
                       filled={event.filled_spots}
+                      location={event.location}
+                      isDanaEvent={event.isDanaEvent}
                       image={event.image}
-                      isRegistered={event.isRegistered}
+                      start={event.start_time}
+                      end={event.end_time}
                       isAdmin={isAdmin}
                       fetchEvents={fetchPastEvents}
+                      updateEvents={updateEvents}
                       isPastEvent={true}
                     ></EventCard>
                   </div>
