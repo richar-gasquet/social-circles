@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import GuestHeader from "../../components/headers/GuestHeader.jsx";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler.jsx";
-import Loading from "../../components/loading-component/loading.jsx";
+import Loading from "../../components/shared-components/LoadingSpinner.jsx";
 import styles from "../../css/LoginPage.module.css"; 
 
 

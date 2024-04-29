@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -58,7 +59,7 @@ function AddCommunity(props) {
       if (request.ok) {
         setAlert({
           type: "success",
-          text: `${groupName} was successfully added.`,
+          text: `${he.decode(groupName)} was successfully added.`,
         });
         props.fetchCommunities();
         setGroupName("");
@@ -67,13 +68,13 @@ function AddCommunity(props) {
       } else {
         setAlert({
           type: "danger",
-          text: `${groupName} could not be added.`,
+          text: `${he.decode(groupName)} could not be added.`,
         });
       }
     } catch (error) {
       setAlert({
         type: "danger",
-        text: `We could not connect to the server while adding ${groupName}.`
+        text: `We could not connect to the server while adding ${he.decode(groupName)}.`
       });
     } finally {
       setIsQuerying(false);
@@ -107,7 +108,7 @@ function AddCommunity(props) {
             <Form.Control
               type="text"
               placeholder="Enter group name"
-              value={groupName}
+              value={he.decode(groupName)}
               onChange={(e) => setGroupName(e.target.value)}
               maxLength={100}
             ></Form.Control>
@@ -118,7 +119,7 @@ function AddCommunity(props) {
               as="textarea"
               rows={5}
               placeholder="Enter group description"
-              value={groupDesc}
+              value={he.decode(groupDesc)}
               onChange={(e) => setGroupDesc(e.target.value)}
               maxLength={500}
             ></Form.Control>
@@ -128,7 +129,7 @@ function AddCommunity(props) {
             <Form.Control
               as="textarea"
               placeholder="Enter image URL"
-              value={imageLink}
+              value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}
               maxLength={200}
             ></Form.Control>

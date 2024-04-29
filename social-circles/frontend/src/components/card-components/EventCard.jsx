@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import CardButton from "./CardButton";
 import EventRegisterButton from "../user-functions/EventRegisterButton";
@@ -51,7 +52,7 @@ function EventCard(props) {
         if (data.status === "waitlist") {
           props.addRegistrationAlert(
             "success",
-            `You have joined the waitlist for ${props.name}.`
+            `You have joined the waitlist for ${he.decode(props.name)}.`
           );
           const updatedCard = {
             isRegistered: false,
@@ -63,7 +64,7 @@ function EventCard(props) {
         } else {
           props.addRegistrationAlert(
             "success",
-            `You have registered for ${props.name}.`
+            `You have registered for ${he.decode(props.name)}.`
           );
           const updatedCard = {
             isRegistered: true,
@@ -78,13 +79,13 @@ function EventCard(props) {
         if (data.message === "waitlist_error") {
           props.addRegistrationAlert(
             "danger",
-            `We couldn't register you for the wailist for ${props.name}. 
+            `We couldn't register you for the wailist for ${he.decode(props.name)}. 
             Try again or contact the administrator.`
           );
         } else {
           props.addRegistrationAlert(
             "danger",
-            `We couldn't register you for ${props.name}. 
+            `We couldn't register you for ${he.decode(props.name)}. 
             Try again or contact the administrator.`
           );
         }
@@ -92,8 +93,8 @@ function EventCard(props) {
     } catch (error) {
       props.addRegistrationAlert(
         "danger",
-        `We couldn't connect to the server. 
-        Try again or contact the administrator.`
+        `We couldn't register you for ${he.decode(props.name)}. 
+        The server is most likely down.`
       );
     } finally {
       setIsQuerying(false);
@@ -117,20 +118,20 @@ function EventCard(props) {
       if (request.ok) {
         props.addRegistrationAlert(
           "success",
-          `You have cancelled your registration for ${props.name}.`
+          `You have cancelled your registration for ${he.decode(props.name)}.`
         );
         props.fetchEvents();
       } else {
         props.addRegistrationAlert(
           "danger",
-          `We couldn't cancel your membership for ${props.name}. 
+          `We couldn't cancel your membership for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
     } catch (error) {
       props.addRegistrationAlert(
         "danger",
-        `We couldn't cancel your membership for ${props.name}. 
+        `We couldn't cancel your membership for ${he.decode(props.name)}. 
         The server is most likely down.`
       );
     } finally {
@@ -155,7 +156,7 @@ function EventCard(props) {
       if (request.ok) {
         props.addRegistrationAlert(
           "success",
-          `You have left the waitlist for ${props.name}.`
+          `You have left the waitlist for ${he.decode(props.name)}.`
         );
         const updatedCard = {
           isRegistered: false,
@@ -166,14 +167,14 @@ function EventCard(props) {
       } else {
         props.addRegistrationAlert(
           "danger",
-          `We couldn't cancel your waitlist spot for ${props.name}. 
+          `We couldn't cancel your waitlist spot for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
     } catch (error) {
       props.addRegistrationAlert(
         "danger",
-        `We couldn't cancel your waitlist spot for ${props.name}. 
+        `We couldn't cancel your waitlist spot for ${he.decode(props.name)}. 
         The server is most likely down.`
       );
     } finally {
@@ -181,8 +182,31 @@ function EventCard(props) {
     }
   };
 
+  const handleCardClick = (e) => {
+    if (!e.target.closest('.edit-event-modal') && !e.target.closest('.delete-event-modal')
+              && !e.target.closest('.email-event-modal') && !e.target.closest('.register-button')) {
+      const eventData = {
+        isRegistered: props.isRegistered,
+        isFull: props.isFull,
+        isWaitlisted: props.isWaitlisted,
+        filled_spots: props.filled
+      };
+      localStorage.setItem('eventData', JSON.stringify(eventData));
+      window.location.href = `/events/${props.id}`;
+    }
+  };
+
+  const handleButtonClick = (e, action) => {
+    e.stopPropagation();
+    action();
+  };
+
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className={`card h-100 ${styles.card}`}>
+    <div className={`card h-100 ${styles.card}`} onClick={handleCardClick}>
       <div className={styles.cardImgTopContainer}>
         <img
           className={`card-img-top ${styles.cardImgTop}`}
@@ -193,18 +217,18 @@ function EventCard(props) {
           <div className={`${styles.cardButtons}`}>
             <CardButton
               className="mb-2"
-              action={() => setShowEditEvent(true)}
+              action={(e) => { e.stopPropagation(); setShowEditEvent(true); }}
               message="Edit Event"
               icon="fas fa-edit"
             ></CardButton>
             <CardButton
               className="mb-2"
-              action={() => setShowDeleteEvent(true)}
+              action={(e) => { e.stopPropagation(); setShowDeleteEvent(true); }}
               message="Delete Event"
               icon="fas fa-trash"
             ></CardButton>
             <CardButton
-              action={() => setShowEmailEvent(true)}
+              action={(e) => { e.stopPropagation(); setShowEmailEvent(true); }}
               message="Email Event Attendees"
               icon="fas fa-envelope"
             ></CardButton>
@@ -212,32 +236,36 @@ function EventCard(props) {
         )}
       </div>
       <div className={`card-body d-flex flex-column`}>
-        <h2 className={`card-title ${styles.cardTitle}`}>{props.name}</h2>
+        <h2 className={`card-title ${styles.cardTitle}`}>
+          {he.decode(props.name)}
+        </h2>
         <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
           <i className="fa-solid fa-user pr-2 py-1"></i>
           {props.filled}/{props.capacity} registered
         </h5>
         <h5 className={`card-subtitle mb-2 d-flex ${styles.cardSubtitle}`}>
-          <i class="fa-solid fa-location-dot pr-2 py-1"></i>
-          {props.location}
+          <i className="fa-solid fa-location-dot pr-2 py-1"></i>
+          {he.decode(props.location)}
         </h5>
-        <h6 className={`card-text ${styles.cardText}`}>{props.desc}</h6>
+        <h6 className={`card-text ${styles.cardText}`}>
+          {he.decode(props.desc)}
+        </h6>
         <h6 className={`${styles.cardTime}`}>
-          <i class="fa-solid fa-clock pr-2 py-1"></i>
+          <i className="fa-solid fa-clock pr-2 py-1"></i>
           {localStart} —
           <br />
           {localEnd}
         </h6>
-        <div className={``}>
+        <div className="register-button">
           {!props.isPastEvent ? (
             <EventRegisterButton
               isRegistered={props.isRegistered}
               isFull={props.isFull}
               isWaitlisted={props.isWaitlisted}
               isDisabled={isQuerying}
-              handleRegister={handleRegistration}
-              handleCancelRegistration={handleCancelRegistration}
-              handleCancelWaitlist={handleCancelWaitlist}
+              handleRegister={(e) => handleButtonClick(e, handleRegistration)}
+              handleCancelRegistration={(e) => handleButtonClick(e, handleCancelRegistration)}
+              handleCancelWaitlist={(e) => handleButtonClick(e, handleCancelWaitlist)}
             />
           ) : (
             <Button variant="secondary" disabled>
@@ -247,9 +275,10 @@ function EventCard(props) {
         </div>
       </div>
       {showEditEvent && props.isAdmin && (
+        <div className="edit-event-modal" onClick={stopPropagation}>
         <EditEvent
           isShown={showEditEvent}
-          handleClose={() => setShowEditEvent(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowEditEvent(false); }}
           event_id={props.id}
           eventName={props.name}
           eventDesc={props.desc}
@@ -263,24 +292,30 @@ function EventCard(props) {
           isRegistered={props.isRegistered}
           updateEvents={props.updateEvents}
         ></EditEvent>
+        </div>
       )}
       {showDeleteEvent && props.isAdmin && (
+        <div className="delete-event-modal" onClick={stopPropagation}>
         <DeleteEvent
           isShown={showDeleteEvent}
-          handleClose={() => setShowDeleteEvent(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowDeleteEvent(false); }}
           event_id={props.id}
           name={props.name}
           fetchEvents={props.fetchEvents}
         ></DeleteEvent>
+        </div>
       )}
+
       {showEmailEvent && props.isAdmin && (
+        <div className="email-event-modal" onClick={stopPropagation}>
         <EmailEventGroup
           isShown={showEmailEvent}
-          handleClose={() => setShowEmailEvent(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowEmailEvent(false); }}
           event_id={props.id}
           name={props.name}
           fetchEvents={props.fetchEvents}
         ></EmailEventGroup>
+        </div>
       )}
     </div>
   );

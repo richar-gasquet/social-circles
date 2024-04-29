@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ToastContainer from "react-bootstrap/ToastContainer";
@@ -30,7 +31,7 @@ function DeleteCommunity(props) {
       if (request.ok) {
         setAlert({
           type: "success",
-          text: `${props.name} was successfully deleted.`
+          text: `${he.decode(props.name)} was successfully deleted.`
         });
         setTimeout(() => {
           props.fetchCommunities();
@@ -39,13 +40,13 @@ function DeleteCommunity(props) {
       } else {
         setAlert({
           type: "danger",
-          text: `${props.name} could not be deleted.`
+          text: `${he.decode(props.name)} could not be deleted.`
         });
       }
     } catch (error) {
       setAlert({
         type: "danger",
-        text: `We could not connect to the server while deleting ${props.name}.`,
+        text: `We could not connect to the server while deleting ${he.decode(props.name)}.`,
       });
     } finally {
       setIsQuerying(false);
@@ -75,7 +76,7 @@ function DeleteCommunity(props) {
         )}
         <p>
           Are you sure you want to delete the community{" "}
-          <strong>{props.name}</strong>? This action will be irreversible.
+          <strong>{he.decode(props.name)}</strong>? This action will be irreversible.
         </p>
         <Button
           variant="secondary"

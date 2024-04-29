@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -33,7 +34,7 @@ function EmailCommunity(props) {
         if (request.ok) {
           setAlert({
             type: "success",
-            text: "You will be redirected shortly.",
+            text: "You will be redirected shortly to your mail app..",
           });
           const data = await request.json();
           const encoded_subject = encodeURIComponent(String(subject));
@@ -49,7 +50,7 @@ function EmailCommunity(props) {
         } else {
           setAlert({
             type: "danger",
-            text: `We could not fetch the user emails for ${props.name}.`,
+            text: `We could not fetch the user emails for ${he.decode(props.name)}.`,
           });
         }
       } catch (error) {
@@ -72,18 +73,22 @@ function EmailCommunity(props) {
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
         <Modal.Title className={`${styles.modalTitle}`}>
-          Email Community: {props.groupName}{" "}
+          Email Members for {he.decode(props.name)}{" "}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
-          <AlertBox
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            wantTimer={false}
-            handleClose={() => setAlert(null)}
-          ></AlertBox>
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="subject">

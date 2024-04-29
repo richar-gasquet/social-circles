@@ -3,7 +3,7 @@ import { useUserContext } from '../../../contexts/UserContextHandler';
 import AdminHeader from '../../../components/headers/AdminHeader';
 import UserHeader from '../../../components/headers/UserHeader';
 import GuestHeader from '../../../components/headers/GuestHeader';
-import Loading from '../../../components/loading-component/loading';
+import Loading from '../../../components/shared-components/LoadingSpinner';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import styles from '../../../css/ProfileForm.module.css';

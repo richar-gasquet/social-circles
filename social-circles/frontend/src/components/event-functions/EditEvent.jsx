@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -14,8 +15,8 @@ function EditEvent(props) {
   const [location, setLocation] = useState(props.location);
   const [isDanaEvent, setIsDanaEvent] = useState(props.isDanaEvent);
   const [imageLink, setImageLink] = useState(props.imageLink);
-  const [eventStart, setEventStart] = useState(props.start);
-  const [eventEnd, setEventEnd] = useState(props.end);
+  const [startTime, setStartTime] = useState(props.start);
+  const [endTime, setEndTime] = useState(props.end);
 
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
@@ -47,18 +48,37 @@ function EditEvent(props) {
         return;
       }
     }
-    if (eventStart !== props.start)
-      eventData.start_time = eventStart;
-    if (eventEnd !== props.end) 
-      eventData.end_time = eventEnd;
+    if (startTime !== props.start)
+      eventData.start_time = startTime;
+    if (endTime !== props.end) 
+      eventData.end_time = endTime;
 
     if (
-      !eventName.trim()  || !eventDesc.trim() || 
-      !location.trim() || !imageLink.trim() || !eventStart || !eventEnd 
+      !eventName || !eventName.trim() ||
+      !eventDesc || !eventDesc.trim() ||
+      !location || !location.trim() ||
+      !imageLink || !imageLink.trim() ||
+      !startTime || !endTime
     ) {
       setAlert({
         type: "warning",
         text: "All fields must be filled.",
+      });
+      return;
+    }
+
+    if (capacity < 0) {
+      setAlert({
+        type: "warning",
+        text: "Capacity must be greater than 0.",
+      });
+      return;
+    }
+
+    if (endTime < startTime) {
+      setAlert({
+        type: "warning",
+        text: "End time must be later than the start time,",
       });
       return;
     }
@@ -80,19 +100,20 @@ function EditEvent(props) {
         if (request.ok) {
           setAlert({
             type: "success",
-            text: `${eventName} was successfully updated.`,
+            text: `${he.decode(eventName)} was successfully updated.`,
           });
           props.updateEvents(props.event_id, eventData);
         } else {
           setAlert({
             type: "danger",
-            text: `${eventName} could not be updated.`,
+            text: `${he.decode(eventName)} could not be updated.`,
           });
         }
       } catch (error) {
+        console.log(error)
         setAlert({
           type: "danger",
-          text: `We could not connect to the server while updating ${eventName}.`,
+          text: `We could not connect to the server while updating ${he.decode(eventName)}.`,
         });
       } finally {
         setIsQuerying(false);
@@ -129,8 +150,8 @@ function EditEvent(props) {
             <Form.Label>Event Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder={props.eventName}
-              value={eventName}
+              placeholder={he.decode(props.eventName)}
+              value={he.decode(eventName)}
               onChange={(e) => setEventName(e.target.value)}
               maxLength={150}
             ></Form.Control>
@@ -140,8 +161,8 @@ function EditEvent(props) {
             <Form.Control
               as="textarea"
               rows={5}
-              placeholder={props.eventDesc}
-              value={eventDesc}
+              placeholder={he.decode(props.eventDesc)}
+              value={he.decode(eventDesc)}
               onChange={(e) => setEventDesc(e.target.value)}
               maxLength={800}
             ></Form.Control>
@@ -160,8 +181,8 @@ function EditEvent(props) {
             <Form.Control
               as="textarea"
               rows={2}
-              placeholder={props.location}
-              value={location}
+              placeholder={he.decode(props.location)}
+              value={he.decode(location)}
               onChange={(e) => setLocation(e.target.value)}
               maxLength={200}
             ></Form.Control>
@@ -176,30 +197,30 @@ function EditEvent(props) {
               className={`pl-4`}
             />
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="eventStart">
+          <Form.Group className={`mb-2`} controlId="startTime">
             <Form.Label>Event Start Time</Form.Label>
             <Form.Control
               type="datetime-local"
               placeholder={props.start}
-              value={eventStart}
-              onChange={(e) => setEventStart(e.target.value)}
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="eventEnd">
+          <Form.Group className={`mb-2`} controlId="endTime">
             <Form.Label>Event End Time</Form.Label>
             <Form.Control
               type="datetime-local"
               placeholder={props.end}
-              value={eventEnd}
-              onChange={(e) => setEventEnd(e.target.value)}
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="imageLink">
             <Form.Label>Image Link</Form.Label>
             <Form.Control
               as="textarea"
-              placeholder={props.imageLink}
-              value={imageLink}
+              placeholder={he.decode(props.imageLink)}
+              value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}
               maxLength={200}
             ></Form.Control>

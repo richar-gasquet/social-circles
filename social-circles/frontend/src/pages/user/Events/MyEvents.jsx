@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
+import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
+import RegistrationToast from "../../../components/shared-components/RegistrationToast.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
-import UserHeader from "../../../components/headers/UserHeader.jsx";
+import UserHeader from "../../../components/headers/UserHeader.jsx"
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import EventsAside from "../../../components/event-functions/EventsAside.jsx";
 import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
+import SearchBar from "../../../components/shared-components/SearchBar.jsx";
+import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import styles from "../../../css/Toast.module.css"
+
 
 function MyEvents() {
   const {
@@ -17,7 +23,10 @@ function MyEvents() {
     fetchEvents,
     displayAlert,
     setDisplayAlert,
-    updateEventsOnRegistration,
+    updateEvents,
+    query,
+    setQuery,
+    searchEvents,
   } = useEventContext();
   const { isAdmin } = useAuthContext();
 
@@ -30,9 +39,9 @@ function MyEvents() {
 
   const fetchRegisteredEvents = () => fetchEvents("/get-registered-events");
 
-  const addRegistrationAlert = (type, header, text) => {
+  const addRegistrationAlert = (type, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
-      const newRegistrationAlert = { id: Date.now(), type, header, text };
+      const newRegistrationAlert = { id: Date.now(), type, text };
       if (prevRegistrationAlerts.length >= 3) {
         return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
       } else {
@@ -41,12 +50,7 @@ function MyEvents() {
     });
   };
 
-  const removeRegistrationAlert = (id) => {
-    setRegistrationAlerts((prevRegistrationAlerts) =>
-      prevRegistrationAlerts.filter((alert) => alert.id !== id)
-    );
-  };
-
+  const filteredEvents = searchEvents(events)
   const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
@@ -54,16 +58,20 @@ function MyEvents() {
       <SessionTimeoutHandler />
       <Header />
       <div className={`container-fluid p-5`}>
-        {registrationAlerts.map((alert) => (
-          <AlertBox
-            key={alert.id}
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            wantTimer={true}
-            handleClose={() => removeRegistrationAlert(alert.id)}
-          ></AlertBox>
-        ))}
+        <div className="position-relative">
+          <ToastContainer
+            className={`p-3 ${styles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            {registrationAlerts.map((alert) => (
+              <RegistrationToast
+                key={alert.id}
+                type={alert.type}
+                text={alert.text}
+              />
+            ))}
+          </ToastContainer>
+        </div>
         <div
           className={`row container-fluid align-items-center`}
           style = {{paddingTop: '7em'}}
@@ -88,19 +96,12 @@ function MyEvents() {
         <div className={`row`}>
           <EventsAside />
           <div className={`col-lg-10 mt-3`}>
+            <SearchBar query={query} setQuery={setQuery}></SearchBar>
             <div className={`row`}>
               {isFetching ? (
-                <div className="col-12 d-flex justify-content-center">
-                  <div
-                    className="spinner-border mt-5"
-                    role="status"
-                    style={{ width: "10rem", height: "10rem" }}
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
-              ) : events.length > 0 ? (
-                events.map((event) => (
+                <Loading />
+              ) : filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
                   <div
                     key={event.event_id}
                     className="col-lg-4 col-md-6 col-sm-12 mt-2"
@@ -109,15 +110,18 @@ function MyEvents() {
                       id={event.event_id}
                       name={event.name}
                       desc={event.desc}
-                      start={event.start_time}
-                      end={event.end_time}
                       capacity={event.capacity}
                       filled={event.filled_spots}
+                      location={event.location}
+                      isDanaEvent={event.isDanaEvent}
                       image={event.image}
+                      start={event.start_time}
+                      end={event.end_time}
                       isRegistered={event.isRegistered}
+                      isWaitlisted={event.isWaitlisted}
                       isAdmin={isAdmin}
                       fetchEvents={fetchRegisteredEvents}
-                      updateEvents={updateEventsOnRegistration}
+                      updateEvents={updateEvents}
                       addRegistrationAlert={addRegistrationAlert}
                       isPastEvent={event.inPast}
                     ></EventCard>

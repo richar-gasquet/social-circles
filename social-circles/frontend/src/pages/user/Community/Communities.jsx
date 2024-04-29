@@ -11,8 +11,9 @@ import CommunityCard from "../../../components/card-components/CommunityCard.jsx
 import AddCommunity from "../../../components/community-functions/AddCommunity.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
+import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
-import styles from "../../../css/Toast.module.css"
+import styles from "../../../css/Toast.module.css";
 
 function Communities() {
   const {
@@ -71,7 +72,10 @@ function Communities() {
             ))}
           </ToastContainer>
         </div>
-        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '7em'}}>
+        <div
+          className={`row container-fluid align-items-center`}
+          style={{ paddingTop: "7em" }}
+        >
           <div className="col">
             <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
               All Communities
@@ -95,15 +99,7 @@ function Communities() {
             <SearchBar query={query} setQuery={setQuery}></SearchBar>
             <div className={`row`}>
               {isFetching ? (
-                <div className="col-12 d-flex justify-content-center">
-                  <div
-                    className="spinner-border mt-5"
-                    role="status"
-                    style={{ width: "10rem", height: "10rem" }}
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
+                <Loading />
               ) : filteredCommunities.length > 0 ? (
                 filteredCommunities.map((comm) => (
                   <div
@@ -129,7 +125,8 @@ function Communities() {
                   type={displayAlert.type}
                   header={displayAlert.header}
                   text={displayAlert.text}
-                  handleClose={() => setDisplayAlert(null)}
+                  handle
+                  lose={() => setDisplayAlert(null)}
                 ></AlertBox>
               ) : (
                 <h3 className="col-12 text-center">

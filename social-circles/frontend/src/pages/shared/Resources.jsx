@@ -1,6 +1,6 @@
 import { useAuthContext } from "../../contexts/AuthContextHandler";
 import { useUserContext } from '../../contexts/UserContextHandler';
-import Loading from "../../components/loading-component/loading";
+import Loading from "../../components/shared-components/LoadingSpinner";
 import UserHeader from "../../components/headers/UserHeader";
 import GuestHeader from "../../components/headers/GuestHeader";
 import AdminHeader from "../../components/headers/AdminHeader";

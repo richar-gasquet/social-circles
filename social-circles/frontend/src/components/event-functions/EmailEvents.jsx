@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -35,9 +36,6 @@ function EmailEventGroup(props) {
             type: "success",
             text: "You will be redirected shortly to your mail app.",
           });
-          setTimeout(() => {
-            props.fetchEvents();
-          }, 1500);
           const data = await request.json();
           const encoded_subject = encodeURIComponent(String(subject));
           const encoded_msg = encodeURIComponent(String(message));
@@ -52,13 +50,13 @@ function EmailEventGroup(props) {
         } else {
           setAlert({
             type: "danger",
-            text: `We could not fetch the user emails for ${props.name}.`,
+            text: `We could not fetch the user emails for ${he.decode(props.name)}.`,
           });
         }
       } catch (error) {
         setAlert({
           type: "danger",
-          text: "We could not connect to the server while fetching user emails.",
+          text: "We could not connect to the server while fetching the event's emails.",
         });
       } finally {
         setIsQuerying(false);
@@ -75,7 +73,7 @@ function EmailEventGroup(props) {
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
         <Modal.Title className={`${styles.modalTitle}`}>
-          Email Attendees for {props.name}{" "}
+          Email Attendees for {he.decode(props.name)}{" "}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

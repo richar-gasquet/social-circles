@@ -22,6 +22,7 @@ def get_available_events(email) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return all_events
             
             # Retrieve user's user_id at index 0
@@ -80,6 +81,7 @@ def get_dana_events(email) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return dana_events
             
             # Retrieve user's user_id at index 0
@@ -139,6 +141,7 @@ def get_registered_events(email: str) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return registered_events
             
             # Retrieve user's user_id at index 0
@@ -151,19 +154,27 @@ def get_registered_events(email: str) -> list:
                         e.start_time, e.end_time, e.capacity, 
                         e.filled_spots, e.image_link, e.location, 
                         e.is_dana_event,
-                        TRUE as is_registered,
+                        (e_reg.user_id IS NOT NULL) as is_registered,
+                        (e_wait.user_id IS NOT NULL) as is_waitlisted,
                         (e.end_time < CURRENT_TIMESTAMP) as in_past
                 FROM   
                     events e
-                INNER JOIN 
+                LEFT JOIN 
                     event_registrations e_reg 
-                ON 
-                    e.event_id = e_reg.event_id
+                    ON 
+                        e.event_id = e_reg.event_id AND 
+                        e_reg.user_id = %s
+                LEFT JOIN
+                    event_waitlists e_wait
+                    ON
+                        e.event_id = e_wait.event_id AND 
+                        e_wait.user_id = %s
                 WHERE 
-                    e_reg.user_id = %s
+                    e_reg.user_id = %s OR
+                    e_wait.user_id = %s
                 ORDER BY
                     e.end_time DESC
-            ''', (user_id, ))
+            ''', (user_id, user_id, user_id, user_id, ))
             
             registered_events = cursor.fetchall()
     except Exception:
@@ -190,6 +201,7 @@ def get_past_events(email) -> list:
             user_info = cursor.fetchone()
             
             if not user_info:
+                put_connection(connection)
                 return past_events
             
             # Retrieve user's user_id at index 0
@@ -199,15 +211,10 @@ def get_past_events(email) -> list:
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
                     e.start_time, e.end_time, e.capacity, 
-                    e.filled_spots, e.image_link, e.location,
-                    (e_reg.user_id IS NOT NULL) as is_registered
+                    e.filled_spots, e.image_link, e.location, 
+                    e.is_dana_event
                 FROM 
                     events e
-                LEFT JOIN 
-                    event_registrations e_reg
-                ON
-                    e.event_id = e_reg.event_id
-                    AND e_reg.user_id = %s
                 WHERE
                     e.end_time < CURRENT_TIMESTAMP
                 ORDER BY
@@ -270,7 +277,7 @@ def update_event(args: dict) -> None:
             
             sql_query_base = "UPDATE events SET "
             values = []
-            # deleted commas, might need to bring back
+
             if event_name:
                 sql_query_base += "event_name = %s, "
                 values.append(event_name)
@@ -283,7 +290,7 @@ def update_event(args: dict) -> None:
             if location:
                 sql_query_base += "location = %s, "
                 values.append(location)
-            if is_dana_event:
+            if is_dana_event != "unchanged":
                 sql_query_base += "is_dana_event = %s, "
                 values.append(is_dana_event)
             if image_link:
@@ -468,6 +475,85 @@ def get_event_emails(event_id: int) -> list:
         put_connection(connection)
 
     return event_emails
+
+def get_one_event_info_with_user_status(event_id: int, user_email: str):
+    event_info = {}
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # First, get the user_id from the user_email
+            cursor.execute('''
+                SELECT user_id FROM users WHERE email = %s;
+            ''', (user_email,))
+            user_result = cursor.fetchone()
+            if not user_result:
+                put_connection(connection)
+                return event_info  # No such user
+
+            user_id = user_result[0]
+
+            # Now, fetch the event details along with registration and waitlist status
+            cursor.execute('''
+                SELECT 
+                    e.event_id, e.event_name, e.event_desc, e.start_time, e.end_time,
+                    e.capacity, e.filled_spots, e.image_link, e.location, e.is_dana_event,
+                    (SELECT COUNT(*) FROM event_registrations er WHERE er.event_id = e.event_id AND er.user_id = %s) > 0 AS is_registered,
+                    (SELECT COUNT(*) FROM event_waitlists ew WHERE ew.event_id = e.event_id AND ew.user_id = %s) > 0 AS is_waitlisted,
+                    e.filled_spots >= e.capacity AS is_full
+                FROM 
+                    events e
+                WHERE 
+                    e.event_id = %s;
+            ''', (user_id, user_id, event_id))
+
+            event_info = cursor.fetchone()
+    except Exception as ex:
+        print("Error fetching event info:", ex)
+    finally:
+        put_connection(connection)
+    return event_info
+
+
+def get_users_for_event(event_id):
+    rows = []
+    user_ids= []
+    user_info = []
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor: 
+            # Get all users registered for the event 
+            # from the event_registrations table
+            cursor.execute('''
+                SELECT *
+                FROM event_registrations
+                WHERE event_id = %s;
+            ''', (event_id, ))
+            rows = cursor.fetchall()
+
+            if rows:
+                for row in rows:
+                    user_ids.append(row[1])
+                
+                sql_query_base = "SELECT * FROM users WHERE "
+
+                i = 0
+                for _ in user_ids:
+                    if (i == 0):
+                        sql_query_base += "user_id = %s"
+                    else:
+                        sql_query_base += " OR user_id = %s"
+                    i = i + 1
+                cursor.execute(sql_query_base, tuple(user_ids))
+                user_info = cursor.fetchall()
+            else:
+                pass
+
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        put_connection(connection)
+    return user_info
         
 # ---------------------------------------------------------------------
 # Queries/Helper functions for WAITLIST functionality
