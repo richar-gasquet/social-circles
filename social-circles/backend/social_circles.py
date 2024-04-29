@@ -356,6 +356,18 @@ def add_community_registration_route():
 def delete_community_registration_route():
     return communities.delete_community_registration()
 
+@app.route('/remove-user', methods = ['POST'])    
+def remove_user_route():
+    return communities.remove_user()
+
+@app.route('/api/get-one-group-info', methods = ['GET'])
+def get_one_group_info():
+    return communities.get_one_group_info()
+
+@app.route('/api/get-users-for-group', methods = ['GET'])
+def get_users_for_group():
+    return communities.get_users_for_group()
+
 @app.route('/api/get-community-emails', methods = ['POST'])
 def email_community_route():
     return communities.get_community_emails()
