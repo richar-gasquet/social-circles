@@ -109,7 +109,8 @@ def get_registered_events():
                     'location' : event[8],
                     'isDanaEvent' : event[9],
                     'isRegistered' : event[10],
-                    'inPast' : event[11]
+                    'isWaitlisted' : event[11],
+                    'inPast' : event[12]
                 }
                 events_list.append(event_dict)
                 
@@ -144,7 +145,7 @@ def get_past_events():
                     'filled_spots': event[6],
                     'image' : event[7],
                     'location' : event[8],
-                    'isRegistered' : event[9]
+                    'isDanaEvent' : event[9]
                 }
                 events_list.append(event_dict)
                 
@@ -217,7 +218,7 @@ def edit_event():
                 'capacity' : event_data.get('capacity', ''),
                 'image_link' : html.escape(event_data.get('image', '')),
                 'location' : html.escape(event_data.get('location', '')),
-                'isDanaEvent' : bool(event_data.get('isDanaEvent', '')),
+                'isDanaEvent' : bool(event_data.get('isDanaEvent', 'unchanged')),
                 'start_time' : start_time,
                 'end_time' : end_time
             }

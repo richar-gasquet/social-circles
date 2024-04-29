@@ -151,19 +151,27 @@ def get_registered_events(email: str) -> list:
                         e.start_time, e.end_time, e.capacity, 
                         e.filled_spots, e.image_link, e.location, 
                         e.is_dana_event,
-                        TRUE as is_registered,
+                        (e_reg.user_id IS NOT NULL) as is_registered,
+                        (e_wait.user_id IS NOT NULL) as is_waitlisted,
                         (e.end_time < CURRENT_TIMESTAMP) as in_past
                 FROM   
                     events e
-                INNER JOIN 
+                LEFT JOIN 
                     event_registrations e_reg 
-                ON 
-                    e.event_id = e_reg.event_id
+                    ON 
+                        e.event_id = e_reg.event_id AND 
+                        e_reg.user_id = %s
+                LEFT JOIN
+                    event_waitlists e_wait
+                    ON
+                        e.event_id = e_wait.event_id AND 
+                        e_wait.user_id = %s
                 WHERE 
-                    e_reg.user_id = %s
+                    e_reg.user_id = %s OR
+                    e_wait.user_id = %s
                 ORDER BY
                     e.end_time DESC
-            ''', (user_id, ))
+            ''', (user_id, user_id, user_id, user_id, ))
             
             registered_events = cursor.fetchall()
     except Exception:
@@ -199,15 +207,10 @@ def get_past_events(email) -> list:
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
                     e.start_time, e.end_time, e.capacity, 
-                    e.filled_spots, e.image_link, e.location,
-                    (e_reg.user_id IS NOT NULL) as is_registered
+                    e.filled_spots, e.image_link, e.location, 
+                    e.is_dana_event
                 FROM 
                     events e
-                LEFT JOIN 
-                    event_registrations e_reg
-                ON
-                    e.event_id = e_reg.event_id
-                    AND e_reg.user_id = %s
                 WHERE
                     e.end_time < CURRENT_TIMESTAMP
                 ORDER BY
@@ -270,7 +273,7 @@ def update_event(args: dict) -> None:
             
             sql_query_base = "UPDATE events SET "
             values = []
-            # deleted commas, might need to bring back
+
             if event_name:
                 sql_query_base += "event_name = %s, "
                 values.append(event_name)
@@ -283,7 +286,7 @@ def update_event(args: dict) -> None:
             if location:
                 sql_query_base += "location = %s, "
                 values.append(location)
-            if is_dana_event:
+            if is_dana_event != "unchanged":
                 sql_query_base += "is_dana_event = %s, "
                 values.append(is_dana_event)
             if image_link:

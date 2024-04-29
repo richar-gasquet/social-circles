@@ -25,8 +25,11 @@ function AddEvent(props) {
     setAlert(null);
 
     if (
-      !eventName.trim() || !eventDesc.trim() || 
-      !location.trim() || !imageLink.trim() || !startTime || !endTime 
+      !eventName || !eventName.trim() ||
+      !eventDesc || !eventDesc.trim() ||
+      !location || !location.trim() ||
+      !imageLink || !imageLink.trim() ||
+      !startTime || !endTime 
     ) {
       setAlert({
         type: "warning",

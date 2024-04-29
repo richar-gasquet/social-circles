@@ -53,8 +53,11 @@ function EditEvent(props) {
       eventData.end_time = eventEnd;
 
     if (
-      !eventName.trim()  || !eventDesc.trim() || 
-      !location.trim() || !imageLink.trim() || !eventStart || !eventEnd 
+      !eventName || !eventName.trim() ||
+      !eventDesc || !eventDesc.trim() ||
+      !location || !location.trim() ||
+      !imageLink || !imageLink.trim() ||
+      !eventStart || !eventEnd
     ) {
       setAlert({
         type: "warning",
@@ -90,6 +93,7 @@ function EditEvent(props) {
           });
         }
       } catch (error) {
+        console.log(error)
         setAlert({
           type: "danger",
           text: `We could not connect to the server while updating ${eventName}.`,
