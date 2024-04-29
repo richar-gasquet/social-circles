@@ -1,4 +1,5 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -33,7 +34,7 @@ function EmailCommunity(props) {
         if (request.ok) {
           setAlert({
             type: "success",
-            text: "You will be redirected shortly.",
+            text: "You will be redirected shortly to your mail app..",
           });
           const data = await request.json();
           const encoded_subject = encodeURIComponent(String(subject));
@@ -49,7 +50,7 @@ function EmailCommunity(props) {
         } else {
           setAlert({
             type: "danger",
-            text: `We could not fetch the user emails for ${e.decode(props.name)}.`,
+            text: `We could not fetch the user emails for ${he.decode(props.name)}.`,
           });
         }
       } catch (error) {

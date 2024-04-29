@@ -171,7 +171,7 @@ function CommunityCard(props) {
           isShown={showEmailComm}
           handleClose={() => setShowEmailComm(false)}
           group_id={props.group_id}
-          groupName={props.name}
+          name={props.name}
         />
       )}
     </>
