@@ -56,7 +56,9 @@ function App() {
             path="/user-dashboard"
             element={
               <UserContextProvider>
-                <ProtectedRoute component={UserDashboard} />
+                <EventContextProvider>
+                  <ProtectedRoute component={UserDashboard} />
+                </EventContextProvider>
               </UserContextProvider>
             }
           />
@@ -113,12 +115,15 @@ function App() {
               }
           />
           <Route
-            exact path="/calendar"
+            exact
+            path="/calendar"
             element={
               <UserContextProvider>
-                <ProtectedRoute component={ReactCalendar} />
+                <EventContextProvider>
+                  <ProtectedRoute component={ReactCalendar} />
+                </EventContextProvider>
               </UserContextProvider>
-          }
+            }
           />
           <Route
             exact
