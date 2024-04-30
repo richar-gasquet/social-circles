@@ -26,10 +26,9 @@ function UserDashboard() {
   const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
   //const Header = isAdmin ? AdminHeader : UserHeader;
 
-  // Checking if userData is undefined or email is empty
-  // if (!userData || userData.email === '') {
-  //   return <Navigate to={"/"} />;
-  // }
+  if (userData.is_admin === undefined){
+    return <Navigate to={"/profile"} />;
+  }
 
   useEffect(() => {
     fetchEvents("/get-available-events");
