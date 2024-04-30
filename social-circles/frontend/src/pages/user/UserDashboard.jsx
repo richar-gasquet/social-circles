@@ -24,7 +24,7 @@ function UserDashboard() {
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
   const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
-  const Header = isAdmin ? AdminHeader : UserHeader;
+  //const Header = isAdmin ? AdminHeader : UserHeader;
 
   // Checking if userData is undefined or email is empty
   if (!userData || userData.email === '') {
@@ -85,7 +85,7 @@ function UserDashboard() {
   return (
     <>
       <SessionTimeoutHandler/>
-      <Header />
+      <UserHeader />
       <div style={{paddingTop: '7em'}}>
         <CarouselComponent
           announcements={announcements}
