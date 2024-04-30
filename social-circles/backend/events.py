@@ -531,5 +531,3 @@ def send_confirmation_email(receiver_email: str, event_id: int,
 
         server.sendmail(sender, receiver_email, text)
         print('hdioh')
-
-            

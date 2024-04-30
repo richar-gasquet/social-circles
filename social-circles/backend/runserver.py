@@ -7,7 +7,7 @@ PORT = 5000
 
 def main():
     try:
-        social_circles.app.run(host = '0.0.0.0', port = PORT, 
+        social_circles.app.run(host = '0.0.0.0', port = PORT, debug=True,
                                ssl_context = ('cert.pem', 'key.pem'))
     except Exception as ex:
         print(f'{sys.argv[0]}: {str(ex)}')

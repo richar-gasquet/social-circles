@@ -8,33 +8,67 @@ import Modal from 'react-bootstrap/Modal';
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import EventRegisterButton from '../../../components/user-functions/EventRegisterButton.jsx';
-import logo from "../../../assets/social-circles-logo.png"
+import logo from "../../../assets/social-circles-logo.png";
+import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
+import RegistrationToast from '../../../components/shared-components/RegistrationToast.jsx';
+import toastStyles from "../../../css/Toast.module.css"
+import { useUserContext } from '../../../contexts/UserContextHandler';
+import Loading from '../../../components/shared-components/LoadingSpinner.jsx';
+import { Navigate } from "react-router-dom";
 
 
 function EventPage() {
     const { eventId } = useParams();
     const [event, setEvent] = useState(null);
-    const [displayAlert, setDisplayAlert] = useState(null);
     const [usersForEvent, setUsersForEvent] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const { isAdmin } = useAuthContext();
+    const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
+    const { userData, isLoading } = useUserContext();
     const Header = isAdmin ? AdminHeader : UserHeader;
 
+    if (isLoading) {
+        return (
+        <>
+        <Header />
+        <Loading/>
+        </>
+        )
+    }
+    // Checking if userData is undefined or email is empty  !userData ||
+  if ( userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
+    
     const [eventData, setEventData] = useState({
         isRegistered: false,
         isFull: false,
         isWaitlisted: false,
         filled_spots: 0
       });
-    
-      useEffect(() => {
-        const storedEventData = JSON.parse(localStorage.getItem('eventData'));
-        if (storedEventData) {
-          setEventData(storedEventData);
-          localStorage.removeItem('eventData'); // Clean up local storage after use
+
+    const addRegistrationAlert = (type, text) => {
+      setRegistrationAlerts((prevRegistrationAlerts) => {
+        const newRegistrationAlert = { id: Date.now(), type, text };
+        if (prevRegistrationAlerts.length >= 3) {
+          return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
+        } else {
+          return [newRegistrationAlert, ...prevRegistrationAlerts];
         }
-      }, []);
+      });
+    };
+    
+    useEffect(() => {
+      const storedEventData = JSON.parse(localStorage.getItem('eventData'));
+      if (storedEventData) {
+        setEventData(storedEventData);
+        localStorage.removeItem('eventData'); // Clean up local storage after use
+      }
+    }, []);
 
     const handleUserClick = (user) => {
       if (isAdmin) {
@@ -42,15 +76,13 @@ function EventPage() {
       }
     };
     
-      const closePopup = () => {
-        setSelectedUser(null);
+    const closePopup = () => {
+      setSelectedUser(null);
     };
 
     const unregisterUser = () => {
         // Confirm with the admin before proceeding
-        const confirmAction = window.confirm("Are you sure you want to unregister this user?");
         
-        if (confirmAction) {
           if (!selectedUser) return;  // Guard clause if no user is selected
       
           fetch(`${import.meta.env.VITE_BACKEND_URL}/unregister-user`, {
@@ -65,24 +97,40 @@ function EventPage() {
           })
           .then(response => response.json())
           .then(data => {
+            {console.log(data.message)}
             if (data.status === 'success') {
-              alert('User has been unregistered.');
+              addRegistrationAlert(
+                "success",
+                `User has been successfully unregistered.`
+              );
+
               closePopup();
               // Refresh the list of users or remove the user from the state
               setUsersForEvent(usersForEvent.filter(user => user.email !== selectedUser.email));
-             
+              const updated = {
+                ...eventData,
+                isRegistered: false,
+                isWaitlisted: false,
+                isFull: event.filled_spots - 1 >= event.capacity,
+                filled_spots: event.filled_spots - 1,
+              };
+              event.filled_spots = event.filled_spots - 1;
+              setEventData(updated);
             } else {
-              alert('Error: ' + data.message);
+              addRegistrationAlert(
+                "danger",
+                `Error: ${data.message}`
+              );
             }
           })
           .catch(error => {
             console.error('Error unregistering user:', error);
-            alert('Failed to unregister user.');
+            addRegistrationAlert(
+              "danger",
+              `Failed to unregister user.`
+            );
           });
-        } else {
-          // If the user cancels, just close the confirmation and do nothing
-          console.log("User deletion cancelled.");
-        }
+        
       };
 
     useEffect(() => {
@@ -105,18 +153,18 @@ function EventPage() {
                         filled_spots: data.results.filled_spots
                     }));
                 } else {
-                    setDisplayAlert({
-                        type: "danger",
-                        header: "Could not display event!",
-                        text: "Try again or contact the administrator.",
-                    });
+                    addRegistrationAlert(
+                      "danger",
+                      `Could not display event!.
+                      Try again or contact server administrator.`
+                    );
                 }
             } catch (error) {
-                setDisplayAlert({
-                    type: "danger",
-                    header: "Could not display events!",
-                    text: "Try again or contact the administrator.",
-                });
+              addRegistrationAlert(
+                "danger",
+                `Could not display event!.
+                Try again or contact server administrator.`
+              );
             }
         };
 
@@ -136,18 +184,18 @@ function EventPage() {
                     const data = await request.json();
                     setUsersForEvent(data.results);
                 } else {
-                    setDisplayAlert({
-                        type: "danger",
-                        header: "Could not display event!",
-                        text: "Try again or contact the administrator.",
-                    });
+                  addRegistrationAlert(
+                    "danger",
+                    `Could not display users registered to this event!.
+                    Try again or contact server administrator.`
+                  );
                 }
             } catch (error) {
-                setDisplayAlert({
-                    type: "danger",
-                    header: "Could not display events!",
-                    text: "Try again or contact the administrator.",
-                });
+              addRegistrationAlert(
+                "danger",
+                `Could not display users registered to this event!.
+                Try again or contact server administrator.`
+              );
             }
         };
 
@@ -173,10 +221,10 @@ function EventPage() {
         if (request.ok) {
           const data = await request.json();
           if (data.status === "waitlist") {
-            setDisplayAlert({
-              type: "success",
-              text: `You have joined the waitlist for ${event.event_name}.`
-            });
+            addRegistrationAlert(
+              "success",
+              `You have joined waitlist for ${event.event_name}.`
+            );
 
             const updated = {
                 ...eventData,
@@ -189,10 +237,10 @@ function EventPage() {
               setEventData(updated);
 
           } else {
-            setDisplayAlert({
-                type: "success",
-                text: `You have registered for ${event.event_name}.`
-              });
+            addRegistrationAlert(
+              "success",
+              `You have registered for ${event.event_name}.`
+            );
 
             const updated = {
                 ...eventData,
@@ -208,22 +256,25 @@ function EventPage() {
         } else {
           const data = await request.json();
           if (data.message === "waitlist_error") {
-            setDisplayAlert({
-                type: "danger",
-                text: `We couldn't register you for the wailist for ${event.event_name}.\n Try again or contact the administrator.`
-              });
+            addRegistrationAlert(
+              "danger",
+              `We couldn't register you for the wailist for ${event.event_name}. 
+              Try again or contact the administrator.`
+            );
           } else {
-            setDisplayAlert({
-                type: "danger",
-                text: `We couldn't register you for ${event.event_name}.\n Try again or contact the administrator.`
-              });
+            addRegistrationAlert(
+              "danger",
+              `We couldn't register you for ${event.event_name}. 
+              Try again or contact the administrator.`
+            );
           }
         }
       } catch (error) {
-        setDisplayAlert({
-            type: "danger",
-            text: `We couldn't connect to the server.\n Try again or contact the administrator.`
-          });
+        addRegistrationAlert(
+          "danger",
+          `We couldn't register you for ${event.event_name}. 
+          Try again or contact the administrator.`
+        );
       } finally {
         setIsQuerying(false);
       }
@@ -254,22 +305,24 @@ function EventPage() {
             event.filled_spots = event.filled_spots - 1;
             setEventData(updated);
       
-            setDisplayAlert({
-              type: "success",
-              text: `You have cancelled your registration for ${event.event_name}.`
-            });
+            addRegistrationAlert(
+              "success",
+              `We have cancelled your registration for ${event.event_name}.`
+            );
       
           } else {
-            setDisplayAlert({
-              type: "danger",
-              text: `We couldn't cancel your membership for ${event.event_name}.\n Try again or contact the administrator.`
-            });
+            addRegistrationAlert(
+              "danger",
+              `We couldn't cancel your registration for ${event.event_name}. 
+              Try again or contact the administrator.`
+            );
           }
         } catch (error) {
-          setDisplayAlert({
-              type: "danger",
-              text: `We couldn't cancel your membership for ${event.event_name}.\n The server is most likely down.`
-            });
+          addRegistrationAlert(
+            "danger",
+            `We couldn't cancel your registration for ${event.event_name}. 
+            Try again or contact the administrator.`
+          );
         } finally {
           setIsQuerying(false);
         }
@@ -291,33 +344,35 @@ function EventPage() {
           }
         );
         if (request.ok) {
-          setDisplayAlert({
-            type: "success",
-            text: `You have left the waitlist for ${event.event_name}.`
-          });
+          addRegistrationAlert(
+            "success",
+            `You have left the waitlist for ${event.event_name}.`
+          );
 
         } else {
-          setDisplayAlert({
-            type: "danger",
-            text: `We couldn't cancel your waitlist spot for ${event.event_name}.\n Try again or contact the administrator.`
-          });
+          addRegistrationAlert(
+            "danger",
+            `We couldn't cancel your waitlist spot for ${event.event_name}. 
+            Try again or contact the administrator`
+          );
         }
       } catch (error) {
-        setDisplayAlert({
-            type: "danger",
-            text: `We couldn't cancel your waitlist spot for ${event.event_name}.\n The server is most likely down.`
-          });
+        addRegistrationAlert(
+          "danger",
+          `We couldn't cancel your waitlist spot for ${event.event_name}. 
+          The server is most likely down.`
+        );
       } finally {
         setIsQuerying(false);
       }
     };
 
-    
-
     const handleButtonClick = (e, action) => {
         e.stopPropagation();
         action();
-      };
+    };
+
+    const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
 
     return (
         <>
@@ -325,6 +380,20 @@ function EventPage() {
             <Header />
             {/* Event info container */}
             <div className="container spacing-from-header" >
+              <div className="position-relative">
+                <ToastContainer
+                  className={`p-3 ${toastStyles.toastContainer}`}
+                  style={{ zIndex: 100 }}
+                >
+                  {registrationAlerts.map((alert) => (
+                    <RegistrationToast
+                      key={alert.id}
+                      type={alert.type}
+                      text={alert.text}
+                    />
+                  ))}
+                </ToastContainer>
+              </div>
                 {event ? (
                     <div className='event-info mt-5 postiion'>
                         <h1>{event.event_name}</h1>

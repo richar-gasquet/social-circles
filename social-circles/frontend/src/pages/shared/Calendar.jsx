@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
+import { useUserContext } from '../../contexts/UserContextHandler';
 import moment from 'moment';
 import AlertBox from '../../components/shared-components/AlertBox.jsx';
 import UserHeader from '../../components/headers/UserHeader';
 import AdminHeader from '../../components/headers/AdminHeader.jsx';
 import Loading from '../../components/shared-components/LoadingSpinner.jsx';
+import { Navigate } from "react-router-dom";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -15,6 +17,25 @@ function ReactCalendar() {
   const [isQuerying, setQuerying] = useState(true);
   const [alert, setAlert] = useState(null)
   const { isAdmin } = useAuthContext();
+  const { userData, isLoading } = useUserContext();
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <Loading/>
+      </>
+    )
+  }
+  // Checking if userData is undefined or email is empty
+  if ( userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
+
 
   useEffect(() => {
     fetchCalendarEvents();
@@ -49,8 +70,6 @@ function ReactCalendar() {
       setQuerying(false);
     }
   };
-
-  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>

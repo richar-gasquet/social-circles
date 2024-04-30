@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import { useUserContext } from '../../../contexts/UserContextHandler';
 import { useCommunityContext } from "../../../contexts/CommunityContextHandler.jsx";
 import ToastContainer from "react-bootstrap/ToastContainer";
 import AlertToast from "../../../components/shared-components/AlertToast.jsx";
@@ -13,6 +14,7 @@ import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import { Navigate } from "react-router-dom";
 import styles from "../../../css/Toast.module.css";
 
 function Communities() {
@@ -31,6 +33,24 @@ function Communities() {
 
   const { isAdmin } = useAuthContext();
   const [showAddCommunity, setShowAddCommunity] = useState(false);
+  const { userData, isLoading } = useUserContext();
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <Loading/>
+      </>
+    )
+  }
+  // Checking if userData is undefined or email is empty
+  if ( userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
 
   useEffect(() => {
     fetchCommunities("/api/get-registered-communities");
@@ -51,7 +71,6 @@ function Communities() {
   };
 
   const filteredCommunities = searchCommunities(communities);
-  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>

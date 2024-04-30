@@ -124,7 +124,7 @@ function EventCard(props) {
       } else {
         props.addRegistrationAlert(
           "danger",
-          `We couldn't cancel your membership for ${he.decode(props.name)}. 
+          `We couldn't cancel your registration for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
@@ -206,7 +206,7 @@ function EventCard(props) {
   };
 
   return (
-    <div className={`card h-100 ${styles.card}`} onClick={handleCardClick}>
+    <div className={`card h-100 ${styles.card}`} onClick={(e) => handleCardClick(e)}>
       <div className={styles.cardImgTopContainer}>
         <img
           className={`card-img-top ${styles.cardImgTop}`}
@@ -275,7 +275,7 @@ function EventCard(props) {
         </div>
       </div>
       {showEditEvent && props.isAdmin && (
-        <div className="edit-event-modal" onClick={stopPropagation}>
+        <div className="edit-event-modal" onClick={(e) => stopPropagation(e)}>
         <EditEvent
           isShown={showEditEvent}
           handleClose={(e) => { e.stopPropagation(); setShowEditEvent(false); }}
@@ -295,7 +295,7 @@ function EventCard(props) {
         </div>
       )}
       {showDeleteEvent && props.isAdmin && (
-        <div className="delete-event-modal" onClick={stopPropagation}>
+        <div className="delete-event-modal" onClick={(e) => stopPropagation(e)}>
         <DeleteEvent
           isShown={showDeleteEvent}
           handleClose={(e) => { e.stopPropagation(); setShowDeleteEvent(false); }}
@@ -307,7 +307,7 @@ function EventCard(props) {
       )}
 
       {showEmailEvent && props.isAdmin && (
-        <div className="email-event-modal" onClick={stopPropagation}>
+        <div className="email-event-modal" onClick={(e) => stopPropagation(e)}>
         <EmailEventGroup
           isShown={showEmailEvent}
           handleClose={(e) => { e.stopPropagation(); setShowEmailEvent(false); }}

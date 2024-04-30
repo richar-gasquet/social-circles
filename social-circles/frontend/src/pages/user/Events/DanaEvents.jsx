@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import { useUserContext } from '../../../contexts/UserContextHandler';
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
 import AlertToast from "../../../components/shared-components/AlertToast.jsx";
@@ -31,6 +32,24 @@ function DanaEvents() {
 
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const { userData, isLoading } = useUserContext();
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <Loading/>
+      </>
+    )
+  }
+  // Checking if userData is undefined or email is empty  !userData ||
+  if ( userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
 
   useEffect(() => {
     fetchEvents("/get-dana-events");
@@ -49,7 +68,6 @@ function DanaEvents() {
     });
   };
   const filteredEvents = searchEvents(events);
-  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>
