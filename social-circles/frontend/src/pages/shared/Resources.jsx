@@ -50,7 +50,7 @@ function Resources() {
     fetchAllResources();
   };
   
-  const Header = isAdmin ? AdminHeader : (userData.is_admin === null ? GuestHeader : UserHeader);
+  const Header = isAdmin ? AdminHeader : (userData.is_admin === null || userData.is_admin === undefined ? GuestHeader : UserHeader);
   
   if (isLoading) {
     return (

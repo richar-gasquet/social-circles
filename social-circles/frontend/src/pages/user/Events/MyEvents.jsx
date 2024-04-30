@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import { useUserContext } from '../../../contexts/UserContextHandler';
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
 import RegistrationToast from "../../../components/shared-components/RegistrationToast.jsx";
@@ -13,6 +14,7 @@ import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import { Navigate } from "react-router-dom";
 import styles from "../../../css/Toast.module.css"
 
 
@@ -32,6 +34,21 @@ function MyEvents() {
 
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const { userData, isLoading } = useUserContext();
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <Loading/>
+      </>
+    )
+  }
+  // Checking if userData is undefined or email is empty
+  if (!userData || userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
 
   useEffect(() => {
     fetchEvents("/get-registered-events");
@@ -51,7 +68,6 @@ function MyEvents() {
   };
 
   const filteredEvents = searchEvents(events)
-  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>

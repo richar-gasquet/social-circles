@@ -53,3 +53,9 @@ header {
     background-color: #E1525F !important;
     color: #ffffff !important; 
 }
+
+@media (max-width: 412px) {
+    .aSocial{
+        display: none;
+    }
+}

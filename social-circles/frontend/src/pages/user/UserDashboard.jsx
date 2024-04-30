@@ -15,6 +15,9 @@ function UserDashboard() {
       </>
     )
   }
+  if(!userData || userData.email == '') {
+    return <Navigate to={"/"} />;
+  }
   if (userData.is_admin == undefined){
     return <Navigate to={"/profile"} />;
   }

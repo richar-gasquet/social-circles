@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
+import { useUserContext } from '../../../contexts/UserContextHandler';
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx"
@@ -11,6 +12,7 @@ import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import { Navigate } from "react-router-dom";
 
 function Events() {
   const {
@@ -27,6 +29,21 @@ function Events() {
   const { isAdmin } = useAuthContext();
 
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const { userData, isLoading } = useUserContext();
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <Loading/>
+      </>
+    )
+  }
+  // Checking if userData is undefined or email is empty
+  if (!userData || userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
 
   useEffect(() => {
     fetchEvents("/get-past-events");
@@ -36,7 +53,6 @@ function Events() {
     fetchEvents("/get-past-events");
 
   const filteredEvents = searchEvents(events);
-  const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
     <>
