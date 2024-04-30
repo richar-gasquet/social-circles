@@ -9,7 +9,9 @@ import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import logo from "../../../assets/social-circles-logo.png"
 import CommunityRegisterButton from '../../../components/user-functions/CommunityRegisterButton.jsx';
-
+import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
+import RegistrationToast from '../../../components/shared-components/RegistrationToast.jsx';
+import toastStyles from "../../../css/Toast.module.css"
 
 function CommunitiesPage() {
     const { groupId } = useParams();
@@ -18,6 +20,7 @@ function CommunitiesPage() {
     const [usersForGroup, setUsersForGroup] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const { isAdmin } = useAuthContext();
+    const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
     const Header = isAdmin ? AdminHeader : UserHeader;
 
@@ -28,13 +31,24 @@ function CommunitiesPage() {
         count: 0
       });
 
-      useEffect(() => {
-        const storedCommData = JSON.parse(localStorage.getItem('commData'));
-        if (storedCommData) {
-          setCommData(storedCommData);
-          localStorage.removeItem('commData'); // Clean up local storage after use
+    const addRegistrationAlert = (type, text) => {
+    setRegistrationAlerts((prevRegistrationAlerts) => {
+        const newRegistrationAlert = { id: Date.now(), type, text };
+        if (prevRegistrationAlerts.length >= 3) {
+        return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
+        } else {
+        return [newRegistrationAlert, ...prevRegistrationAlerts];
         }
-      }, []);
+    });
+    };
+
+    useEffect(() => {
+    const storedCommData = JSON.parse(localStorage.getItem('commData'));
+    if (storedCommData) {
+        setCommData(storedCommData);
+        localStorage.removeItem('commData'); // Clean up local storage after use
+    }
+    }, []);
 
     const cardBodyStyle = {
         padding: '0.5rem'  // Adjust padding as needed
@@ -52,9 +66,7 @@ function CommunitiesPage() {
 
     const unregisterUser = () => {
         // Confirm with the admin before proceeding
-        const confirmAction = window.confirm("Are you sure you want to unregister this user?");
-        
-        if (confirmAction) {
+    
           if (!selectedUser) return;  // Guard clause if no user is selected
       
           fetch(`${import.meta.env.VITE_BACKEND_URL}/remove-user`, {
@@ -70,7 +82,10 @@ function CommunitiesPage() {
           .then(response => response.json())
           .then(data => {
             if (data.status === 'success') {
-              alert('User has been unregistered.');
+              addRegistrationAlert(
+                    "success",
+                    `User has been successfully unregistered.`
+              );
               closePopup();
               // Refresh the list of users or remove the user from the state
               setUsersForGroup(usersForGroup.filter(user => user.email !== selectedUser.email));
@@ -81,19 +96,22 @@ function CommunitiesPage() {
               };
               group.count = group.count - 1;
               setCommData(updated);
-              
+
             } else {
-              alert('Error: ' + data.message);
+                addRegistrationAlert(
+                    "danger",
+                    `Error: ${data.message}`
+                );
             }
           })
           .catch(error => {
             console.error('Error unregistering user:', error);
-            alert('Failed to unregister user.');
+            addRegistrationAlert(
+                "danger",
+                `Failed to unregister user.`
+              );
           });
-        } else {
-          // If the user cancels, just close the confirmation and do nothing
-          console.log("User deletion cancelled.");
-        }
+       
       };
 
     useEffect(() => {
@@ -110,18 +128,18 @@ function CommunitiesPage() {
                     console.log(data.results)
                     setGroup(data.results);
                 } else {
-                    setDisplayAlert({
-                        type: "danger",
-                        header: "Could not display community!",
-                        text: "Try again or contact the administrator.",
-                    });
+                    addRegistrationAlert(
+                        "danger",
+                        `Could not display community!.
+                        Try again or contact server administrator.`
+                      );
                 }
             } catch (error) {
-                setDisplayAlert({
-                    type: "danger",
-                    header: "Could not display communities!",
-                    text: "Try again or contact the administrator.",
-                });
+                addRegistrationAlert(
+                    "danger",
+                    `Could not display community!.
+                    Try again or contact server administrator.`
+                  );
             }
         };
 
@@ -142,18 +160,18 @@ function CommunitiesPage() {
                     console.log(data.results)
                     setUsersForGroup(data.results);
                 } else {
-                    setDisplayAlert({
-                        type: "danger",
-                        header: "Could not display users!",
-                        text: "Try again or contact the administrator.",
-                    });
+                    addRegistrationAlert(
+                        "danger",
+                        `Could not display members!.
+                        Try again or contact server administrator.`
+                      );
                 }
             } catch (error) {
-                setDisplayAlert({
-                    type: "danger",
-                    header: "Could not display users!",
-                    text: "Try again or contact the administrator.",
-                });
+                addRegistrationAlert(
+                    "danger",
+                    `Could not display members!.
+                    Try again or contact server administrator.`
+                  );
             }
         };
 
@@ -177,10 +195,11 @@ function CommunitiesPage() {
           if (request.ok) {
             const data = await request.json();
             
-            setDisplayAlert({
-                type: "success",
-                text: `You have registered for ${group.group_name}.`
-            });
+            
+            addRegistrationAlert(
+                "success",
+                `You have been added to ${group.group_name}.`
+              );
 
             const updated = {
                 ...commData,
@@ -191,16 +210,20 @@ function CommunitiesPage() {
             setCommData(updated);
           } else {
             const data = await request.json();
-              setDisplayAlert({
-                  type: "danger",
-                  text: `We couldn't register you for ${group.group_name}.\n Try again or contact the administrator.`
-                });
+            
+                addRegistrationAlert(
+                    "danger",
+                    `We couldn't add you to ${group.group_name}. 
+                    Try again or contact the administrator.`
+                  );
           }
         } catch (error) {
-          setDisplayAlert({
-              type: "danger",
-              text: `We couldn't connect to the server.\n Try again or contact the administrator.`
-            });
+       
+            addRegistrationAlert(
+                "danger",
+                `We couldn't add you to ${group.group_name}. 
+                Try again or contact the administrator.`
+            );
         } finally {
           setIsQuerying(false);
         }
@@ -229,22 +252,27 @@ function CommunitiesPage() {
               group.count = group.count - 1;
               setCommData(updated);
         
-              setDisplayAlert({
-                type: "success",
-                text: `You have cancelled your registration for ${group.group_name}.`
-              });
+           
+              addRegistrationAlert(
+                "success",
+                `We have cancelled your membership for ${group.group_name}.`
+              );
         
             } else {
-              setDisplayAlert({
-                type: "danger",
-                text: `We couldn't cancel your membership for ${group.group_name}.\n Try again or contact the administrator.`
-              });
+            
+              addRegistrationAlert(
+                "danger",
+                `We couldn't cancel your membership for ${group.group_name}. 
+                Try again or contact the administrator.`
+              );
             }
           } catch (error) {
-            setDisplayAlert({
-                type: "danger",
-                text: `We couldn't cancel your membership for ${group.group_name}.\n The server is most likely down.`
-              });
+            addRegistrationAlert(
+                "danger",
+                `We couldn't cancel your membership for ${group.group_name}. 
+                Try again or contact the administrator.`
+              );
+           
           } finally {
             setIsQuerying(false);
           }
@@ -263,6 +291,20 @@ function CommunitiesPage() {
             <Header />
             {/* Community info container */}
             <div className="container spacing-from-header" >
+                <div className="position-relative">
+                    <ToastContainer
+                    className={`p-3 ${toastStyles.toastContainer}`}
+                    style={{ zIndex: 100 }}
+                    >
+                    {registrationAlerts.map((alert) => (
+                        <RegistrationToast
+                        key={alert.id}
+                        type={alert.type}
+                        text={alert.text}
+                        />
+                    ))}
+                    </ToastContainer>
+                </div>
                 {group ? (
                     <div className='group-info mt-5 postiion'>
                         <h1>{group.group_name}</h1>
