@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
+import { Navigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import { useUserContext } from '../../contexts/UserContextHandler';
+import he from "he"
 import moment from 'moment';
-import AlertBox from '../../components/shared-components/AlertBox.jsx';
 import UserHeader from '../../components/headers/UserHeader';
 import AdminHeader from '../../components/headers/AdminHeader.jsx';
+import AlertBox from '../../components/shared-components/AlertBox.jsx';
 import Loading from '../../components/shared-components/LoadingSpinner.jsx';
-import { Navigate } from "react-router-dom";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -52,7 +53,7 @@ function ReactCalendar() {
         const data = await response.json();
         const transformedEvents = data.results.map((event, index) => ({
           id: parseInt(event.event_id),
-          title: String(event.name),
+          title: he.decode(String(event.name)),
           start: moment(event.start_time).toDate(),
           end: moment(event.end_time).toDate(),
         }));
