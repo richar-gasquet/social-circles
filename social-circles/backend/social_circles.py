@@ -9,8 +9,7 @@ import events
 import communities
 import vistors
 import resources
-import users
-import user_dashboard
+import user_queries as db
 import uuid
 from datetime import datetime, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -21,7 +20,7 @@ app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = True
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 app.config['SESSION_COOKIE_NAME'] = 'socialcircles_session'
 app.config["SESSION_COOKIE_SAMESITE"] = "None" # Allow cookies to be sent in cross-site requests
 app.config['SESSION_COOKIE_SECURE'] = True  # Ensure cookies are sent in secure channel (HTTPS)
@@ -31,29 +30,17 @@ Session(app)
 REACT_FRONTEND = os.environ.get('REACT_FRONTEND')
 flask_cors.CORS(app, supports_credentials=True, resources={r"/*": {"origins": REACT_FRONTEND}})
 
-last_session_init_time = None
-session_init_lock_timeout = timedelta(seconds=1)  # Timeout to prevent re-init
-
 #----------------------------------------------------------------------
 
 # Routes for authentication and authorization
 
 @app.before_request
 def make_session_permanent():
-    global last_session_init_time
-    now = datetime.now(timezone.utc)
-
     flask.session.permanent = True  # Make the session permanent so that it uses the configured expiration
-
+    flask.session['session_start'] = datetime.now(timezone.utc)
     if 'visited' not in flask.session:
-        if last_session_init_time is not None and (now - last_session_init_time) < session_init_lock_timeout:
-            return  # If the last init was very recent, skip this initialization
-
-        flask.session['session_start'] = now
         flask.session['visited'] = True
         flask.session['session_id'] = str(uuid.uuid4())
-        last_session_init_time = now  # Update the last initialization time
-
         vistors.log_visit(flask.session['session_id'])
 
 
@@ -85,41 +72,191 @@ def session_timeout():
 
 @app.route('/user-data', methods = ['GET'])
 def get_user_data():
-    return users.get_user_data()
+    # Check if user is logged on server-side
+    if 'email' in flask.session:
+        user_details = db.get_user_details(flask.session['email'])
+        if user_details:
+            return flask.jsonify({
+                'first_name' : user_details['first_name'],
+                'last_name' : user_details['last_name'],
+                'email': user_details['email'],
+                'is_admin': user_details['is_admin'],  
+                'address' : user_details['address'],
+                'preferred_name' : user_details['preferred_name'],
+                'pronouns' : user_details['pronouns'],
+                'phone_number' : user_details['phone_number'],
+                'marital_status' : user_details['marital_status'],
+                'family_circumstance' : user_details['family_circumstance'],
+                'community_status' : user_details['community_status'],
+                'interests' : user_details['interests'],
+                'personal_identity' : user_details['personal_identity'],
+                'picture' : flask.session['picture']
+            }), 200  # OK
+        else:
+            return flask.jsonify({
+                'name': flask.session['name'],
+                'email': flask.session['email']
+            }), 200  # OK
+    else:
+        return flask.jsonify({
+            'status': 'error',
+            'message': 'User not logged in'
+        }), 401  # Unauthorized
 
 @app.route('/add-user', methods = ['POST'])
 def add_user_data():
-    return users.add_user_data()
+    if 'email' in flask.session:
+        try:
+            user_data = flask.request.json
+            user_dict = {
+                'first_name': user_data.get('first_name', '')[:50],
+                'last_name': user_data.get('last_name', '')[:50],
+                'email': user_data.get('email', '')[:50],
+                'address': user_data.get('address', '')[:50],
+                'preferred_name': user_data.get('preferred_name', '')[:50],
+                'pronouns': user_data.get('pronouns', '')[:50],
+                'phone_number': user_data.get('phone_number', '')[:15],
+                'marital_status': user_data.get('marital_status', '')[:50],
+                'family_circumstance': user_data.get('family_circumstance', '')[:50],
+                'community_status': user_data.get('community_status', '')[:50],
+                'interests': user_data.get('interests', '')[:50],
+                'personal_identity': user_data.get('personal_identity', '')[:50]
+            }
+            db.add_user(user_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not Auth'
+        }), 401 # unauthorized
     
+
 @app.route('/update-user', methods = ['POST'])
 def update_user_data():
-    return users.update_user_data()
+    if 'email' in flask.session:
+        try:
+            
+            user_data = flask.request.json
+            user_dict = {
+                'first_name': user_data.get('first_name', '')[:50],
+                'last_name': user_data.get('last_name', '')[:50],
+                'email': user_data.get('email', '')[:50],
+                'address': user_data.get('address', '')[:50],
+                'preferred_name': user_data.get('preferred_name', 'N/A')[:50] if user_data.get('preferred_name') != '' else 'N/A',
+                'pronouns': user_data.get('pronouns', 'N/A')[:50] if user_data.get('pronouns') != '' else 'N/A',
+                'phone_number': user_data.get('phone_number', '')[:15],
+                'marital_status': user_data.get('marital_status', 'N/A')[:50] if user_data.get('marital_status') != '' else 'N/A',
+                'family_circumstance': user_data.get('family_circumstance', 'N/A')[:50] if user_data.get('family_circumstance') != '' else 'N/A',
+                'community_status': user_data.get('community_status', 'N/A')[:50] if user_data.get('community_status') != '' else 'N/A',
+                'interests': user_data.get('interests', 'N/A')[:50] if user_data.get('interests') != '' else 'N/A',
+                'personal_identity': user_data.get('personal_identity', 'N/A')[:50] if user_data.get('personal_identity') != '' else 'N/A'
+            }
+            
+            db.update_user(user_dict)
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not Auth'
+        }), 401 # unauthorized
     
 @app.route('/delete-user', methods = ['DELETE'])
 def delete_user_data():
-    return users.delete_user_data()
+    if 'email' in flask.session:
+        try:
+            user_data = flask.request.json
+            db.delete_user(user_data['email'])
+            return flask.jsonify({
+                'status' : 'success'
+            }), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': str(ex)
+            }), 500 # internal server error
+    else:
+        return flask.jsonify({
+            'status' : 'error',
+            'message': 'User not Auth'
+        }), 401 # unauthorized
     
 @app.route('/all-users', methods=['GET'])
 def get_all_users():
-    return users.get_all_users()
+    if 'email' in flask.session and db.get_user_authorization(flask.session['email']):  # Check if user is logged in and is authorized
+        try:
+            all_user_details = db.get_all_user_details()
+            return flask.jsonify(all_user_details), 200  # OK
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({
+                'status': 'error',
+                'message': 'Failed to fetch user data'
+            }), 500  # Internal Server Error
+    else:
+        return flask.jsonify({
+            'status': 'error',
+            'message': 'Unauthorized access'
+        }), 403  # Forbidden
     
 @app.route('/block-and-delete-user', methods=['POST'])
 def block_and_delete_user_route():
-    return users.block_and_delete_user_route()
+    if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
+        # Check if the session user is an admin or has appropriate permissions
+        try:
+            user_data = flask.request.json
+            user_email = user_data['email']  # Email of the user to be blocked and deleted
+
+            db.block_and_delete_user(user_email)
+            return flask.jsonify({'status': 'success', 'message': 'User has been blocked and deleted'}), 200
+        except Exception as ex:
+            return flask.jsonify({'status': 'error', 'message': str(ex)}), 500  # Internal Server Error
+    else:
+        return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
     
 
 @app.route('/get-blocked-users', methods=['GET'])
 def get_blocked_users():
-    return users.get_blocked_users()
+    if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
+        try:
+            blocked_users = db.get_all_blocked_users()
+            return flask.jsonify(blocked_users), 200  # OK
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({'status': 'error', 'message': 'Failed to fetch blocked users'}), 500  # Internal Server Error
+    else:
+        return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
 
 
 @app.route('/remove-user-from-block', methods=['POST'])
 def remove_user_from_block():
-    return users.remove_user_from_block()
+    if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
+        try:
+            user_data = flask.request.json
+            db.remove_user_from_block(user_data['email'])
+            return flask.jsonify({'status': 'success', 'message': 'User has been removed from the block'}), 200
+        except Exception as ex:
+            print(ex)
+            return flask.jsonify({'status': 'error', 'message': 'Failed to remove user from block'}), 500  # Internal Server Error
+    else:
+        return flask.jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403  # Forbidden
 
-#----------------------------------------------------------------------
-
-# Routes for requesting current vistors from database
 
 @app.route('/current_visitors', methods = ['GET'])
 def get_current_visitors():
@@ -132,10 +269,6 @@ def get_current_visitors():
 @app.route('/get-available-events', methods = ['GET'])
 def get_available_events_route():
     return events.get_available_events()
-
-@app.route('/get-dana-events', methods = ['GET'])
-def get_dana_events_route():
-    return events.get_dana_events()
         
 @app.route('/get-registered-events', methods = ['GET'])
 def get_registered_events_route():
@@ -186,10 +319,6 @@ def get_users_for_event():
 def email_event_route():
     return events.get_event_emails()
 
-@app.route('/api/get-upcoming-events', methods = ['POST'])
-def get_upcoming_events():
-    return events.get_upcoming_events()
-
 # grab events for calendar
 @app.route('/calendar', methods=['GET'])
 def calendar_route():
@@ -231,9 +360,9 @@ def delete_community_registration_route():
 # def remove_user_route():
 #     return communities.remove_user()
 
-# @app.route('/api/get-one-group-info', methods = ['GET'])
-# def get_one_group_info():
-#     return communities.get_one_group_info()
+@app.route('/api/get-one-group-info', methods = ['GET'])
+def get_one_group_info():
+    return communities.get_one_event_info_with_user_status()
 
 # @app.route('/api/get-users-for-group', methods = ['GET'])
 # def get_users_for_group():
@@ -246,6 +375,10 @@ def email_community_route():
 def clear_expired_sessions():
     with app.app_context():
         vistors.delete_expired_sessions_from_database()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
+scheduler.start()
 
 #----------------------------------------------------------------------
 
@@ -266,26 +399,3 @@ def delete_resources_route():
 @app.route('/api/edit-resources', methods = ['POST'])
 def update_resources_route():
     return resources.update_resources()
-
-#----------------------------------------------------------------------
-# Routes for querying USER DASHBOARD data from database
-
-@app.route('/api/get-announcements', methods = ['GET'])
-def get_announcements_route():
-    return user_dashboard.get_announcements()
-
-@app.route('/api/add-announcements', methods = ['POST'])
-def add_announcements_route():
-    return user_dashboard.add_announcements()
-
-@app.route('/api/delete-announcements', methods = ['POST'])
-def delete_announcements_route():
-    return user_dashboard.delete_announcements()
-
-@app.route('/api/edit-announcements', methods = ['POST'])
-def update_announcements_route():
-    return user_dashboard.update_announcements()
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=clear_expired_sessions, trigger="interval", hours=24)
-scheduler.start()

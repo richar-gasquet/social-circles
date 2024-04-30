@@ -12,6 +12,7 @@ import EventCard from "../../../components/card-components/EventCard.jsx";
 import AddEvent from "../../../components/event-functions/AddEvent.jsx";
 import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
+import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 import { Navigate } from "react-router-dom";
 import styles from "../../../css/Toast.module.css"

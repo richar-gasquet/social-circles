@@ -220,40 +220,40 @@ def get_community_emails():
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
     
-# def get_one_group_info():
-#     if 'email' in flask.session:
-#         try:
-#             group_id = flask.request.args.get('group_id')
-#             if group_id is None:
-#                 return flask.jsonify({
-#                     'message' : 'group_id parameter is missing in the URL.'
-#                 }), 400 # BAD REQUEST
-#             event_info = comm_db.get_one_group_info(group_id)
+def get_one_event_info_with_user_status():
+    if 'email' in flask.session:
+        try:
+            group_id = flask.request.args.get('group_id')
+            if group_id is None:
+                return flask.jsonify({
+                    'message' : 'group_id parameter is missing in the URL.'
+                }), 400 # BAD REQUEST
+            event_info = comm_db.get_one_event_info_with_user_status(group_id)
 
-#             event_info_dict = {
-#                 'event_name': event_info[1],
-#                 'capacity': event_info[2],
-#                 'filled_spots': event_info[3],
-#                 'event_desc': event_info[4],
-#                 'image_link': event_info[5],
-#                 'start_time': event_info[6],
-#                 'end_time': event_info[7],
-#                 'location': event_info[8],
-#                 'is_dana_event': event_info[9]
-#             }
+            event_info_dict = {
+                'event_name': event_info[1],
+                'capacity': event_info[2],
+                'filled_spots': event_info[3],
+                'event_desc': event_info[4],
+                'image_link': event_info[5],
+                'start_time': event_info[6],
+                'end_time': event_info[7],
+                'location': event_info[8],
+                'is_dana_event': event_info[9]
+            }
 
-#             return flask.jsonify({
-#                 'results' : event_info_dict
-#             }), 200 # OK
-#         except Exception as ex:
-#             print(f'events.py: {str(ex)}')
-#             return flask.jsonify({
-#                 'message' : str(ex)
-#             }), 500 # INTERNAL SERVER ERROR
-#     else:
-#         return flask.jsonify({
-#             'message' : 'User not authenticated.'
-#         }), 401 # UNAUTHORIZED
+            return flask.jsonify({
+                'results' : event_info_dict
+            }), 200 # OK
+        except Exception as ex:
+            print(f'events.py: {str(ex)}')
+            return flask.jsonify({
+                'message' : str(ex)
+            }), 500 # INTERNAL SERVER ERROR
+    else:
+        return flask.jsonify({
+            'message' : 'User not authenticated.'
+        }), 401 # UNAUTHORIZED
     
 # def remove_user():
 #     if 'email' in flask.session:
