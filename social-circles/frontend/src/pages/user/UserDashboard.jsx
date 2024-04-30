@@ -2,21 +2,28 @@ import { Navigate } from "react-router-dom";
 import { useUserContext } from '../../contexts/UserContextHandler';
 import { useEventContext } from "../../contexts/EventsContextHandler";
 import { useState, useEffect } from 'react';
-import Carousel from 'react-bootstrap/Carousel';
 import UserHeader from "../../components/headers/UserHeader";
-import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
+import EventCard from "../../components/card-components/EventCard";
+import ToastContainer from "react-bootstrap/esm/ToastContainer";
+import RegistrationToast from "../../components/shared-components/RegistrationToast";
 import AlertBox from "../../components/shared-components/AlertBox";
 import Loading from "../../components/shared-components/LoadingSpinner";
-import ToastContainer from "react-bootstrap/esm/ToastContainer";
+import Carousel from 'react-bootstrap/Carousel';
+import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
+
+
 import styles from "../../css/Toast.module.css";
 
 function UserDashboard() {
-  const { userData, isLoading } = useUserContext();
+  const { userData } = useUserContext();
+
+  if (userData.is_admin === undefined){
+    return <Navigate to={"/profile"} />;
+  }
+
   const [announcements, setAnnouncements] = useState([]);
-  const [isQuerying, setQuerying] = useState(true);
+  const [isQuerying, setIsQuerying] = useState(true);
   const [index, setIndex] = useState(0);
-  // const [displayAlert, setDisplayAlert] = useState(null);
-  const [dataLoaded, setDataLoaded] = useState(false);
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
   const {
@@ -25,48 +32,39 @@ function UserDashboard() {
     fetchEvents,
     displayAlert,
     setDisplayAlert,
-    updateEvents,
-    query,
-    setQuery,
-    searchEvents
+    updateEvents
   } = useEventContext();
 
   useEffect(() => {
-    fetchAllAnnouncements()
-      .then(() => setDataLoaded(true))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
-
-  const fetchAllAnnouncements = async () => {
-    try {
-      setQuerying(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/get-announcements`,
-        { credentials: "include" }
-      )
-      if (response.ok) {
-        const data = await response.json();
-        setAnnouncements(data.results);
-      } else {
+    fetchEvents("/get-available-events");
+    const fetchAllAnnouncements = async () => {
+      try {
+        setIsQuerying(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/get-announcements`,
+          { credentials: "include" }
+        )
+        if (response.ok) {
+          const data = await response.json();
+          setAnnouncements(data.results);
+        } else {
+          setDisplayAlert({
+            type: "danger",
+            header: "Could not display announcements!",
+            text: "Try again or contact the administrator.",
+          });
+        }
+      } catch (error) {
         setDisplayAlert({
           type: "danger",
-          header: "Could not display announcements!",
+          header: "Could not connect to server!",
           text: "Try again or contact the administrator.",
         });
+      } finally {
+        setIsQuerying(false);
       }
-    } catch (error) {
-      setDisplayAlert({
-        type: "danger",
-        header: "Could not connect to server!",
-        text: "Try again or contact the administrator.",
-      });
-    } finally {
-      setQuerying(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEvents("/get-available-events");
+    };
+    fetchAllAnnouncements();
   }, []);
 
   const fetchAllEvents = () => fetchEvents("/get-available-events");
@@ -82,25 +80,21 @@ function UserDashboard() {
     });
   };
 
-  const upcomingEvents = events.slice(0,2);
-
-  if (userData.is_admin === undefined){
-    return <Navigate to={"/profile"} />;
-  }
-
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
   };
 
+  const slicedEvents = events.slice(0, 3)
+
   return (
     <>
-      {userData && <SessionTimeoutHandler />}
+      <SessionTimeoutHandler />
         <UserHeader />
         <div style={{paddingTop: '7em'}}>
           <Carousel activeIndex={index} onSelect={handleSelect} indicators={false} slide={false}>
-            {isLoading ? (
+            {isQuerying ? (
               <Loading />
-            ) : dataLoaded && announcements.length > 0 ? (
+            ) : announcements.length > 0 ? (
               announcements.map((ann) => (
                 <Carousel.Item key={ann.announcement_id} style={{ maxHeight: '400px', overflow: 'hidden' }}>
                   <img
@@ -115,16 +109,7 @@ function UserDashboard() {
                   </Carousel.Caption>
                 </Carousel.Item>
               ))
-            ) : dataLoaded && displayAlert ? (
-              <AlertBox
-                type={displayAlert.type}
-                header={displayAlert.header}
-                text={displayAlert.text}
-                handleClose={() => setDisplayAlert(null)}
-              />
-            ) : null}
-            {/* Display "No Announcements" item only if data loading is complete and no announcements are available */}
-            {dataLoaded && announcements.length === 0 && (
+            ) : (
               <Carousel.Item key="no-announcements" style={{ maxHeight: '400px', overflow: 'hidden' }}>
                 <img
                   className="d-block w-100"
@@ -167,8 +152,8 @@ function UserDashboard() {
               <div className={`row`}>
                 {isFetching ? (
                   <Loading />
-                ) : upcomingEvents.length > 0 ? (
-                  upcomingEvents.map((event) => (
+                ) : slicedEvents.length > 0 ? (
+                  slicedEvents.map((event) => (
                     <div
                       key={event.event_id}
                       className="col-lg-4 col-md-6 col-sm-12 mt-2"
