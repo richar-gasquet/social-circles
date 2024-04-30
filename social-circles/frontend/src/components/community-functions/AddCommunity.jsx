@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import ToastContainer from "react-bootstrap/ToastContainer";
-import RegistrationToast from "../shared-components/RegistrationToast";
+import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
@@ -19,6 +19,8 @@ function AddCommunity(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
+
+    /* ADD STUFF!!*/
 
     if (!groupName.trim() || !groupDesc.trim() || !imageLink.trim()) {
       setAlert({
@@ -94,7 +96,7 @@ function AddCommunity(props) {
             className={`p-3 ${toastStyles.toastContainer}`}
             style={{ zIndex: 100 }}
           >
-            <RegistrationToast
+            <AlertToast
               key={alert.id}
               type={alert.type}
               text={alert.text}

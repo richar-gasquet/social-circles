@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { useAuthContext } from "../../contexts/AuthContextHandler.jsx";
 import moment from 'moment';
+import AlertBox from '../../components/shared-components/AlertBox.jsx';
 import UserHeader from '../../components/headers/UserHeader';
 import AdminHeader from '../../components/headers/AdminHeader.jsx';
 import Loading from '../../components/shared-components/LoadingSpinner.jsx';

@@ -3,7 +3,7 @@ import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ToastContainer from "react-bootstrap/ToastContainer";
-import RegistrationToast from "../shared-components/RegistrationToast";
+import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
@@ -67,7 +67,7 @@ function DeleteResource(props) {
             className={`p-3 ${toastStyles.toastContainer}`}
             style={{ zIndex: 100 }}
           >
-            <RegistrationToast
+            <AlertToast
               key={alert.id}
               type={alert.type}
               text={alert.text}

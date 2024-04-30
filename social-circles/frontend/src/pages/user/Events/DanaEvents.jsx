@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
-import RegistrationToast from "../../../components/shared-components/RegistrationToast.jsx";
+import AlertToast from "../../../components/shared-components/AlertToast.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx"
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
@@ -13,8 +13,7 @@ import AddButton from "../../../components/admin-functions/AddButton.jsx";
 import SearchBar from "../../../components/shared-components/SearchBar.jsx";
 import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
-import styles from "../../../css/Toast.module.css"
-import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
+import styles from "../../../css/Toast.module.css";
 
 function DanaEvents() {
   const {
@@ -63,7 +62,7 @@ function DanaEvents() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <RegistrationToast
+              <AlertToast
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}

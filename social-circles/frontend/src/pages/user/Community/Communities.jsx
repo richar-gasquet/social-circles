@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useCommunityContext } from "../../../contexts/CommunityContextHandler.jsx";
 import ToastContainer from "react-bootstrap/ToastContainer";
-import RegistrationToast from "../../../components/shared-components/RegistrationToast.jsx";
+import AlertToast from "../../../components/shared-components/AlertToast.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx";
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
@@ -64,7 +64,7 @@ function Communities() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <RegistrationToast
+              <AlertToast
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}

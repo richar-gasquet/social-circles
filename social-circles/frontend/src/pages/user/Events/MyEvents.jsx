@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
-import RegistrationToast from "../../../components/shared-components/RegistrationToast.jsx";
+import AlertToast from "../../../components/shared-components/AlertToast.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx"
 import AdminHeader from "../../../components/headers/AdminHeader.jsx";
@@ -64,7 +64,7 @@ function MyEvents() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <RegistrationToast
+              <AlertToast
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}
