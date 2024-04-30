@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Toast from "react-bootstrap/Toast";
 import styles from "../../css/Toast.module.css";
 
-function RegistrationToast(props) {
+function AlertToast(props) {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
@@ -32,4 +32,4 @@ function RegistrationToast(props) {
   );
 }
 
-export default RegistrationToast;
+export default AlertToast;
