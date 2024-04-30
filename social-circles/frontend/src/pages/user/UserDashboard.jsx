@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import UserHeader from "../../components/headers/UserHeader";
 import EventCard from "../../components/card-components/EventCard";
 import ToastContainer from "react-bootstrap/esm/ToastContainer";
-import RegistrationToast from "../../components/shared-components/RegistrationToast";
+import AlertToast from "../../components/shared-components/AlertToast";
 import CarouselComponent from "../../components/user-dashboard-functions/CarouselComponent"
 import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
@@ -118,7 +118,7 @@ function UserDashboard() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <RegistrationToast
+              <AlertToast
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}
