@@ -117,7 +117,7 @@ function CommunityCard(props) {
 
   return (
     <>
-      <div className={`card h-100 ${styles.card}`} onClick={handleCardClick}>
+      <div className={`card h-100 ${styles.card}`} onClick={(e) => handleCardClick(e)}>
         <div className={styles.cardImgTopContainer}>
           <img
             className={`card-img-top ${styles.cardImgTop}`}
@@ -171,7 +171,7 @@ function CommunityCard(props) {
         </div>
       </div>
       {showEditComm && props.isAdmin && (
-        <div className="edit-community-modal" onClick={stopPropagation}>
+        <div className="edit-community-modal" onClick={(e) => stopPropagation(e)}>
         <EditCommunity
           isShown={showEditComm}
           // handleClose={() => setShowEditComm(false)}
@@ -187,7 +187,7 @@ function CommunityCard(props) {
 
       )}
       {showDeleteComm && props.isAdmin && (
-        <div className="delete-community-modal" onClick={stopPropagation}>
+        <div className="delete-community-modal" onClick={(e) => stopPropagation(e)}>
         <DeleteCommunity
           isShown={showDeleteComm}
           // handleClose={() => setShowDeleteComm(false)}
@@ -199,7 +199,7 @@ function CommunityCard(props) {
         </div>
       )}
       {showEmailComm && props.isAdmin && (
-        <div className="email-community-modal" onClick={stopPropagation}>
+        <div className="email-community-modal" onClick={(e) => stopPropagation(e)}>
         <EmailCommunity
           isShown={showEmailComm}
           // handleClose={() => setShowEmailComm(false)}

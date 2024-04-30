@@ -44,11 +44,14 @@ function Events() {
       </>
     )
   }
-  // Checking if userData is undefined or email is empty
-  if (!userData || userData.email === '') {
+  // Checking if userData is undefined or email is empty  !userData ||
+  if ( userData.email === '') {
     return <Navigate to={"/"} />;
   }
-
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
+  {console.log(userData)}
   useEffect(() => {
     fetchEvents("/get-available-events");
   }, []);

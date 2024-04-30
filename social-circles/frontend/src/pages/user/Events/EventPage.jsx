@@ -12,6 +12,10 @@ import logo from "../../../assets/social-circles-logo.png";
 import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
 import RegistrationToast from '../../../components/shared-components/RegistrationToast.jsx';
 import toastStyles from "../../../css/Toast.module.css"
+import { useUserContext } from '../../../contexts/UserContextHandler';
+import Loading from '../../../components/shared-components/LoadingSpinner.jsx';
+import { Navigate } from "react-router-dom";
+
 
 function EventPage() {
     const { eventId } = useParams();
@@ -21,8 +25,25 @@ function EventPage() {
     const { isAdmin } = useAuthContext();
     const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
+    const { userData, isLoading } = useUserContext();
     const Header = isAdmin ? AdminHeader : UserHeader;
 
+    if (isLoading) {
+        return (
+        <>
+        <Header />
+        <Loading/>
+        </>
+        )
+    }
+    // Checking if userData is undefined or email is empty  !userData ||
+  if ( userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
+    
     const [eventData, setEventData] = useState({
         isRegistered: false,
         isFull: false,

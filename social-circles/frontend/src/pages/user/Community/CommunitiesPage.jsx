@@ -12,17 +12,36 @@ import CommunityRegisterButton from '../../../components/user-functions/Communit
 import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
 import RegistrationToast from '../../../components/shared-components/RegistrationToast.jsx';
 import toastStyles from "../../../css/Toast.module.css"
+import { useUserContext } from '../../../contexts/UserContextHandler';
+import Loading from '../../../components/shared-components/LoadingSpinner.jsx';
+import { Navigate } from "react-router-dom";
 
 function CommunitiesPage() {
     const { groupId } = useParams();
     const [group, setGroup] = useState(null);
-    const [displayAlert, setDisplayAlert] = useState(null);
     const [usersForGroup, setUsersForGroup] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const { isAdmin } = useAuthContext();
     const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
+    const { userData, isLoading } = useUserContext();
     const Header = isAdmin ? AdminHeader : UserHeader;
+
+    if (isLoading) {
+        return (
+        <>
+        <Header />
+        <Loading/>
+        </>
+        )
+    }
+    // Checking if userData is undefined or email is empty  !userData ||
+    if ( userData.email === '') {
+        return <Navigate to={"/"} />;
+    }
+    if ( userData.is_admin === undefined) {
+        return <Navigate to={"/profile"} />;
+    }
 
     const [isQuerying, setIsQuerying] = useState(false);
 

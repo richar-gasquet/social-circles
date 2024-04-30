@@ -133,9 +133,11 @@ function App() {
             }
           />
           <Route path="/communities/:groupId" element={
-               <CommunityContextProvider>
-            <ProtectedRoute component={CommunitiesPage} />
-            </CommunityContextProvider>
+            <UserContextProvider>
+              <CommunityContextProvider>
+                <ProtectedRoute component={CommunitiesPage} />
+              </CommunityContextProvider>
+            </UserContextProvider>
             }
           />
           <Route
