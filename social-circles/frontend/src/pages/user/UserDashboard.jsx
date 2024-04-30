@@ -27,9 +27,9 @@ function UserDashboard() {
   //const Header = isAdmin ? AdminHeader : UserHeader;
 
   // Checking if userData is undefined or email is empty
-  if (!userData || userData.email === '') {
-    return <Navigate to={"/"} />;
-  }
+  // if (!userData || userData.email === '') {
+  //   return <Navigate to={"/"} />;
+  // }
 
   useEffect(() => {
     fetchEvents("/get-available-events");
