@@ -10,7 +10,7 @@ import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import EventRegisterButton from '../../../components/user-functions/EventRegisterButton.jsx';
 import logo from "../../../assets/social-circles-logo.png";
 import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
-import RegistrationToast from '../../../components/shared-components/RegistrationToast.jsx';
+import AlertToast from '../../../components/shared-components/AlertToast.jsx';
 import toastStyles from "../../../css/Toast.module.css"
 import { useUserContext } from '../../../contexts/UserContextHandler';
 import Loading from '../../../components/shared-components/LoadingSpinner.jsx';
@@ -36,10 +36,11 @@ function EventPage() {
         </>
         )
     }
-    // Checking if userData is undefined or email is empty  !userData ||
+    // Checking if userData is undefined or email is empty
   if ( userData.email === '') {
     return <Navigate to={"/"} />;
   }
+
   if ( userData.is_admin === undefined) {
     return <Navigate to={"/profile"} />;
   }
@@ -386,7 +387,7 @@ function EventPage() {
                   style={{ zIndex: 100 }}
                 >
                   {registrationAlerts.map((alert) => (
-                    <RegistrationToast
+                    <AlertToast
                       key={alert.id}
                       type={alert.type}
                       text={alert.text}

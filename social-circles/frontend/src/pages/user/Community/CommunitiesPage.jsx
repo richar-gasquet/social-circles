@@ -9,8 +9,8 @@ import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import logo from "../../../assets/social-circles-logo.png"
 import CommunityRegisterButton from '../../../components/user-functions/CommunityRegisterButton.jsx';
-import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
-import RegistrationToast from '../../../components/shared-components/RegistrationToast.jsx';
+import ToastContainer from 'react-bootstrap/ToastContainer.js';
+import AlertToast from '../../../components/shared-components/AlertToast.jsx';
 import toastStyles from "../../../css/Toast.module.css"
 import { useUserContext } from '../../../contexts/UserContextHandler';
 import Loading from '../../../components/shared-components/LoadingSpinner.jsx';
@@ -316,7 +316,7 @@ function CommunitiesPage() {
                     style={{ zIndex: 100 }}
                     >
                     {registrationAlerts.map((alert) => (
-                        <RegistrationToast
+                        <AlertToast
                         key={alert.id}
                         type={alert.type}
                         text={alert.text}

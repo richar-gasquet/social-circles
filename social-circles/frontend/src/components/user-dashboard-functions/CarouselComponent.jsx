@@ -1,7 +1,6 @@
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Loading from "../../components/shared-components/LoadingSpinner";
-import AlertBox from "../../components/shared-components/AlertBox";
 
 function CarouselComponent({ announcements, isQuerying }) {
   return (
