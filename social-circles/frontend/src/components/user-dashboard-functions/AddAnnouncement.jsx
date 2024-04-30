@@ -1,31 +1,50 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
+import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function AddAnnouncement(props) {
   const [annName, setAnnName] = useState("");
   const [descrip, setDescrip] = useState("");
   const [imageLink, setImageLink] = useState("");
-  const [emptyAlert, setEmptyAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!annName && !descrip && !imageLink) {
-      setEmptyAlert(true); 
-      return; 
+    setAlert(null);
+
+    if (!annName.trim() || !descrip.trim() || !imageLink.trim()) {
+      setAlert({
+        type: "warning",
+        text: "All fields must be filled.",
+      });
+      return;
+    }
+
+    try {
+      new URL(imageLink)
+    } catch (error) {
+      setAlert({
+        type: "warning",
+        text: "Image link must be a valid URL.",
+      });
+      return;
     }
 
     const announcementData = {
       announcement_name: annName,
       description: descrip,
-      image_link: imageLink
+      image_link: imageLink,
     };
-
     try {
+      setIsQuerying(true);
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/add-announcement`,
         {
@@ -38,40 +57,50 @@ function AddAnnouncement(props) {
         }
       );
       if (request.ok) {
-        setSuccessAlert(true);
-        setErrorAlert(false);
-        setAnnName("");
-        setDescrip("");
+        setAlert({
+          type: "success",
+          text: `${he.decode(annName)} was successfully added.`,
+        });
+        props.fetchAnnouncements();
+        setGroupName("");
+        setGroupDesc("");
         setImageLink("");
       } else {
-        setErrorAlert(true);
+        setAlert({
+          type: "danger",
+          text: `${he.decode(annName)} could not be added.`,
+        });
       }
     } catch (error) {
-      setErrorAlert(true);
+      setAlert({
+        type: "danger",
+        text: `We could not connect to the server while adding ${he.decode(annName)}.`
+      });
+    } finally {
+      setIsQuerying(false);
     }
   };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Add Announcement</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Add Announcement
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The announcement was successfully added!
-          </Alert>
-        )}
-        {errorAlert && (
-          <Alert variant="danger">
-            Error! The announcement could not be added. Try again or 
-            contact technical support. 
-          </Alert>
-        )}
-        {emptyAlert && (
-          <Alert variant="warning">
-            All fields must be filled.
-          </Alert>
+        {alert && (
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="annName">
@@ -79,17 +108,9 @@ function AddAnnouncement(props) {
             <Form.Control
               type="text"
               placeholder="Enter the title for the announcement."
-              value={annName}
+              value={he.decode(annName)}
               onChange={(e) => setAnnName(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group className={`mb-2`} controlId="imageLink">
-            <Form.Label>Link for Background Image</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter a link for the background."
-              value={imageLink}
-              onChange={(e) => setImageLink(e.target.value)}
+              maxLength={100}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="descrip">
@@ -97,15 +118,35 @@ function AddAnnouncement(props) {
             <Form.Control
               as="textarea"
               rows={5}
-              placeholder="Enter a description for the announcement."
-              value={descrip}
+              placeholder="Enter the announcement description."
+              value={he.decode(descrip)}
               onChange={(e) => setDescrip(e.target.value)}
+              maxLength={500}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Form.Group className={`mb-2`} controlId="imageLink">
+            <Form.Label>Image Link</Form.Label>
+            <Form.Control
+              as="textarea"
+              placeholder="Enter image URL"
+              value={he.decode(imageLink)}
+              onChange={(e) => setImageLink(e.target.value)}
+              maxLength={200}
+            ></Form.Control>
+          </Form.Group>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="primary" type="submit">
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
             Submit
           </Button>
         </Form>
