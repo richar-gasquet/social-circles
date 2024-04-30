@@ -330,3 +330,83 @@ def get_community_emails(group_id: int) -> list:
         put_connection(connection)
 
     return community_emails   
+
+def get_one_group_info_with_user_status(group_id: int, user_email: str):
+    group_info = {}
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # First, get the user_id from the user_email
+            cursor.execute('''
+                SELECT user_id FROM users WHERE email = %s;
+            ''', (user_email,))
+            user_result = cursor.fetchone()
+            print(user_result)
+            if not user_result:
+                return group_info  # No such user
+
+            user_id = user_result[0]
+            print(user_id)
+            print(group_id)
+            # Now, fetch the event details along with registration and waitlist status
+            cursor.execute('''
+                SELECT 
+                    c.group_id, c.group_name, c.group_desc, 
+                    c.member_count, c.image_link, 
+                    (SELECT COUNT(*) FROM community_registrations cr WHERE cr.group_id = c.group_id AND cr.user_id = %s) > 0 AS is_registered
+                    
+                FROM 
+                    communities c
+                WHERE 
+                    c.group_id = %s;
+            ''', (user_id, group_id))
+
+            group_info = cursor.fetchone()
+            print(group_info)
+    except Exception as ex:
+        print("Error fetching community info:", ex)
+    finally:
+        put_connection(connection)
+    return group_info
+
+def get_users_for_group(group_id):
+    rows = []
+    user_ids= []
+    user_info = []
+    connection = get_connection()
+    try: 
+        with connection.cursor() as cursor: 
+            # Get all users registered for the community
+            # from the community_registrations table
+            cursor.execute('''
+                SELECT *
+                FROM community_registrations
+                WHERE group_id = %s;
+            ''', (group_id, ))
+            rows = cursor.fetchall()
+
+            if rows:
+                for row in rows:
+                    user_ids.append(row[1])
+                
+                sql_query_base = "SELECT * FROM users WHERE "
+
+                i = 0
+                for _ in user_ids:
+                    if (i == 0):
+                        sql_query_base += "user_id = %s"
+                    else:
+                        sql_query_base += " OR user_id = %s"
+                    i = i + 1
+                cursor.execute(sql_query_base, tuple(user_ids))
+                user_info = cursor.fetchall()
+                return user_info
+            else:
+                user_info = []
+
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        put_connection(connection)
+    return user_info

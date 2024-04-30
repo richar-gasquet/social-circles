@@ -124,7 +124,7 @@ function EventCard(props) {
       } else {
         props.addRegistrationAlert(
           "danger",
-          `We couldn't cancel your membership for ${he.decode(props.name)}. 
+          `We couldn't cancel your registration for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
