@@ -28,9 +28,13 @@ function ReactCalendar() {
     )
   }
   // Checking if userData is undefined or email is empty
-  if (!userData || userData.email === '') {
+  if ( userData.email === '') {
     return <Navigate to={"/"} />;
   }
+  if ( userData.is_admin === undefined) {
+    return <Navigate to={"/profile"} />;
+  }
+
 
   useEffect(() => {
     fetchCalendarEvents();

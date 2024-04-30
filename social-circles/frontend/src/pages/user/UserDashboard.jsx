@@ -11,22 +11,32 @@ import CarouselComponent from "../../components/user-dashboard-functions/Carouse
 import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import AddButton from "../../components/admin-functions/AddButton";
-
 import styles from "../../css/Toast.module.css";
 import AddAnnouncement from "../../components/user-dashboard-functions/AddAnnouncement";
-import AdminHeader from "../../components/headers/AdminHeader";
 
 function UserDashboard() {
-  const { userData } = useUserContext();
+  const { userData, isLoading } = useUserContext();
   const { isAdmin } = useAuthContext();
   const [announcements, setAnnouncements] = useState([]);
   const [isQuerying, setIsQuerying] = useState(true);
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
   const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
-  //const Header = isAdmin ? AdminHeader : UserHeader;
 
-  if (userData.is_admin === undefined){
+  if (isLoading) {
+    return (
+      <>
+      <UserHeader />
+      <Loading/>
+      </>
+    )
+  }
+
+  // Checking if userData is undefined or email is empty 
+  if ( userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+  if ( userData.is_admin === undefined) {
     return <Navigate to={"/profile"} />;
   }
 

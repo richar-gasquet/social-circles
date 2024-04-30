@@ -40,7 +40,7 @@ function Events() {
       </>
     )
   }
-  // Checking if userData is undefined or email is empty  !userData ||
+  // Checking if userData is undefined or email is empty 
   if ( userData.email === '') {
     return <Navigate to={"/"} />;
   }

@@ -45,7 +45,7 @@ function AdminDashboard() {
         curve: 'smooth'
       },
       title: {
-        text: 'User Activity Over Time',
+        text: 'User Activity Over The Past 24 Hours',
         align: 'left'
       },
       grid: {
