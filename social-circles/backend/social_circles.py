@@ -186,6 +186,10 @@ def get_users_for_event():
 def email_event_route():
     return events.get_event_emails()
 
+@app.route('/api/get-upcoming-events', methods = ['POST'])
+def get_upcoming_events():
+    return events.get_upcoming_events()
+
 # grab events for calendar
 @app.route('/calendar', methods=['GET'])
 def calendar_route():
