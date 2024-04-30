@@ -22,7 +22,7 @@ import Profile from "./pages/user/Profile/Profile.jsx";
 import EventContextProvider from "./contexts/EventsContextHandler.jsx";
 import ReactCalendar from "./pages/shared/Calendar.jsx";
 import EventPage from "./pages/user/Events/EventPage.jsx";
-// import CommunitiesPage from "./pages/user/Community/CommunitiesPage.jsx";
+import CommunitiesPage from "./pages/user/Community/CommunitiesPage.jsx";
 
 
 function App() {
@@ -109,12 +109,12 @@ function App() {
               </CommunityContextProvider>
             }
           />
-          {/* <Route path="/communities/:groupId" element={
+          <Route path="/communities/:groupId" element={
                <CommunityContextProvider>
             <ProtectedRoute component={CommunitiesPage} />
             </CommunityContextProvider>
             }
-          /> */}
+          />
           <Route
             exact
             path="/my-communities"
