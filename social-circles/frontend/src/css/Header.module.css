@@ -38,6 +38,7 @@ header {
     font-size: 1.5rem;
     text-decoration: none;
     transition: color 0.2s;
+    white-space: nowrap;
 }
 
 /* Change color on hover for nav links except current one */
