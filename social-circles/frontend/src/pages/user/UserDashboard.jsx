@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import UserHeader from "../../components/headers/UserHeader";
 import EventCard from "../../components/card-components/EventCard";
 import ToastContainer from "react-bootstrap/esm/ToastContainer";
+import RegistrationToast from "../../components/shared-components/RegistrationToast";
 import CarouselComponent from "../../components/user-dashboard-functions/CarouselComponent"
 import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
@@ -14,7 +15,6 @@ import AddButton from "../../components/admin-functions/AddButton";
 import styles from "../../css/Toast.module.css";
 import AddAnnouncement from "../../components/user-dashboard-functions/AddAnnouncement";
 import AdminHeader from "../../components/headers/AdminHeader";
-import GuestHeader from "../../components/headers/GuestHeader";
 
 function UserDashboard() {
   const { userData } = useUserContext();
@@ -26,8 +26,9 @@ function UserDashboard() {
   const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
   const Header = isAdmin ? AdminHeader : UserHeader;
 
-  if (userData.is_admin === undefined){
-    return <Navigate to={"/profile"} />;
+  // Checking if userData is undefined or email is empty
+  if (!userData || userData.email === '') {
+    return <Navigate to={"/"} />;
   }
 
   useEffect(() => {

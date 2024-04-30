@@ -24,6 +24,7 @@ import ReactCalendar from "./pages/shared/Calendar.jsx";
 import EventPage from "./pages/user/Events/EventPage.jsx";
 // import CommunitiesPage from "./pages/user/Community/CommunitiesPage.jsx";
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -33,14 +34,11 @@ function App() {
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/contact" element={<Contact />} />
-          <Route
-            exact
-            path="/resources"
-            element={
-              <UserContextProvider>
+          <Route exact path="/resources" element={
+            <UserContextProvider>
                 <Resources />
-              </UserContextProvider>
-            }
+            </UserContextProvider>
+            } 
           />
 
           {/* Member routes */}
@@ -65,62 +63,78 @@ function App() {
             }
           />
           <Route
-            exact
-            path="/events"
+            exact path="/events"
             element={
-              <EventContextProvider>
-                <ProtectedRoute component={Events} />
-              </EventContextProvider>
-            }
+              <UserContextProvider>
+                <EventContextProvider>
+                  <ProtectedRoute component={Events} />
+                </EventContextProvider>
+              </UserContextProvider>
+          }
           />
+          
+           <Route path="/events/:eventId" element={
+              <UserContextProvider>
+                <EventContextProvider>
+                    <ProtectedRoute component={EventPage} />
+                </EventContextProvider>
+              </UserContextProvider>
 
-          <Route
-            path="/events/:eventId"
-            element={
-              <EventContextProvider>
-                <ProtectedRoute component={EventPage} />
-              </EventContextProvider>
             }
           />
           <Route
-            exact
-            path="/dana-events"
+            exact path="/dana-events"
             element={
-              <EventContextProvider>
-                <ProtectedRoute component={DanaEvents} />
-              </EventContextProvider>
-            }
+              <UserContextProvider>
+                <EventContextProvider>
+                    <ProtectedRoute component={DanaEvents} />
+                </EventContextProvider>  
+              </UserContextProvider>
+
+              
+              }
           />
           <Route
-            exact
-            path="/my-events"
+            exact path="/my-events"
             element={
-              <EventContextProvider>
-                <ProtectedRoute component={MyEvents} />
-              </EventContextProvider>
-            }
+              <UserContextProvider>
+                <EventContextProvider>
+                    <ProtectedRoute component={MyEvents} />
+                </EventContextProvider>  
+              </UserContextProvider>
+              }
           />
           <Route
-            exact
-            path="/past-events"
+            exact path="/past-events"
             element={
-              <EventContextProvider>
-                <ProtectedRoute component={PastEvents} />
-              </EventContextProvider>
-            }
+              <UserContextProvider>
+                <EventContextProvider>
+                    <ProtectedRoute component={PastEvents} />
+                </EventContextProvider>  
+              </UserContextProvider>
+              }
           />
           <Route
             exact
             path="/calendar"
-            element={<ProtectedRoute component={ReactCalendar} />}
+            element={
+              <UserContextProvider>
+                <EventContextProvider>
+                  <ProtectedRoute component={ReactCalendar} />
+                </EventContextProvider>
+              </UserContextProvider>
+            }
           />
           <Route
             exact
             path="/communities"
             element={
-              <CommunityContextProvider>
-                <ProtectedRoute component={Communities} />
-              </CommunityContextProvider>
+              <UserContextProvider>
+                <CommunityContextProvider>
+                    <ProtectedRoute component={Communities} />
+                </CommunityContextProvider>
+              </UserContextProvider>
+
             }
           />
           {/* <Route path="/communities/:groupId" element={
@@ -133,9 +147,12 @@ function App() {
             exact
             path="/my-communities"
             element={
-              <CommunityContextProvider>
-                <ProtectedRoute component={MyCommunities} />
-              </CommunityContextProvider>
+              <UserContextProvider>
+                <CommunityContextProvider>
+                    <ProtectedRoute component={MyCommunities} />
+                </CommunityContextProvider>
+              </UserContextProvider>
+
             }
           />
 

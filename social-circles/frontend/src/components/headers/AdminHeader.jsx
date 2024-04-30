@@ -12,7 +12,7 @@ function AdminHeader() {
   
   return (
     <header>
-      <nav className={`navbar navbar-expand-md navbar-light ${styles.nav}`}>
+      <nav className={`navbar navbar-expand-xl navbar-light ${styles.nav}`}>
         <NavLink to="/admin-dashboard" className="navbar-brand">
           <img src={logo} alt="Social Circles Logo" className={`img-fluid ${styles.logo}`} />
         </NavLink>

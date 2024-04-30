@@ -38,6 +38,7 @@ header {
     font-size: 1.5rem;
     text-decoration: none;
     transition: color 0.2s;
+    white-space: nowrap;
 }
 
 /* Change color on hover for nav links except current one */
@@ -51,4 +52,10 @@ header {
     border-radius: 8px; 
     background-color: #E1525F !important;
     color: #ffffff !important; 
+}
+
+@media (max-width: 412px) {
+    .aSocial{
+        display: none;
+    }
 }
