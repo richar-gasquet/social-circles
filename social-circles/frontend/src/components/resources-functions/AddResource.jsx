@@ -1,37 +1,51 @@
 import { useState } from "react";
+import he from "he";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
+import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function AddResource(props) {
-  const [resource, setResource] = useState("");
+  const [resourceLink, setResource] = useState("");
   const [dispName, setDispName] = useState("");
-  const [descrip, setDescrip] = useState("");
-  const [emptyAlert, setEmptyAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
-  const [urlIssueAlert, setUrlIssueAlert] = useState(false);
+  const [desc, setDesc] = useState("");
+
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!resource && !dispName && !descrip) {
-      setEmptyAlert(true); 
-      return; 
+    setAlert(null);
+
+    if (!resourceLink || !dispName || !desc) {
+      setAlert({
+        type: "warning",
+        text: "All fields must be filled.",
+      });
+      return;
     }
 
-    if(!resource.startsWith("https://")){
-      setUrlIssueAlert(true);
+    try {
+      new URL(resourceLink);
+    } catch (error) {
+      setAlert({
+        type: "warning",
+        text: "Resource link must be a valid URL.",
+      });
       return;
     }
 
     const resourceData = {
-      resource: resource,
+      resource: resourceLink,
       disp_name: dispName,
-      descrip: descrip
+      descrip: desc,
     };
 
     try {
+      setIsQuerying(true);
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/add-resources`,
         {
@@ -44,54 +58,63 @@ function AddResource(props) {
         }
       );
       if (request.ok) {
-        setSuccessAlert(true);
-        setErrorAlert(false);
+        setAlert({
+          type: "success",
+          text: `${he.decode(dispName)} was successfully added.`,
+        });
+        props.fetchResources()
         setResource("");
         setDispName("");
-        setDescrip("");
+        setDesc("");
       } else {
-        setErrorAlert(true);
+        setAlert({
+          type: "danger",
+          text: `${he.decode(dispName)} could not be added.`,
+        });
       }
     } catch (error) {
-      setErrorAlert(true);
+      setAlert({
+        type: "danger",
+        text: `We could not connect to the server while adding ${he.decode(
+          dispName
+        )}.`,
+      });
+    } finally {
+      setIsQuerying(false);
     }
   };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Add Resource</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Add Resource
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The resource was successfully added!
-          </Alert>
-        )}
-        {errorAlert && (
-          <Alert variant="danger">
-            Error! The resource could not be added. Try again or 
-            contact technical support. 
-          </Alert>
-        )}
-        {emptyAlert && (
-          <Alert variant="warning">
-            All fields must be filled.
-          </Alert>
-        )}
-        {urlIssueAlert && (
-          <Alert variant="warning">
-            Resource URL must start with "https://"
-          </Alert>
+        {alert && (
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="resource">
             <Form.Label>Resource URL Link</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={2}
               placeholder="Enter the resource link"
-              value={resource}
+              value={he.decode(resourceLink)}
               onChange={(e) => setResource(e.target.value)}
+              maxLength={300}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="dispName">
@@ -99,23 +122,35 @@ function AddResource(props) {
             <Form.Control
               type="text"
               placeholder="Enter a display name for the resource link"
-              value={dispName}
+              value={he.decode(dispName)}
               onChange={(e) => setDispName(e.target.value)}
+              maxLength={300}
             ></Form.Control>
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="descrip">
+          <Form.Group className={`mb-2`} controlId="desc">
             <Form.Label>Description</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={3}
               placeholder="Enter a description for this resource"
-              value={descrip}
-              onChange={(e) => setDescrip(e.target.value)}
+              value={he.decode(desc)}
+              onChange={(e) => setDesc(e.target.value)}
+              maxLength={500}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="primary" type="submit">
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
             Submit
           </Button>
         </Form>

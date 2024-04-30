@@ -213,7 +213,8 @@ function AddEvent(props) {
           <Form.Group className={`mb-2`} controlId="imageLink">
             <Form.Label>Image Link</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={2}
               placeholder="Enter an event image link (png/jpg)"
               value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}

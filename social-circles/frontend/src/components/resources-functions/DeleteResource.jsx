@@ -1,15 +1,22 @@
 import { useState } from "react";
+import he from 'he';
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Alert from "react-bootstrap/Alert";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
+import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function DeleteResource(props) {
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
+  const [isQuerying, setIsQuerying] = useState(false);
+  const [isFinalized, setIsFinalized] = useState(false);
+  const [alert, setAlert] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    setAlert(null);
+
     try {
+      setIsQuerying(true);
       const request = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/delete-resources`,
         {
@@ -23,43 +30,68 @@ function DeleteResource(props) {
       );
 
       if (request.ok) {
-        setSuccessAlert(true);
-        setErrorAlert(false);
+        setAlert({
+          type: "success",
+          text: `${he.decode(props.dispName)} was successfully deleted.`,
+        });
+        setTimeout(() => {
+          props.fetchResources();
+        }, 2000);
+        setIsFinalized(true);
       } else {
-        setSuccessAlert(false);
-        setErrorAlert(true);
+        setAlert({
+          type: "danger",
+          text: `${he.decode(props.dispName)} could not be deleted.`,
+        });
       }
     } catch (error) {
-      setSuccessAlert(false);
-      setErrorAlert(true);
+      setAlert({
+        type: "danger",
+        text: `We could not connect to the server while deleting ${he.decode(props.dispName)}.`,
+      });
+    } finally {
+      setIsQuerying(false);
     }
   }
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Delete Resource</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Delete Resource
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {successAlert && (
-          <Alert variant="success">
-            Success! The resource was successfully deleted!
-          </Alert>
-        )}
-        {errorAlert && (
-          <Alert variant="danger">
-            Error! The resource could not be deleted. Try again or contact
-            technical support.
-          </Alert>
+        {alert && (
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <p>
           Are you sure you want to delete the resource{" "}
-          <strong>{props.resource}</strong>? This action will be irreversible.
+          <strong>{he.decode(props.dispName)}</strong>? This action will be irreversible.
         </p>
-        <Button variant="secondary" onClick={props.handleClose}>
-          Cancel
+        <Button
+          variant="secondary"
+          className={`${styles.modalBtn}`}
+          onClick={props.handleClose}
+        >
+          Close
         </Button>
-        <Button variant="danger" onClick={handleSubmit}>
+        <Button
+          variant="danger"
+          className={`${styles.modalBtn} ${styles.modalSubmit}`}
+          onClick={handleSubmit}
+          disabled={isQuerying || isFinalized}
+        >
           Delete
         </Button>
       </Modal.Body>

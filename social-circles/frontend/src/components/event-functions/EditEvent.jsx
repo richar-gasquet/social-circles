@@ -110,7 +110,6 @@ function EditEvent(props) {
           });
         }
       } catch (error) {
-        console.log(error)
         setAlert({
           type: "danger",
           text: `We could not connect to the server while updating ${he.decode(eventName)}.`,
@@ -129,7 +128,9 @@ function EditEvent(props) {
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
-        <Modal.Title className={`${styles.modalTitle}`}>Edit Event</Modal.Title>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Edit Event
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (

@@ -1,36 +1,58 @@
 import { useState } from "react";
+import he from "he";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import AlertBox from "../shared-components/AlertBox";
-import styles from '../../css/Modal.module.css';
+import ToastContainer from "react-bootstrap/ToastContainer";
+import RegistrationToast from "../shared-components/RegistrationToast";
+import styles from "../../css/Modal.module.css";
+import toastStyles from "../../css/Toast.module.css";
 
 function EditResource(props) {
   const [resource, setResource] = useState(props.resource);
-  const [dispName, setDispName] = useState(props.disp_name);
-  const [descrip, setDescrip] = useState(props.descrip);
+  const [dispName, setDispName] = useState(props.dispName);
+  const [desc, setDesc] = useState(props.desc);
+
+  const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
+    console.log("click")
     e.preventDefault();
+    setAlert(null);
+
     const resourceData = { resource_id: props.resource_id };
-    if (resource !== props.resource && resource.trim() !== ""){
-      if(!resource.startsWith("https://")){
+    if (resource !== props.resource)
+      try {
+        new URL(resource);
+        resourceData.resource = resource;
+      } catch (error) {
         setAlert({
           type: "warning",
-          header: "URL Link Issue",
-          text: "Resource URL must start with 'https://'"
+          text: "Resorce link must be a valid URL.",
         });
         return;
       }
-      resourceData.resource = resource;
+    if (dispName !== props.dispName) resourceData.disp_name = dispName;
+    if (desc !== props.desc) resourceData.descrip = desc;
+
+    if (
+      !resource ||
+      !resource.trim() ||
+      !dispName ||
+      !dispName.trim() ||
+      !desc ||
+      !desc.trim()
+    ) {
+      setAlert({
+        type: "warning",
+        text: "All fields must be filled.",
+      });
+      return;
     }
-    if (dispName !== props.disp_name && dispName.trim() !== "")
-      resourceData.disp_name = dispName;
-    if (descrip !== props.descrip && descrip.trim() !== "")
-      resourceData.descrip = descrip;
 
     if (Object.keys(resourceData).length > 1) {
+      setIsQuerying(true);
       try {
         const request = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/edit-resources`,
@@ -45,59 +67,65 @@ function EditResource(props) {
         );
         if (request.ok) {
           setAlert({
-              type: "success",
-              header: "Edit successful!",
-              text: "The resource was successfully updated."
+            type: "success",
+            text: `${he.decode(dispName)} was successfully updated.`,
           });
-          setTimeout(() => {
-            props.fetchAllResources()
-          }, 1500)
+          props.updateResources(props.resource_id, resourceData);
         } else {
           setAlert({
             type: "danger",
-            header: "Edit failed!",
-            text: "The resource could not be updated."
+            text: `${he.decode(dispName)} could not be updated.`,
           });
         }
       } catch (error) {
         setAlert({
           type: "danger",
-          header: "Edit error!",
-          text: "We could not connect to the server while updating the resource."
+          text: `We could not connect to the server while updating ${he.decode(
+            dispName
+          )}.`,
         });
+      } finally {
+        setIsQuerying(false);
       }
     } else {
       setAlert({
         type: "warning",
-        header: "Missing changes!",
-        text: "Please update one or more fields."
+        text: "Please update one or more fields.",
       });
     }
-  }
+  };
 
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>Edit Resource</Modal.Title>
+      <Modal.Header className={`${styles.modalHeader}`}>
+        <Modal.Title className={`${styles.modalTitle}`}>
+          Edit Resource
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {alert && (
-          <AlertBox
-            type={alert.type}
-            header={alert.header}
-            text={alert.text}
-            wantTimer={false}
-            handleClose={() => setAlert(null)}>
-          </AlertBox>
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            <RegistrationToast
+              key={alert.id}
+              type={alert.type}
+              text={alert.text}
+              onDismiss={() => setAlert(null)}
+            />
+          </ToastContainer>
         )}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="resource">
-            <Form.Label>Resource</Form.Label>
+            <Form.Label>Resource URL Link</Form.Label>
             <Form.Control
-              type="text"
+              type="textarea"
+              rows={2}
               placeholder={props.resource}
-              value={resource}
+              value={he.decode(resource)}
               onChange={(e) => setResource(e.target.value)}
+              maxLength={300}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="dispName">
@@ -105,24 +133,36 @@ function EditResource(props) {
             <Form.Control
               type="text"
               placeholder={props.disp_name}
-              value={dispName}
+              value={he.decode(dispName)}
               onChange={(e) => setDispName(e.target.value)}
+              maxLength={300}
             ></Form.Control>
           </Form.Group>
-          <Form.Group className={`mb-2`} controlId="descrip">
+          <Form.Group className={`mb-2`} controlId="desc">
             <Form.Label>Description</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
+              rows={3}
               placeholder={props.descrip}
-              value={descrip}
-              onChange={(e) => setDescrip(e.target.value)}
+              value={he.decode(desc)}
+              onChange={(e) => setDesc(e.target.value)}
+              maxLength={500}
             ></Form.Control>
           </Form.Group>
-          <Button variant="secondary" className={`${styles.modalBtn}`} onClick={props.handleClose}>
+          <Button
+            variant="secondary"
+            className={`${styles.modalBtn}`}
+            onClick={props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="primary" className={`${styles.modalBtn} ${styles.modalSubmit}`} type="submit">
-            Submit
+          <Button
+            variant="primary"
+            className={`${styles.modalBtn} ${styles.modalSubmit}`}
+            type="submit"
+            disabled={isQuerying}
+          >
+            Save
           </Button>
         </Form>
       </Modal.Body>

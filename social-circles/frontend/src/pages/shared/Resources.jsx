@@ -1,25 +1,27 @@
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
-import { useUserContext } from '../../contexts/UserContextHandler';
+import { useUserContext } from "../../contexts/UserContextHandler";
 import Loading from "../../components/shared-components/LoadingSpinner";
+import AlertBox from "../../components/shared-components/AlertBox";
 import UserHeader from "../../components/headers/UserHeader";
 import GuestHeader from "../../components/headers/GuestHeader";
 import AdminHeader from "../../components/headers/AdminHeader";
 import AddResource from "../../components/resources-functions/AddResource";
 import AddButton from "../../components/admin-functions/AddButton";
 import ResourceCard from "../../components/card-components/ResourcesCard";
-import React, { useState, useEffect } from 'react';
 
 function Resources() {
-  const {userData, isLoading} = useUserContext();
+  const { userData, isLoading } = useUserContext();
+
   const [resources, setResources] = useState([]);
-  const [error, setError] = useState("");
   const [isQuerying, setQuerying] = useState(true);
+  const [displayAlert, setDisplayAlert] = useState(false);
   const [showAddResource, setShowAddResource] = useState(false);
 
   const { isAdmin } = useAuthContext();
 
   useEffect(() => {
-    fetchAllResources()
+    fetchAllResources();
   }, []);
 
   const fetchAllResources = async () => {
@@ -28,51 +30,73 @@ function Resources() {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/get-resources`,
         { credentials: "include" }
-      )
+      );
       if (response.ok) {
         const data = await response.json();
         setResources(data.results);
       } else {
-        const errorData = await response.json();
-        setError(errorData.message);
+        setDisplayAlert({
+          type: "danger",
+          header: "Could not display resources!",
+          text: "Try again or contact the administrator.",
+        });
       }
     } catch (error) {
-      console.error("Failed to fetch resource data: ", error);
-      setError("Server error. Please contact the administrator.")
+      setDisplayAlert({
+        type: "danger",
+        header: "Could not connect to server!",
+        text: "Try again or contact the administrator.",
+      });
     } finally {
       setQuerying(false);
     }
   };
 
-  const handleShowAddResource = () => setShowAddResource(true)
-  const handleCloseAddResource = () => {
-    setShowAddResource(false);
-    fetchAllResources();
-  };
+  const updateResources = useCallback((resource_id, newResource) => {
+    setResources((prevResources) =>
+      prevResources.map((oldResource) => {
+        if (oldResource.resource_id === resource_id) {
+          return { ...oldResource, ...newResource};
+        } else {
+          return oldResource
+        }
+      })
   
-  const Header = isAdmin ? AdminHeader : (userData.is_admin === null ? GuestHeader : UserHeader);
-  
+    );
+  }, [resources]);
+
+  const Header = isAdmin
+    ? AdminHeader
+    : userData.is_admin === null
+    ? GuestHeader
+    : UserHeader;
+
   if (isLoading) {
     return (
       <>
-      <Header/>
-      <Loading/>
+        <Header />
+        <Loading />
       </>
-    )
+    );
   }
 
   return (
     <>
       <Header />
-      <div className={`container-fluid p-5 `} >
-        <div className={`row container-fluid align-items-center`} style={{paddingTop: '7em'}}>
-          <h1 className={`ml-4`} style={{ fontSize: '2.5rem' }}>Resources</h1>
+      <div className={`container-fluid p-5 `}>
+        <div
+          className={`row container-fluid align-items-center`}
+          style={{ paddingTop: "7em" }}
+        >
+          <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
+            Resources
+          </h1>
           {isAdmin && (
             <div className="col d-flex justify-content-end">
               <AddButton
                 type="Add Resource"
-                action={handleShowAddResource}>
-              </AddButton>
+                action={() => setShowAddResource(true)}
+              ></AddButton>
             </div>
           )}
         </div>
@@ -81,29 +105,31 @@ function Resources() {
           <div className={`col-lg-10 mt-3`}>
             <div className={`row ml-5 mr-5`}>
               {isQuerying ? (
-                <div className="col-12 d-flex justify-content-center">
-                  <div className="spinner-border mt-5" role="status"
-                    style={{ width: '10rem', height: '10rem'}}>
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
+                <Loading />
               ) : resources.length > 0 ? (
                 resources.map((resource) => (
                   <div key={resource.resource_id} className="col-lg-12 mb-4">
                     <ResourceCard
                       resource_id={resource.resource_id}
                       resource={resource.resource}
-                      disp_name={resource.disp_name}
-                      descrip={resource.descrip}
+                      dispName={resource.disp_name}
+                      desc={resource.descrip}
                       isAdmin={isAdmin}
-                      fetchAllResources={fetchAllResources}>
-                    </ResourceCard>
+                      fetchResources={fetchAllResources}
+                      updateResources={updateResources}
+                    ></ResourceCard>
                   </div>
                 ))
+              ) : displayAlert ? (
+                <AlertBox
+                  type={displayAlert.type}
+                  header={displayAlert.header}
+                  text={displayAlert.text}
+                  wantTimer={false}
+                  handleClose={() => setDisplayAlert(null)}
+                ></AlertBox>
               ) : (
-                <h3 className="col-12">
-                  There are no available resources.
-                </h3>
+                <h3 className="col-12">There are no available resources.</h3>
               )}
             </div>
           </div>
@@ -111,8 +137,9 @@ function Resources() {
         {showAddResource && isAdmin && (
           <AddResource
             isShown={showAddResource}
-            handleClose={handleCloseAddResource}>
-          </AddResource>
+            handleClose={() => setShowAddResource(false)}
+            fetchResources={fetchAllResources}
+          ></AddResource>
         )}
       </div>
     </>
