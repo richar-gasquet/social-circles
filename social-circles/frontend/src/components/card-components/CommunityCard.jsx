@@ -93,25 +93,31 @@ function CommunityCard(props) {
     }
   };
 
-  // const handleCardClick = (e) => {
-  //   if (!e.target.closest('.edit-community-modal') && !e.target.closest('.delete-community-modal')
-  //             && !e.target.closest('.email-community-modal') && !e.target.closest('.register-button')) {
-  //     window.open(`/community/${props.id}`, "_blank");
-  //   }
-  // };
+  const handleCardClick = (e) => {
+    if (!e.target.closest('.edit-community-modal') && !e.target.closest('.delete-community-modal')
+              && !e.target.closest('.email-community-modal') && !e.target.closest('.register-button')) {
+      const commData = {
+        isRegistered: props.isRegistered,
+        count: props.count
+      };
+      localStorage.setItem('commData', JSON.stringify(commData));
+      // window.open(`/community/${props.id}`, "_blank");
+      window.location.href = `/communities/${props.group_id}`;
+    }
+  };
 
-  // const handleButtonClick = (e, action) => {
-  //   e.stopPropagation();
-  //   action();
-  // };
+  const handleButtonClick = (e, action) => {
+    e.stopPropagation();
+    action();
+  };
 
-  // const stopPropagation = (e) => {
-  //   e.stopPropagation();
-  // };
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
 
   return (
     <>
-      <div className={`card h-100 ${styles.card}`}>
+      <div className={`card h-100 ${styles.card}`} onClick={(e) => handleCardClick(e)}>
         <div className={styles.cardImgTopContainer}>
           <img
             className={`card-img-top ${styles.cardImgTop}`}
@@ -122,21 +128,21 @@ function CommunityCard(props) {
             <div className={`${styles.cardButtons}`}>
               <CardButton
                 className="mb-2"
-                action={() => setShowEditComm(true)}
-                // action={(e) => { e.stopPropagation(); setShowEditComm(true); }}
+                // action={() => setShowEditComm(true)}
+                action={(e) => { e.stopPropagation(); setShowEditComm(true); }}
                 message="Edit Community"
                 icon="fas fa-edit"
               ></CardButton>
               <CardButton
                 className={`mb-2`}
-                action={() => setShowDeleteComm(true)}
-                // action={(e) => { e.stopPropagation(); setShowDeleteComm(true); }}
+                // action={() => setShowDeleteComm(true)}
+                action={(e) => { e.stopPropagation(); setShowDeleteComm(true); }}
                 message="Delete Community"
                 icon="fas fa-trash"
               ></CardButton>
               <CardButton
-              action={() => setShowEmailComm(true)}
-              // action={(e) => { e.stopPropagation(); setShowEmailComm(true); }}
+              // action={() => setShowEmailComm(true)}
+              action={(e) => { e.stopPropagation(); setShowEmailComm(true); }}
               message="Email Community"
                 icon="fas fa-envelope"
               ></CardButton>
@@ -158,18 +164,18 @@ function CommunityCard(props) {
             <CommunityRegisterButton
               isRegistered={props.isRegistered}
               isDisabled={isQuerying}
-              handleRegister={handleRegistration}
-              handleCancelRegistration={handleCancelRegistration}
+              handleRegister={(e) => handleButtonClick(e, handleRegistration)}
+              handleCancelRegistration={(e) => handleButtonClick(e, handleCancelRegistration)}
             />
           </div>
         </div>
       </div>
       {showEditComm && props.isAdmin && (
-        // <div className="edit-community-modal" onClick={stopPropagation}>
+        <div className="edit-community-modal" onClick={stopPropagation}>
         <EditCommunity
           isShown={showEditComm}
-          handleClose={() => setShowEditComm(false)}
-          // handleClose={(e) => { e.stopPropagation(); setShowEditComm(false); }}
+          // handleClose={() => setShowEditComm(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowEditComm(false); }}
           group_id={props.group_id}
           name={props.name}
           desc={props.desc}
@@ -177,31 +183,31 @@ function CommunityCard(props) {
           isRegistered={props.isRegistered}
           updateCommunities={props.updateCommunities}
         />
-        // </div>
+        </div>
 
       )}
       {showDeleteComm && props.isAdmin && (
-        // <div className="delete-community-modal" onClick={stopPropagation}>
+        <div className="delete-community-modal" onClick={(e) => stopPropagation(e)}>
         <DeleteCommunity
           isShown={showDeleteComm}
-          handleClose={() => setShowDeleteComm(false)}
-          // handleClose={(e) => { e.stopPropagation(); setShowDeleteComm(false); }}
+          // handleClose={() => setShowDeleteComm(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowDeleteComm(false); }}
           group_id={props.group_id}
           name={props.name}
           fetchCommunities={props.fetchCommunities}
         />
-        // </div>
+        </div>
       )}
       {showEmailComm && props.isAdmin && (
-        // <div className="email-community-modal" onClick={stopPropagation}>
+        <div className="email-community-modal" onClick={(e) => stopPropagation(e)}>
         <EmailCommunity
           isShown={showEmailComm}
-          handleClose={() => setShowEmailComm(false)}
-          // handleClose={(e) => { e.stopPropagation(); setShowEmailComm(false); }}
+          // handleClose={() => setShowEmailComm(false)}
+          handleClose={(e) => { e.stopPropagation(); setShowEmailComm(false); }}
           group_id={props.group_id}
           name={props.name}
         />
-        // </div>
+        </div>
       )}
     </>
   );
