@@ -1,5 +1,5 @@
 import flask
-import vistor_queries as vistor_db
+import visitor_queries as vistor_db
 import user_queries as user_db
 
 
