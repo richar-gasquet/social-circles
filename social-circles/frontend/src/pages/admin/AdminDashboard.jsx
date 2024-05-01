@@ -5,6 +5,7 @@ import SessionTimeoutHandler from '../../components/session-checker/SessionTimeo
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Line } from 'react-chartjs-2';
+import { Link } from 'react-router-dom';
 import styles from '../../css/Buttons.module.css';
 import dashstyles from '../../css/AdminDash.module.css'
 import Loading from '../../components/shared-components/LoadingSpinner';
@@ -268,7 +269,6 @@ function AdminDashboard() {
   const handleLogout = (e) => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
   };
-  
 
   if (isLoading) {
     return (
@@ -285,7 +285,16 @@ function AdminDashboard() {
     <AdminHeader />
     <div style={{marginBottom: '5%', marginLeft: '5%', marginRight: '5%', paddingTop: '10em'}}>
       <div>
-        <h2>Hello {userData.first_name} {userData.last_name}</h2>
+        <div className='row'>
+          <div className='col'>
+            <h2>Hello {userData.first_name} {userData.last_name}</h2>
+          </div>
+          <button className={styles.submitButton} style={{ float: 'right'}}>
+            <Link to="/user-dashboard" className="nav-link" style={{ color: 'white' }}>
+              User Dashboard
+            </Link>
+          </button>
+        </div>
         <br/>
         <div>
           <div style={{outline: '#F5EDED solid 10px', borderRadius: '1%', padding: '2%'}}>

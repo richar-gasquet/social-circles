@@ -1,12 +1,13 @@
+import { useState, useEffect } from 'react';
 import { Navigate } from "react-router-dom";
 import { useUserContext } from '../../contexts/UserContextHandler';
 import { useEventContext } from "../../contexts/EventsContextHandler";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
-import { useState, useEffect } from 'react';
 import UserHeader from "../../components/headers/UserHeader";
+import AdminHeader from "../../components/headers/AdminHeader";
 import EventCard from "../../components/card-components/EventCard";
-import ToastContainer from "react-bootstrap/esm/ToastContainer";
-import RegistrationToast from "../../components/shared-components/RegistrationToast";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import AlertToast from "../../components/shared-components/AlertToast";
 import CarouselComponent from "../../components/user-dashboard-functions/CarouselComponent"
 import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
@@ -22,62 +23,62 @@ function UserDashboard() {
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
   const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
+  const Header = isAdmin
+    ? AdminHeader
+    : UserHeader;
 
   if (isLoading) {
     return (
       <>
-      <UserHeader />
-      <Loading/>
+        <UserHeader />
+        <Loading />
       </>
     )
   }
 
   // Checking if userData is undefined or email is empty 
-  if ( userData.email === '') {
+  if (userData.email === '') {
     return <Navigate to={"/"} />;
   }
-  if ( userData.is_admin === undefined) {
+  if (userData.is_admin === undefined) {
     return <Navigate to={"/profile"} />;
   }
 
-  useEffect(() => {
-    fetchEvents("/get-available-events");
-    const fetchAllAnnouncements = async () => {
-      try {
-        setIsQuerying(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/get-announcements`,
-          { credentials: "include" }
-        )
-        if (response.ok) {
-          const data = await response.json();
-          setAnnouncements(data.results);
-        } else {
-          setDisplayAlert({
-            type: "danger",
-            header: "Could not display announcements!",
-            text: "Try again or contact the administrator.",
-          });
-        }
-      } catch (error) {
+  const fetchAllAnnouncements = async () => {
+    try {
+      setIsQuerying(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/get-announcements`,
+        { credentials: "include" }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setAnnouncements(data.results);
+      } else {
         setDisplayAlert({
           type: "danger",
-          header: "Could not connect to server!",
+          header: "Could not display announcements!",
           text: "Try again or contact the administrator.",
         });
-      } finally {
-        setIsQuerying(false);
       }
-    };
+    } catch (error) {
+      setDisplayAlert({
+        type: "danger",
+        header: "Could not connect to server!",
+        text: "Try again or contact the administrator.",
+      });
+    } finally {
+      setIsQuerying(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents("/get-available-events");
     fetchAllAnnouncements();
   }, []);
 
-  useEffect(() => {
-    fetchEvents("/get-available-events");
-  }, []);
-
   const fetchAllEvents = () => fetchEvents("/get-available-events");
-  
+
   const addRegistrationAlert = (type, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
       const newRegistrationAlert = { id: Date.now(), type, text };
@@ -89,16 +90,18 @@ function UserDashboard() {
     });
   };
 
-  const slicedEvents = events.slice(0, 3)
+  const slicedEvents = events.slice(0, 3);
 
   return (
     <>
-      <SessionTimeoutHandler/>
-      <UserHeader />
-      <div style={{paddingTop: '7em'}}>
+      <SessionTimeoutHandler />
+      <Header />
+      <div style={{ paddingTop: '7em' }}>
         <CarouselComponent
           announcements={announcements}
           isQuerying={isQuerying}
+          isAdmin={ isAdmin }
+          fetchAnnouncements={fetchAllAnnouncements}
         />
       </div>
       {isAdmin && (
@@ -109,7 +112,7 @@ function UserDashboard() {
               setShowAddAnnouncement(true);
             }}
           ></AddButton>
-      </div>
+        </div>
       )}
       <div className={`container`}>
         <div className="position-relative">
@@ -118,16 +121,15 @@ function UserDashboard() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <RegistrationToast
+              <AlertToast
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}
-                onDismiss={() => setDisplayAlert(null)}
               />
             ))}
           </ToastContainer>
         </div>
-        <div className={`row container-fluid align-items-center`} style = {{paddingTop: '2em'}}>
+        <div className={`row container-fluid align-items-center`} style={{ paddingTop: '2em' }}>
           <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
             Upcoming Events
           </h1>

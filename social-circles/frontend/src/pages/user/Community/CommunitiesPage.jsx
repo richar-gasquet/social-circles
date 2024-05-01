@@ -9,7 +9,7 @@ import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import logo from "../../../assets/social-circles-logo.png"
 import CommunityRegisterButton from '../../../components/user-functions/CommunityRegisterButton.jsx';
-import ToastContainer from 'react-bootstrap/ToastContainer.js';
+import ToastContainer from "react-bootstrap/ToastContainer";
 import AlertToast from '../../../components/shared-components/AlertToast.jsx';
 import toastStyles from "../../../css/Toast.module.css"
 import { useUserContext } from '../../../contexts/UserContextHandler';

@@ -1,4 +1,5 @@
 import sys
+import html
 import flask
 import user_dashboard_queries as userdash_db
 import user_queries as user_db
@@ -35,9 +36,9 @@ def add_announcement():
             announcement_data = flask.request.json
 
             announcement_dict = {
-                'announcement_name' : announcement_data['announcement_name'],
-                'description' : announcement_data['description'],
-                'image_link' :announcement_data['image_link']
+                'announcement_name' : html.escape(announcement_data['announcement_name']),
+                'description' : html.escape(announcement_data['description']),
+                'image_link' : html.escape(announcement_data['image_link'])
             }
 
             userdash_db.add_announcement(announcement_dict)
@@ -89,9 +90,9 @@ def update_announcement():
 
             announcement_dict = {
                 'announcement_id' : announcement_data.get('announcement_id',''),
-                'announcement_name' : announcement_data.get('announcement_name',''),
-                'description' : announcement_data.get('description',''),
-                'image_link' : announcement_data.get('image_link', '')
+                'announcement_name' : html.escape(announcement_data.get('announcement_name','')),
+                'description' : html.escape(announcement_data.get('description','')),
+                'image_link' : html.escape(announcement_data.get('image_link', ''))
             }
 
             userdash_db.update_announcement(announcement_dict)
