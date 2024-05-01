@@ -7,7 +7,7 @@ import auth
 import users
 import events
 import communities
-import vistors
+import visitors
 import resources
 import users
 import uuid
@@ -53,7 +53,7 @@ def make_session_permanent():
         flask.session['session_id'] = str(uuid.uuid4())
         last_session_init_time = now  # Update the last initialization time
 
-        vistors.log_visit(flask.session['session_id'])
+        visitors.log_visit(flask.session['session_id'])
 
 
 @app.route('/login', methods = ['GET'])
@@ -118,11 +118,11 @@ def remove_user_from_block():
 
 #----------------------------------------------------------------------
 
-# Routes for requesting current vistors from database
+# Routes for requesting current visitors from database
 
 @app.route('/current_visitors', methods = ['GET'])
 def get_current_visitors():
-    return vistors.current_visitors()
+    return visitors.current_visitors()
 
 #----------------------------------------------------------------------
 
@@ -240,7 +240,7 @@ def email_community_route():
 
 def clear_expired_sessions():
     with app.app_context():
-        vistors.delete_expired_sessions_from_database()
+        visitors.delete_expired_sessions_from_database()
 
 #----------------------------------------------------------------------
 
