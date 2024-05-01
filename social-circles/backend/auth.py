@@ -5,7 +5,6 @@ import requests
 from dotenv import load_dotenv
 import flask
 import oauthlib.oauth2
-import vistors
 import user_queries as db
 
 #----------------------------------------------------------------------
