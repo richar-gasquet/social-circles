@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Navigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, Navigate } from "react-router-dom";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useUserContext } from "../../../contexts/UserContextHandler";
-import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
 import he from "he";
 import Button from "react-bootstrap/esm/Button.js";
 import logo from "../../../assets/social-circles-logo.png";
@@ -26,15 +25,13 @@ function EventPage() {
   const [event, setEvent] = useState(null);
   const [usersForEvent, setUsersForEvent] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
-  const [showEditEvent, setShowEditEvent] = useState(false);
-  const [showEmailEvent, setShowEmailEvent] = useState(false);
+  const [registrationAlerts, setRegistrationAlerts] = useState([]);
+  const [eventDisplayAlert, setEventDisplayAlert] = useState(null);
+  const [userDisplayAlert, setUserDisplayAlert] = useState(null)
 
   const { isAdmin } = useAuthContext();
   const { userData, isLoading } = useUserContext();
-  const { displayAlert, setDisplayAlert, fetchSingleEvent, getUsersForEvent } =
-    useEventContext();
 
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [isFetchingEvent, setIsFetchingEvent] = useState(false);
@@ -54,31 +51,57 @@ function EventPage() {
   if (userData.email === "") return <Navigate to={"/"} />;
   if (userData.is_admin === undefined) return <Navigate to={"/profile"} />;
 
-  useEffect(() => {
-    if (!event && !isQuerying) {
-      async function fetchData() {
-        try {
-          setIsFetchingEvent(true);
-          const eventData = await fetchSingleEvent(eventId);
-          setEvent(eventData);
-        } catch (error) {
-          return;
-        } finally {
-          setIsFetchingEvent(false);
-        }
-        try {
-          setIsFetchingUsers(true);
-          const usersData = await getUsersForEvent(eventId);
-          setUsersForEvent(usersData);
-        } catch (error) {
-          return;
-        } finally {
-          setIsFetchingUsers(false);
-        }
+  // Utility function for handling fetch errors
+  const handleFetchError = (setAlert, message, detail = "Try again or contact the administrator.") => {
+    setAlert({
+      type: "danger",
+      header: message,
+      text: detail,
+    });
+  };
+
+  const fetchSingleEvent = useCallback(async () => {
+    try {
+      setIsFetchingEvent(true);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get-one-event-info-with-user-status?event_id=${eventId}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEvent(data.results);
+      } else {
+        handleFetchError(setEventDisplayAlert, "Could not display the event details!");
       }
-      fetchData();
+    } catch (error) {
+      handleFetchError(setEventDisplayAlert, "Could not connect to server!");
+    } finally {
+      setIsFetchingEvent(false);
     }
-  }, [eventId, event, fetchSingleEvent, getUsersForEvent, isQuerying]);
+  }, [eventId, setIsFetchingEvent, setEventDisplayAlert]);
+
+  const getUsersForEvent = useCallback(async () => {
+    try {
+      setIsFetchingUsers(true);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get-users-for-event?event_id=${eventId}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsersForEvent(data.results);
+      } else {
+        handleFetchError(setUserDisplayAlert, "Could not display the registered users!");
+      }
+    } catch (error) {
+      handleFetchError(setUserDisplayAlert, "Could not connect to server!");
+    } finally {
+      setIsFetchingUsers(false);
+    }
+  }, [eventId, setIsFetchingUsers, setUserDisplayAlert]);
+
+  useEffect(() => {
+    fetchSingleEvent();
+    getUsersForEvent();
+  }, [fetchSingleEvent, getUsersForEvent]);
 
   const unregisterUser = async () => {
     if (!selectedUser) return; // Guard clause if no user is selected
@@ -274,6 +297,8 @@ function EventPage() {
     }
   };
 
+  console.log(event)
+
   const handleCancelWaitlist = async () => {
     setIsQuerying(true);
     try {
@@ -349,16 +374,9 @@ function EventPage() {
             ))}
           </ToastContainer>
         </div>
-        {!event ? (
+        {isFetchingEvent ? (
           <Loading />
-        ) : displayAlert ? (
-          <AlertBox
-            type={displayAlert.type}
-            header={displayAlert.header}
-            text={displayAlert.text}
-            handleClose={() => setDisplayAlert(null)}
-          ></AlertBox>
-        ) : (
+        ) : event ? (
           <div>
             <h1 className="mt-3 py-3">{he.decode(event.event_name)}</h1>
             <div>
@@ -389,7 +407,6 @@ function EventPage() {
               </div>
             )}
             </div>
-
             <hr />
             <h1 className={`mt-3 py-3`}>Event Details</h1>
             <div className="row my-3">
@@ -449,11 +466,20 @@ function EventPage() {
               </h5>
             </div>
           </div>
+        ) : eventDisplayAlert ? (
+          <AlertBox
+            type={eventDisplayAlert.type}
+            header={eventDisplayAlert.header}
+            text={eventDisplayAlert.text}
+            handleClose={() => setEventDisplayAlert(null)}
+          ></AlertBox>
+        ) : (
+          <p>This event does not exist.</p>
         )}
         <div>
           {isFetchingEvent || !event ? (
             <Loading />
-          ) : event.isPastEvent ? (
+          ) : event.in_past ? (
             <Button variant="secondary" disabled>
               Passed
             </Button>
@@ -507,6 +533,13 @@ function EventPage() {
               </div>
             ))}
           </div>
+        ) : userDisplayAlert ? (
+          <AlertBox
+          type={userDisplayAlert.type}
+          header={userDisplayAlert.header}
+          text={userDisplayAlert.text}
+          handleClose={() => setUserDisplayAlert(null)}
+        ></AlertBox>
         ) : (
           <h4>No users are currently registered for this event.</h4>
         )}

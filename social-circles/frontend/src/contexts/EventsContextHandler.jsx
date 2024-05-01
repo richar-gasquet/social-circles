@@ -54,74 +54,6 @@ function EventContextProvider({ children }) {
     }
   }, []);
 
-  const fetchSingleEvent = useCallback(async (eventId) => {
-    try {
-      setIsFetching(true);
-      const request = await fetch(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/get-one-event-info-with-user-status?event_id=${eventId}`,
-        {
-          credentials: "include",
-        }
-      );
-      if (request.ok) {
-        const data = await request.json();
-        return (data.results);
-      } else {
-        setDisplayAlert({
-          type: "danger",
-          header: "Could not display the event!",
-          text: "Try again or contact the administrator.",
-        });
-        throw new Error()
-      }
-    } catch (error) {
-      setDisplayAlert({
-        type: "danger",
-        header: "Could not connect to server!",
-        text: "Try again or contact the administrator.",
-      });
-      throw new Error()
-    } finally {
-      setIsFetching(false);
-    }
-  }, []);
-
-  const getUsersForEvent = useCallback(async (eventId) => {
-    try {
-      setIsFetchingUsers(true);
-      const request = await fetch(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/get-users-for-event?event_id=${eventId}`,
-        {
-          credentials: "include",
-        }
-      );
-      if (request.ok) {
-        const data = await request.json();
-        return(data.results)
-      } else {
-        setDisplayAlert({
-          type: "danger",
-          header: "Could not display the event!",
-          text: "Try again or contact the administrator.",
-        });
-        throw new Error()
-      }
-    } catch (error) {
-      setDisplayAlert({
-        type: "danger",
-        header: "Could not connect to server!",
-        text: "Try again or contact the administrator.",
-      });
-      throw new Error()
-    } finally {
-      setIsFetchingUsers(false);
-    }
-  }, []);
-
   const updateEvents = useCallback(
     (event_id, newEvent) => {
       setEvents((prevEvents) =>
@@ -158,9 +90,7 @@ function EventContextProvider({ children }) {
         setDisplayAlert,
         fetchEvents,
         updateEvents,
-        searchEvents,
-        fetchSingleEvent,
-        getUsersForEvent
+        searchEvents
       }}
     >
       {children}
