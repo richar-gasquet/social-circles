@@ -520,14 +520,8 @@ def send_confirmation_email(receiver_email: str, event_id: int,
 
     with smtplib.SMTP_SSL("smtp.gmail.com", port, 
                           context=context) as server:
-        print('hdioh')
-        print(sender)
-        print(sender_password)
         server.login(sender, sender_password)
-        print('hdioh')
 
         text = msg.as_string()
-        print('hdioh')
 
         server.sendmail(sender, receiver_email, text)
-        print('hdioh')
