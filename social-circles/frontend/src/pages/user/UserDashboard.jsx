@@ -30,7 +30,7 @@ function UserDashboard() {
   if (isLoading) {
     return (
       <>
-        <UserHeader />
+        <Header />
         <Loading />
       </>
     )
