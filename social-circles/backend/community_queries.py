@@ -331,7 +331,7 @@ def get_community_emails(group_id: int) -> list:
 
     return community_emails   
 
-def get_one_group_info_with_user_status(group_id: int, user_email: str):
+def get_community_info(group_id: int, user_email: str):
     group_info = {}
     connection = get_connection()
     try:

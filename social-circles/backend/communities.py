@@ -220,7 +220,7 @@ def get_community_emails():
             'message' : 'User not authenticated.'
         }), 401 # UNAUTHORIZED
     
-def get_one_group_info_with_user_status():
+def get_community_info():
     if 'email' in flask.session:
         try:
             group_id = flask.request.args.get('group_id')
@@ -228,7 +228,7 @@ def get_one_group_info_with_user_status():
                 return flask.jsonify({
                     'message' : 'group_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
-            group_info = comm_db.get_one_group_info_with_user_status(group_id, flask.session['email'])
+            group_info = comm_db.get_community_info(group_id, flask.session['email'])
 
             group_info_dict = {
                 'group_name': group_info[1],
