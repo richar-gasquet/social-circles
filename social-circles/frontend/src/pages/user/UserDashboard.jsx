@@ -16,8 +16,8 @@ import styles from "../../css/Toast.module.css";
 import AddAnnouncement from "../../components/user-dashboard-functions/AddAnnouncement";
 
 function UserDashboard() {
-  const { userData, isLoading } = useUserContext();
   const { isAdmin } = useAuthContext();
+  const { userData, isLoading } = useUserContext();
   const [announcements, setAnnouncements] = useState([]);
   const [isQuerying, setIsQuerying] = useState(true);
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
