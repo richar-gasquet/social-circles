@@ -143,13 +143,13 @@ function EventPage() {
       } else {
         addRegistrationAlert(
           "danger",
-          `We couldn't unregister the user for ${event.event_name}.`
+          `We couldn't unregister the user for ${he.decode(event.event_name)}.`
         );
       }
     } catch (error) {
       addRegistrationAlert(
         "danger",
-        `We couldn't unregister the user for ${event.event_name}. There was
+        `We couldn't unregister the user for ${he.decode(event.event_name)}. There was
         most likely a server error.`
       );
     }
@@ -242,7 +242,7 @@ function EventPage() {
       addRegistrationAlert(
         "danger",
         `We couldn't register you for ${event.event_name}. 
-          There was most likely a server error.`
+        The server is most likely down.`
       );
     } finally {
       setIsQuerying(false);
@@ -296,8 +296,6 @@ function EventPage() {
       setIsQuerying(false);
     }
   };
-
-  console.log(event)
 
   const handleCancelWaitlist = async () => {
     setIsQuerying(true);
@@ -385,27 +383,6 @@ function EventPage() {
               src={event.image_link}
               alt={event.event_name}
             />
-            {isAdmin && (
-              <div className={`${pageStyles.cardButtons}`}>
-                <CardButton
-                  className="mb-2"
-                  action={(e) => {
-                    e.stopPropagation();
-                    setShowEditEvent(true);
-                  }}
-                  message="Edit Event"
-                  icon="fas fa-edit"
-                ></CardButton>
-                <CardButton
-                  action={(e) => {
-                    e.stopPropagation();
-                    setShowEmailEvent(true);
-                  }}
-                  message="Email Event Attendees"
-                  icon="fas fa-envelope"
-                ></CardButton>
-              </div>
-            )}
             </div>
             <hr />
             <h1 className={`mt-3 py-3`}>Event Details</h1>
