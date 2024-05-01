@@ -174,8 +174,8 @@ def unregister_user_route():
     return events.unregister_user()
 
 @app.route('/api/get-one-event-info-with-user-status', methods = ['GET'])
-def get_one_event_info():
-    return events.get_one_event_info_with_user_status()
+def get_event_info_route():
+    return events.get_event_info()
 
 @app.route('/api/get-users-for-event', methods = ['GET'])
 def get_users_for_event():

@@ -476,7 +476,7 @@ def get_event_emails(event_id: int) -> list:
 
     return event_emails
 
-def get_one_event_info_with_user_status(event_id: int, user_email: str):
+def get_event_info(event_id: int, user_email: str):
     event_info = {}
     connection = get_connection()
     try:
@@ -495,11 +495,20 @@ def get_one_event_info_with_user_status(event_id: int, user_email: str):
             # Now, fetch the event details along with registration and waitlist status
             cursor.execute('''
                 SELECT 
-                    e.event_id, e.event_name, e.event_desc, e.start_time, e.end_time,
-                    e.capacity, e.filled_spots, e.image_link, e.location, e.is_dana_event,
-                    (SELECT COUNT(*) FROM event_registrations er WHERE er.event_id = e.event_id AND er.user_id = %s) > 0 AS is_registered,
-                    (SELECT COUNT(*) FROM event_waitlists ew WHERE ew.event_id = e.event_id AND ew.user_id = %s) > 0 AS is_waitlisted,
-                    e.filled_spots >= e.capacity AS is_full
+                    e.event_id, e.event_name, e.event_desc, e.start_time, 
+                    e.end_time, e.capacity, e.filled_spots, e.image_link, 
+                    e.location, e.is_dana_event,
+                    (SELECT COUNT(*) 
+                        FROM 
+                            event_registrations er 
+                        WHERE 
+                            er.event_id = e.event_id AND er.user_id = %s) > 0 AS is_registered,
+                    (SELECT COUNT(*) 
+                        FROM event_waitlists ew 
+                            WHERE 
+                                ew.event_id = e.event_id AND ew.user_id = %s) > 0 AS is_waitlisted,
+                    e.filled_spots >= e.capacity AS is_full,
+                    (e.end_time < CURRENT_TIMESTAMP) as in_past
                 FROM 
                     events e
                 WHERE 
@@ -508,7 +517,7 @@ def get_one_event_info_with_user_status(event_id: int, user_email: str):
 
             event_info = cursor.fetchone()
     except Exception as ex:
-        print("Error fetching event info:", ex)
+        raise
     finally:
         put_connection(connection)
     return event_info

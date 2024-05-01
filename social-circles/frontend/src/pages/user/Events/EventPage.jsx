@@ -1,514 +1,589 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import UserHeader from "../../../components/headers/UserHeader.jsx";
-import SessionTimeoutHandler from '../../../components/session-checker/SessionTimeoutHandler.jsx';
-import '../../../css/EventPage.css'
-import styles from '../../../css/Buttons.module.css';
-import Modal from 'react-bootstrap/Modal'; 
-import AdminHeader from "../../../components/headers/AdminHeader.jsx";
+import React, { useState, useEffect } from "react";
+import { useParams, Navigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
-import EventRegisterButton from '../../../components/user-functions/EventRegisterButton.jsx';
+import { useUserContext } from "../../../contexts/UserContextHandler";
+import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
+import he from "he";
+import Button from "react-bootstrap/esm/Button.js";
 import logo from "../../../assets/social-circles-logo.png";
-import ToastContainer from 'react-bootstrap/esm/ToastContainer.js';
-import AlertToast from '../../../components/shared-components/AlertToast.jsx';
-import toastStyles from "../../../css/Toast.module.css"
-import { useUserContext } from '../../../contexts/UserContextHandler';
-import Loading from '../../../components/shared-components/LoadingSpinner.jsx';
-import { Navigate } from "react-router-dom";
-
+import AdminHeader from "../../../components/headers/AdminHeader.jsx";
+import UserHeader from "../../../components/headers/UserHeader.jsx";
+import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
+import EventRegisterButton from "../../../components/user-functions/EventRegisterButton.jsx";
+import CardButton from "../../../components/card-components/CardButton.jsx";
+import AlertBox from "../../../components/shared-components/AlertBox.jsx";
+import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
+import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
+import AlertToast from "../../../components/shared-components/AlertToast.jsx";
+import toastStyles from "../../../css/Toast.module.css";
+import Modal from "react-bootstrap/Modal";
+import styles from "../../../css/Buttons.module.css";
+import pageStyles from "../../../css/ChildPage.module.css";
 
 function EventPage() {
-    const { eventId } = useParams();
-    const [event, setEvent] = useState(null);
-    const [usersForEvent, setUsersForEvent] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const { isAdmin } = useAuthContext();
-    const [registrationAlerts, setRegistrationAlerts] = useState([]);
+  const { eventId } = useParams();
 
-    const { userData, isLoading } = useUserContext();
-    const Header = isAdmin ? AdminHeader : UserHeader;
+  const [event, setEvent] = useState(null);
+  const [usersForEvent, setUsersForEvent] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [registrationAlerts, setRegistrationAlerts] = useState([]);
 
-    if (isLoading) {
-        return (
-        <>
+  const [showEditEvent, setShowEditEvent] = useState(false);
+  const [showEmailEvent, setShowEmailEvent] = useState(false);
+
+  const { isAdmin } = useAuthContext();
+  const { userData, isLoading } = useUserContext();
+  const { displayAlert, setDisplayAlert, fetchSingleEvent, getUsersForEvent } =
+    useEventContext();
+
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [isFetchingEvent, setIsFetchingEvent] = useState(false);
+  const [isQuerying, setIsQuerying] = useState(false);
+
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
         <Header />
-        <Loading/>
-        </>
-        )
+        <Loading />
+      </>
+    );
+  }
+
+  if (userData.email === "") return <Navigate to={"/"} />;
+  if (userData.is_admin === undefined) return <Navigate to={"/profile"} />;
+
+  useEffect(() => {
+    if (!event && !isQuerying) {
+      async function fetchData() {
+        try {
+          setIsFetchingEvent(true);
+          const eventData = await fetchSingleEvent(eventId);
+          setEvent(eventData);
+        } catch (error) {
+          return;
+        } finally {
+          setIsFetchingEvent(false);
+        }
+        try {
+          setIsFetchingUsers(true);
+          const usersData = await getUsersForEvent(eventId);
+          setUsersForEvent(usersData);
+        } catch (error) {
+          return;
+        } finally {
+          setIsFetchingUsers(false);
+        }
+      }
+      fetchData();
     }
-    // Checking if userData is undefined or email is empty
-  if ( userData.email === '') {
-    return <Navigate to={"/"} />;
-  }
+  }, [eventId, event, fetchSingleEvent, getUsersForEvent, isQuerying]);
 
-  if ( userData.is_admin === undefined) {
-    return <Navigate to={"/profile"} />;
-  }
-    
-    const [eventData, setEventData] = useState({
-        isRegistered: false,
-        isFull: false,
-        isWaitlisted: false,
-        filled_spots: 0
-      });
+  const unregisterUser = async () => {
+    if (!selectedUser) return; // Guard clause if no user is selected
 
-    const addRegistrationAlert = (type, text) => {
-      setRegistrationAlerts((prevRegistrationAlerts) => {
-        const newRegistrationAlert = { id: Date.now(), type, text };
-        if (prevRegistrationAlerts.length >= 3) {
-          return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
-        } else {
-          return [newRegistrationAlert, ...prevRegistrationAlerts];
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/unregister-user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include", // Ensure cookies are sent with the request if sessions are used
+          body: JSON.stringify({
+            email: selectedUser.email,
+            event_id: eventId,
+          }),
         }
-      });
-    };
-    
-    useEffect(() => {
-      const storedEventData = JSON.parse(localStorage.getItem('eventData'));
-      if (storedEventData) {
-        setEventData(storedEventData);
-        localStorage.removeItem('eventData'); // Clean up local storage after use
-      }
-    }, []);
+      );
 
-    const handleUserClick = (user) => {
-      if (isAdmin) {
-        setSelectedUser(user);
-      }
-    };
-    
-    const closePopup = () => {
-      setSelectedUser(null);
-    };
-
-    const unregisterUser = () => {
-        // Confirm with the admin before proceeding
-        
-          if (!selectedUser) return;  // Guard clause if no user is selected
-      
-          fetch(`${import.meta.env.VITE_BACKEND_URL}/unregister-user`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            credentials: 'include',  // Ensure cookies are sent with the request if sessions are used
-            body: JSON.stringify({ email: selectedUser.email,
-                                    event_id: eventId})
-          })
-          .then(response => response.json())
-          .then(data => {
-            {console.log(data.message)}
-            if (data.status === 'success') {
-              addRegistrationAlert(
-                "success",
-                `User has been successfully unregistered.`
-              );
-
-              closePopup();
-              // Refresh the list of users or remove the user from the state
-              setUsersForEvent(usersForEvent.filter(user => user.email !== selectedUser.email));
-              const updated = {
-                ...eventData,
-                isRegistered: false,
-                isWaitlisted: false,
-                isFull: event.filled_spots - 1 >= event.capacity,
-                filled_spots: event.filled_spots - 1,
-              };
-              event.filled_spots = event.filled_spots - 1;
-              setEventData(updated);
-            } else {
-              addRegistrationAlert(
-                "danger",
-                `Error: ${data.message}`
-              );
-            }
-          })
-          .catch(error => {
-            console.error('Error unregistering user:', error);
-            addRegistrationAlert(
-              "danger",
-              `Failed to unregister user.`
-            );
-          });
-        
-      };
-
-    useEffect(() => {
-        const getEventInfo = async () => {
-            try {
-                const request = await fetch(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/get-one-event-info-with-user-status?event_id=${eventId}`,
-                    {
-                        credentials: "include",
-                    }
-                );
-                if (request.ok) {
-                    const data = await request.json();
-                    setEvent(data.results);
-                    setEventData(currentData => ({
-                        ...currentData,
-                        isRegistered: data.results.is_registered,
-                        isFull: data.results.is_full,
-                        isWaitlisted: data.results.is_waitlisted,
-                        filled_spots: data.results.filled_spots
-                    }));
-                } else {
-                    addRegistrationAlert(
-                      "danger",
-                      `Could not display event!.
-                      Try again or contact server administrator.`
-                    );
-                }
-            } catch (error) {
-              addRegistrationAlert(
-                "danger",
-                `Could not display event!.
-                Try again or contact server administrator.`
-              );
-            }
-        };
-
-        getEventInfo();
-    }, [eventId]);
-
-    useEffect(() => {
-        const getUsersForEvent = async () => {
-            try {
-                const request = await fetch(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/get-users-for-event?event_id=${eventId}`,
-                    {
-                        credentials: "include",
-                    }
-                );
-                if (request.ok) {
-                    const data = await request.json();
-                    setUsersForEvent(data.results);
-                } else {
-                  addRegistrationAlert(
-                    "danger",
-                    `Could not display users registered to this event!.
-                    Try again or contact server administrator.`
-                  );
-                }
-            } catch (error) {
-              addRegistrationAlert(
-                "danger",
-                `Could not display users registered to this event!.
-                Try again or contact server administrator.`
-              );
-            }
-        };
-
-        getUsersForEvent();
-    }, [eventId, eventData]);
-
-    const [isQuerying, setIsQuerying] = useState(false);
-
-    const handleRegistration = async () => {
-      setIsQuerying(true);
-      try {
-        const request = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/add-event-registration`,
-          {
-            credentials: "include",
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ event_id: eventId }),
-          }
+      if (response.ok) {
+        // Refresh the list of users or remove the user from the state
+        setUsersForEvent(() =>
+          usersForEvent.filter((user) => user.email !== selectedUser.email)
         );
-        if (request.ok) {
-          const data = await request.json();
-          if (data.status === "waitlist") {
-            addRegistrationAlert(
-              "success",
-              `You have joined waitlist for ${event.event_name}.`
-            );
 
-            const updated = {
-                ...eventData,
-                isRegistered: false,
-                isWaitlisted: true,
-                isFull: true,
-                filled_spots: event.filled_spots,
-              };
-
-              setEventData(updated);
-
-          } else {
-            addRegistrationAlert(
-              "success",
-              `You have registered for ${event.event_name}.`
-            );
-
-            const updated = {
-                ...eventData,
-                isRegistered: true,
-                isWaitlisted: false,
-                isFull: event.filled_spots + 1 >= event.capacity,
-                filled_spots: event.filled_spots + 1,
-            };
-            event.filled_spots = event.filled_spots + 1;
-            setEventData(updated);
-
-          }
-        } else {
-          const data = await request.json();
-          if (data.message === "waitlist_error") {
-            addRegistrationAlert(
-              "danger",
-              `We couldn't register you for the wailist for ${event.event_name}. 
-              Try again or contact the administrator.`
-            );
-          } else {
-            addRegistrationAlert(
-              "danger",
-              `We couldn't register you for ${event.event_name}. 
-              Try again or contact the administrator.`
-            );
-          }
+        if (selectedUser.email === userData.email) {
+          const updatedEvent = { ...event, is_registered: false };
+          setEvent(updatedEvent);
         }
-      } catch (error) {
+
+        setSelectedUser(null);
+
+        addRegistrationAlert(
+          "success",
+          `User has been successfully unregistered.`
+        );
+      } else {
         addRegistrationAlert(
           "danger",
-          `We couldn't register you for ${event.event_name}. 
-          Try again or contact the administrator.`
+          `We couldn't unregister the user for ${event.event_name}.`
         );
-      } finally {
-        setIsQuerying(false);
       }
-    };
-  
-    const handleCancelRegistration = async () => {
-        setIsQuerying(true);
-        try {
-          const request = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/delete-event-registration`,
-            {
-              credentials: "include",
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ event_id: eventId }),
-            }
-          );
-          if (request.ok) {
-            const updated = {
-              ...eventData,
-              isRegistered: false,
-              isWaitlisted: false,
-              isFull: event.filled_spots - 1 >= event.capacity,
-              filled_spots: event.filled_spots - 1,
-            };
-            event.filled_spots = event.filled_spots - 1;
-            setEventData(updated);
-      
-            addRegistrationAlert(
-              "success",
-              `We have cancelled your registration for ${event.event_name}.`
-            );
-      
-          } else {
-            addRegistrationAlert(
-              "danger",
-              `We couldn't cancel your registration for ${event.event_name}. 
-              Try again or contact the administrator.`
-            );
-          }
-        } catch (error) {
-          addRegistrationAlert(
-            "danger",
-            `We couldn't cancel your registration for ${event.event_name}. 
-            Try again or contact the administrator.`
-          );
-        } finally {
-          setIsQuerying(false);
+    } catch (error) {
+      addRegistrationAlert(
+        "danger",
+        `We couldn't unregister the user for ${event.event_name}. There was
+        most likely a server error.`
+      );
+    }
+  };
+
+  const handleRegistration = async () => {
+    setIsQuerying(true);
+    try {
+      const request = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/add-event-registration`,
+        {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ event_id: eventId }),
         }
-      };
-      
-  
-    const handleCancelWaitlist = async () => {
-      setIsQuerying(true);
-      try {
-        const request = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/delete-event-waitlist`,
-          {
-            credentials: "include",
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ event_id: eventId }),
-          }
-        );
-        if (request.ok) {
+      );
+      if (request.ok) {
+        const data = await request.json();
+        if (data.status === "waitlist") {
           addRegistrationAlert(
             "success",
-            `You have left the waitlist for ${event.event_name}.`
+            `You have joined waitlist for ${event.event_name}.`
           );
 
+          const updatedEvent = {
+            ...event,
+            is_registered: false,
+            is_waitlisted: true,
+            is_full: true,
+            filled_spots: event.filled_spots,
+          };
+
+          setEvent(updatedEvent);
+        } else {
+          addRegistrationAlert(
+            "success",
+            `You have registered for ${event.event_name}.`
+          );
+
+          const updatedEvent = {
+            ...event,
+            is_registered: true,
+            is_waitlisted: false,
+            is_full: event.filled_spots + 1 >= event.capacity,
+            filled_spots: event.filled_spots + 1,
+          };
+          setEvent(updatedEvent);
+          setUsersForEvent(() => {
+            return [
+              {
+                first_name: userData.first_name,
+                last_name: userData.last_name,
+                email: userData.email,
+                is_admin: userData.is_admin,
+                address: userData.address,
+                preferred_name: userData.preferred_name,
+                pronouns: userData.pronouns,
+                phone_number: userData.phone_number,
+                marital_status: userData.marital_status,
+                family_circumstance: userData.family_circumstance,
+                community_status: userData.community_status,
+                interests: userData.interests,
+                personal_identity: userData.personal_identity,
+                picture: userData.picture,
+              },
+              ...usersForEvent,
+            ];
+          });
+        }
+      } else {
+        const data = await request.json();
+        if (data.message === "waitlist_error") {
+          addRegistrationAlert(
+            "danger",
+            `We couldn't register you for the wailist for ${event.event_name}. 
+              Try again or contact the administrator.`
+          );
         } else {
           addRegistrationAlert(
             "danger",
-            `We couldn't cancel your waitlist spot for ${event.event_name}. 
-            Try again or contact the administrator`
+            `We couldn't register you for ${event.event_name}. 
+              Try again or contact the administrator.`
           );
         }
-      } catch (error) {
+      }
+    } catch (error) {
+      addRegistrationAlert(
+        "danger",
+        `We couldn't register you for ${event.event_name}. 
+          There was most likely a server error.`
+      );
+    } finally {
+      setIsQuerying(false);
+    }
+  };
+
+  const handleCancelRegistration = async () => {
+    setIsQuerying(true);
+    try {
+      const request = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/delete-event-registration`,
+        {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ event_id: eventId }),
+        }
+      );
+      if (request.ok) {
+        const updatedEvent = {
+          ...event,
+          is_registered: false,
+          is_waitlisted: false,
+          is_full: event.filled_spots - 1 >= event.capacity,
+          filled_spots: event.filled_spots - 1,
+        };
+        setEvent(updatedEvent);
+        setUsersForEvent(() =>
+          usersForEvent.filter((user) => user.email !== userData.email)
+        );
+        addRegistrationAlert(
+          "success",
+          `We have cancelled your registration for ${event.event_name}.`
+        );
+      } else {
+        addRegistrationAlert(
+          "danger",
+          `We couldn't cancel your registration for ${event.event_name}. 
+              Try again or contact the administrator.`
+        );
+      }
+    } catch (error) {
+      addRegistrationAlert(
+        "danger",
+        `We couldn't cancel your registration for ${event.event_name}. 
+            There was most likely a server error.`
+      );
+    } finally {
+      setIsQuerying(false);
+    }
+  };
+
+  const handleCancelWaitlist = async () => {
+    setIsQuerying(true);
+    try {
+      const request = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/delete-event-waitlist`,
+        {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ event_id: eventId }),
+        }
+      );
+      if (request.ok) {
+        addRegistrationAlert(
+          "success",
+          `You have left the waitlist for ${event.event_name}.`
+        );
+      } else {
         addRegistrationAlert(
           "danger",
           `We couldn't cancel your waitlist spot for ${event.event_name}. 
-          The server is most likely down.`
+            Try again or contact the administrator`
         );
-      } finally {
-        setIsQuerying(false);
       }
-    };
+    } catch (error) {
+      addRegistrationAlert(
+        "danger",
+        `We couldn't cancel your waitlist spot for ${event.event_name}. 
+          There was most likely a server error.`
+      );
+    } finally {
+      setIsQuerying(false);
+    }
+  };
 
-    const handleButtonClick = (e, action) => {
-        e.stopPropagation();
-        action();
-    };
+  const addRegistrationAlert = (type, text) => {
+    setRegistrationAlerts((prevRegistrationAlerts) => {
+      const newRegistrationAlert = { id: Date.now(), type, text };
+      if (prevRegistrationAlerts.length >= 3) {
+        return [newRegistrationAlert, ...prevRegistrationAlerts.slice(0, 2)];
+      } else {
+        return [newRegistrationAlert, ...prevRegistrationAlerts];
+      }
+    });
+  };
 
-    const [confirmModal, setConfirmModal] = useState({ show: false, onConfirm: () => {} });
+  const handleUserClick = (user) => {
+    if (isAdmin) {
+      setSelectedUser(user);
+    }
+  };
 
-    return (
-        <>
-            <SessionTimeoutHandler />
-            <Header />
-            {/* Event info container */}
-            <div className="container spacing-from-header" >
-              <div className="position-relative">
-                <ToastContainer
-                  className={`p-3 ${toastStyles.toastContainer}`}
-                  style={{ zIndex: 100 }}
-                >
-                  {registrationAlerts.map((alert) => (
-                    <AlertToast
-                      key={alert.id}
-                      type={alert.type}
-                      text={alert.text}
-                    />
-                  ))}
-                </ToastContainer>
+  const handleButtonClick = (e, action) => {
+    e.stopPropagation();
+    action();
+  };
+
+  return (
+    <>
+      <SessionTimeoutHandler />
+      <Header />
+      {/* Event info container */}
+      <div className="container" style={{ paddingTop: "8em" }}>
+        <div className="position-relative">
+          <ToastContainer
+            className={`p-3 ${toastStyles.toastContainer}`}
+            style={{ zIndex: 100 }}
+          >
+            {registrationAlerts.map((alert) => (
+              <AlertToast key={alert.id} type={alert.type} text={alert.text} />
+            ))}
+          </ToastContainer>
+        </div>
+        {!event ? (
+          <Loading />
+        ) : displayAlert ? (
+          <AlertBox
+            type={displayAlert.type}
+            header={displayAlert.header}
+            text={displayAlert.text}
+            handleClose={() => setDisplayAlert(null)}
+          ></AlertBox>
+        ) : (
+          <div>
+            <h1 className="mt-3 py-3">{he.decode(event.event_name)}</h1>
+            <div>
+            <img
+              className={`${pageStyles.img}`}
+              src={event.image_link}
+              alt={event.event_name}
+            />
+            {isAdmin && (
+              <div className={`${pageStyles.cardButtons}`}>
+                <CardButton
+                  className="mb-2"
+                  action={(e) => {
+                    e.stopPropagation();
+                    setShowEditEvent(true);
+                  }}
+                  message="Edit Event"
+                  icon="fas fa-edit"
+                ></CardButton>
+                <CardButton
+                  action={(e) => {
+                    e.stopPropagation();
+                    setShowEmailEvent(true);
+                  }}
+                  message="Email Event Attendees"
+                  icon="fas fa-envelope"
+                ></CardButton>
               </div>
-                {event ? (
-                    <div className='event-info mt-5 postiion'>
-                        <h1>{event.event_name}</h1>
-                        <img src={event.image_link} alt={event.event_name} />
-                        <div className="row mt-4 postiion">
-                            <div className="col-md-3 mb-0">
-                                <div className="d-flex mb-2">
-                                    <div className="icon-container me-2">
-                                        <i className='fas fa-clock'>&nbsp;</i>
-                                    </div>
-                                    <div>
-                                        <p className="mb-2"><strong>Start:</strong> {new Date(event.start_time).toLocaleString()}</p>
-                                        <p className="mb-0"><strong>End:</strong> {new Date(event.end_time).toLocaleString()}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-3 mb-0">
-                                <div className='d-flex'>
-                                    <div className="icon-container me-2">
-                                        <i className='fas fa-map-marker-alt'>&ensp;</i>
-                                    </div>
-                                    <p className='mb-2'><strong>Location:</strong> {event.location}</p>
-                                </div>
-                            </div>
-                            <div className="col-md-3 mb-0">
-                                <div className='d-flex'>
-                                    <div className="icon-container me-2">
-                                        <i className='fas fa-user'>&ensp;</i>
-                                    </div>
-                                    <p className='mb-2'><strong>Registered: </strong>{event.filled_spots} out of {event.capacity}</p>
-                                </div>
-                            </div>
-                            <div className="col-md-3 mb-0">
-                                <div className='d-flex'>
-                                    <div className="icon-container me-2">
-                                        <i className='fas fa-exclamation-circle'>&nbsp;</i>
-                                    </div>
-                                    <p className='mb-2'><strong>Event with Dana?: </strong>{event.is_dana_event ? <span>Yes</span> : <span>No</span>}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='event-details mt-5 postiion'> 
-                            <h2>Event Details</h2>
-                            <p className='event-desc'>{event.event_desc}</p>
-                        </div>
-                        
-                    </div>
-                ) : (
-                    <p>No event details available.</p>
-                )}
-                    <div className="register-button">
-                        {eventData && (
-                            <EventRegisterButton
-                            isRegistered={eventData.isRegistered}
-                            isFull={eventData.isFull}
-                            isWaitlisted={eventData.isWaitlisted}
-                            isDisabled={isQuerying}
-                            handleRegister={(e) => handleButtonClick(e, handleRegistration)}
-                            handleCancelRegistration={(e) => handleButtonClick(e, handleCancelRegistration)}
-                            handleCancelWaitlist={(e) => handleButtonClick(e, handleCancelWaitlist)}
-                            />
-                        )}
-                    </div>
-                
-            </div >
-            {/* Users grid container */}
-            <div className="container mt-5 position">
-                <h4> Registered Users </h4>
-                {usersForEvent && usersForEvent.length > 0 ? (
-                    <div className="row">
-                        {usersForEvent.map(user => (
-                            <div className="col-12 col-sm-6 col-md-3 col-lg-3 mb-4" key={user.user_id}>
-                                <div className={`card square ${isAdmin ? 'admin-hover-effect' : ''}`} onClick={() => handleUserClick(user)}>
-                                    <div className="card-body square-content">
-                                        <img src={user.profile_photo ? user.profile_photo : logo} alt="Profile Photo" width="100px"/>
-                                        <p className="card-title">{user.first_name} {user.last_name}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p>No users registered for this event.</p>
-                )}
-                {selectedUser && isAdmin && (
-                    <Modal show={selectedUser !== null} onHide={closePopup} backdrop='static' keyboard={false}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>User Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p><strong>First Name:</strong> {selectedUser.first_name}</p>
-                        <p><strong>Last Name:</strong> {selectedUser.last_name}</p>
-                        <p><strong>Email:</strong> {selectedUser.email}</p>
-                        <p><strong>Phone Nmber:</strong> {selectedUser.phone_number}</p>
-                        <p><strong>Address:</strong> {selectedUser.address}</p>
-                        <p><strong>Preferred Name:</strong> {selectedUser.preferred_name}</p>
-                        <p><strong>Pronouns:</strong> {selectedUser.pronouns}</p>
-                        <p><strong>Marital Status:</strong> {selectedUser.marital_status}</p>
-                        <p><strong>Family Circumstance:</strong> {selectedUser.family_circumstance}</p>
-                        <p><strong>Community Status:</strong> {selectedUser.community_status}</p>
-                        <p><strong>Interests:</strong> {selectedUser.interests}</p>
-                        <p><strong>Personal Identity:</strong> {selectedUser.personal_identity}</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        {isAdmin && (
-                            <button className={styles.submitButton} variant="danger" onClick={unregisterUser}>Remove User</button>
-                        )}
-                        <button className={styles.cancelButton} variant="secondary" onClick={closePopup}>Close</button>
-                    </Modal.Footer>
-                    </Modal>
-                    )}
+            )}
             </div>
-        </>
-    );
+
+            <hr />
+            <h1 className={`mt-3 py-3`}>Event Details</h1>
+            <div className="row my-3">
+              <div className="col-md-3">
+                <div className="d-flex">
+                  <div className="icon-container">
+                    <i className="fas fa-clock">&nbsp;</i>
+                  </div>
+                  <div>
+                    <h5 className="mb-2">
+                      <strong>Start:</strong>{" "}
+                      {new Date(event.start_time).toLocaleString()}
+                    </h5>
+                    <h5 className="mb-2">
+                      <strong>End:</strong>{" "}
+                      {new Date(event.end_time).toLocaleString()}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="d-flex">
+                  <div className="icon-container">
+                    <i className="fas fa-map-marker-alt">&ensp;</i>
+                  </div>
+                  <h5 className="mb-2">
+                    <strong>Location:</strong> {he.decode(event.location)}
+                  </h5>
+                </div>
+              </div>
+              <div className="col-md-3 mb-0">
+                <div className="d-flex">
+                  <div className="icon-container">
+                    <i className="fas fa-user">&ensp;</i>
+                  </div>
+                  <h5 className="mb-2">
+                    <strong>Registered: </strong>
+                    {event.filled_spots} out of {event.capacity}
+                  </h5>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="d-flex">
+                  <div className="icon-container">
+                    <i className="fas fa-exclamation-circle">&nbsp;</i>
+                  </div>
+                  <h5 className="mb-2">
+                    <strong>Event with Dana? </strong>
+                    {event.is_dana_event ? <span>Yes</span> : <span>No</span>}
+                  </h5>
+                </div>
+              </div>
+            </div>
+            <div className={`row mb-3`}>
+              <h5 className={`pl-3`}>
+                <strong>Description</strong>: {he.decode(event.event_desc)}
+              </h5>
+            </div>
+          </div>
+        )}
+        <div>
+          {isFetchingEvent || !event ? (
+            <Loading />
+          ) : event.isPastEvent ? (
+            <Button variant="secondary" disabled>
+              Passed
+            </Button>
+          ) : (
+            <EventRegisterButton
+              isRegistered={event.is_registered}
+              isFull={event.is_full}
+              isWaitlisted={event.is_waitlisted}
+              isDisabled={isQuerying}
+              handleRegister={(e) => handleButtonClick(e, handleRegistration)}
+              handleCancelRegistration={(e) =>
+                handleButtonClick(e, handleCancelRegistration)
+              }
+              handleCancelWaitlist={(e) =>
+                handleButtonClick(e, handleCancelWaitlist)
+              }
+            />
+          )}
+        </div>
+      </div>
+      {/* Users grid container */}
+      <div className={`container mt-5 ${pageStyles.usersContainer}`}>
+        <hr />
+        <h1 className={`mt-3 pb-3`}> Registered Users </h1>
+        {isFetchingUsers ? (
+          <Loading />
+        ) : usersForEvent && usersForEvent.length > 0 ? (
+          <div className="row">
+            {usersForEvent.map((user) => (
+              <div
+                className="col-12 col-sm-6 col-md-3 col-lg-3 mb-4"
+                key={user.user_id}
+              >
+                <div
+                  className={`card square ${pageStyles.cardContainer} ${
+                    isAdmin ? pageStyles.adminHoverEffect : ""
+                  }`}
+                  onClick={() => handleUserClick(user)}
+                >
+                  <div className="card-body square-content">
+                    <img
+                      className={`mb-2 ${pageStyles.cardImgTop}`}
+                      src={user.profile_photo || logo}
+                      alt="Profile Photo"
+                    />
+                    <h6 className="card-title">
+                      {user.first_name} {user.last_name}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <h4>No users are currently registered for this event.</h4>
+        )}
+        {selectedUser && isAdmin && (
+          <Modal
+            show={selectedUser !== null}
+            onHide={() => setSelectedUser(null)}
+            backdrop="static"
+            keyboard={false}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>User Details</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                <strong>First Name:</strong> {selectedUser.first_name}
+              </p>
+              <p>
+                <strong>Last Name:</strong> {selectedUser.last_name}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedUser.email}
+              </p>
+              <p>
+                <strong>Phone Nmber:</strong> {selectedUser.phone_number}
+              </p>
+              <p>
+                <strong>Address:</strong> {selectedUser.address}
+              </p>
+              <p>
+                <strong>Preferred Name:</strong> {selectedUser.preferred_name}
+              </p>
+              <p>
+                <strong>Pronouns:</strong> {selectedUser.pronouns}
+              </p>
+              <p>
+                <strong>Marital Status:</strong> {selectedUser.marital_status}
+              </p>
+              <p>
+                <strong>Family Circumstance:</strong>{" "}
+                {selectedUser.family_circumstance}
+              </p>
+              <p>
+                <strong>Community Status:</strong>{" "}
+                {selectedUser.community_status}
+              </p>
+              <p>
+                <strong>Interests:</strong> {selectedUser.interests}
+              </p>
+              <p>
+                <strong>Personal Identity:</strong>{" "}
+                {selectedUser.personal_identity}
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              {isAdmin && (
+                <button
+                  className={styles.submitButton}
+                  variant="danger"
+                  onClick={unregisterUser}
+                >
+                  Remove User
+                </button>
+              )}
+              <button
+                className={styles.cancelButton}
+                variant="secondary"
+                onClick={() => setSelectedUser(null)}
+              >
+                Close
+              </button>
+            </Modal.Footer>
+          </Modal>
+        )}
+      </div>
+    </>
+  );
 }
 
 export default EventPage;

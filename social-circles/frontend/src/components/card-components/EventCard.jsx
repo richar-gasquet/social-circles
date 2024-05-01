@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import he from 'he';
 import Button from "react-bootstrap/Button";
 import CardButton from "./CardButton";
@@ -13,19 +14,8 @@ function EventCard(props) {
   const formattedStart = new Date(props.start).toISOString().slice(0, 16);
   const formattedEnd = new Date(props.end).toISOString().slice(0, 16);
 
-  const localeOptions = {
-    weekday: 'short', 
-    year: 'numeric', 
-    month: 'short',
-    day: 'numeric',  
-    hour: '2-digit', 
-    minute: '2-digit',
-    second: '2-digit', 
-    timeZoneName: 'short'
-  };
-
-  const localStart = new Date(props.start).toLocaleString('en-us', localeOptions)
-  const localEnd = new Date(props.end).toLocaleString('en-us', localeOptions)
+  const localStart = new Date(props.start).toLocaleString()
+  const localEnd = new Date(props.end).toLocaleString()
 
   const [showDeleteEvent, setShowDeleteEvent] = useState(false);
   const [showEditEvent, setShowEditEvent] = useState(false);
@@ -182,17 +172,12 @@ function EventCard(props) {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleCardClick = (e) => {
     if (!e.target.closest('.edit-event-modal') && !e.target.closest('.delete-event-modal')
               && !e.target.closest('.email-event-modal') && !e.target.closest('.register-button')) {
-      const eventData = {
-        isRegistered: props.isRegistered,
-        isFull: props.isFull,
-        isWaitlisted: props.isWaitlisted,
-        filled_spots: props.filled
-      };
-      localStorage.setItem('eventData', JSON.stringify(eventData));
-      window.location.href = `/events/${props.id}`;
+      navigate(`/events/${props.id}`);
     }
   };
 

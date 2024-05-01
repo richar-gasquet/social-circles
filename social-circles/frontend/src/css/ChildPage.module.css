@@ -1,0 +1,35 @@
+.img {
+    max-width: 100%; 
+    max-height: 500px;
+    width: auto; 
+    height: auto;
+    object-fit: cover; 
+    display: block; 
+}
+
+.cardButtons {  
+    position: absolute;
+    margin: 10px;
+    top: 0;
+    right: 0;
+    z-index: 1; 
+}
+
+.cardImgTop {
+    width: 80%;
+    height: 80px;
+    object-fit: cover;
+}
+
+.usersContainer {
+    min-height: 300px;
+}
+
+.adminHoverEffect {
+    transition: transform 0.15s;
+    cursor: pointer;
+}
+
+.adminHoverEffect:hover {
+    transform: scale(1.05);
+}

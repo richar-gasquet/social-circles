@@ -51,7 +51,6 @@ function Events() {
   if ( userData.is_admin === undefined) {
     return <Navigate to={"/profile"} />;
   }
-  {console.log(userData)}
   useEffect(() => {
     fetchEvents("/get-available-events");
   }, []);
