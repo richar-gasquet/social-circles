@@ -63,7 +63,7 @@ function UpdateAnnouncement(props) {
             type: "success",
             text: `${he.decode(annName)} was successfully updated.`,
           });
-          props.updateAnnouncement(props.announcement_id, announcementData);
+          props.updateAnnouncements(props.announcement_id, announcementData);
         } else {
           setAlert({
             type: "danger",

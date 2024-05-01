@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import { useState } from 'react';
 import CardButton from '../card-components/CardButton';
 import Loading from "../../components/shared-components/LoadingSpinner";
 import UpdateAnnouncement from './UpdateAnnouncement';
@@ -80,7 +79,7 @@ function CarouselComponent(props) {
           announcement_name={selectedAnn.name}
           description={selectedAnn.desc}
           image_link={selectedAnn.img}
-          fetchAnnouncements={props.fetchAnnouncements}
+          updateAnnouncements={props.updateAnnouncements}
         />
         </div>
 

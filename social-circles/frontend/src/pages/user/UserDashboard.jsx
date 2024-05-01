@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Navigate } from "react-router-dom";
 import { useUserContext } from '../../contexts/UserContextHandler';
 import { useEventContext } from "../../contexts/EventsContextHandler";
@@ -72,6 +72,18 @@ function UserDashboard() {
     }
   };
 
+  const updateAnnouncements = useCallback((ann_id, newAnnouncement) => {
+    setAnnouncements((prevAnns) =>
+      prevAnns.map((oldAnn) => {
+        if (oldAnn.announcement_id === ann_id) {
+          return { ...oldAnn, ...newAnnouncement };
+        } else {
+          return oldAnn;
+        }
+      })
+    );
+  }, [announcements]);
+
   useEffect(() => {
     fetchEvents("/get-available-events");
     fetchAllAnnouncements();
@@ -102,6 +114,7 @@ function UserDashboard() {
           isQuerying={isQuerying}
           isAdmin={ isAdmin }
           fetchAnnouncements={fetchAllAnnouncements}
+          updateAnnouncements={updateAnnouncements}
         />
       </div>
       {isAdmin && (
