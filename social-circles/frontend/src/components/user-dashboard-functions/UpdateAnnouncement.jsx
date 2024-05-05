@@ -27,7 +27,10 @@ function UpdateAnnouncement(props) {
       announcementData.description = descrip;
     if (imageLink !== props.image_link)
       try {
-        new URL(imageLink)
+        new URL(imageLink);
+        if (!(await isImage(imageLink))) {
+          throw new Error("Image link is not an image file.");
+        }
         announcementData.image_link = imageLink
       } catch (error) {
         setAlert({
