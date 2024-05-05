@@ -62,8 +62,8 @@ function AddAnnouncement(props) {
           text: `${he.decode(annName)} was successfully added.`,
         });
         props.fetchAnnouncements();
-        setGroupName("");
-        setGroupDesc("");
+        setAnnName("");
+        setDescrip("");
         setImageLink("");
       } else {
         setAlert({

@@ -11,6 +11,7 @@ import visitors
 import resources
 import users
 import uuid
+import user_dashboard
 from datetime import datetime, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -262,7 +263,24 @@ def delete_resources_route():
 def update_resources_route():
     return resources.update_resources()
 
+#----------------------------------------------------------------------
+# Routes for querying USER DASHBOARD data from database
 
+@app.route('/api/get-announcements', methods = ['GET'])
+def get_announcements_route():
+    return user_dashboard.get_announcements()
+
+@app.route('/api/add-announcement', methods = ['POST'])
+def add_announcements_route():
+    return user_dashboard.add_announcement()
+
+@app.route('/api/delete-announcement', methods = ['POST'])
+def delete_announcements_route():
+    return user_dashboard.delete_announcement()
+
+@app.route('/api/update-announcement', methods = ['POST'])
+def update_announcements_route():
+    return user_dashboard.update_announcement()
 
 
 scheduler = BackgroundScheduler()
