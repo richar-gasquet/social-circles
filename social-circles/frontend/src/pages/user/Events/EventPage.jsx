@@ -355,6 +355,12 @@ function EventPage() {
     });
   };
 
+  const dismissAlert = (alertId) => {
+    setRegistrationAlerts((prevRegistrationAlerts) =>
+      prevRegistrationAlerts.filter((alert) => alert.id !== alertId)
+    );
+  };
+
   const handleUserClick = (user) => {
     if (isAdmin) {
       setSelectedUser(user);
@@ -367,7 +373,6 @@ function EventPage() {
   };
 
   const Header = isAdmin ? AdminHeader : UserHeader;
-
   if (isLoading) {
     return (
       <>
@@ -389,7 +394,12 @@ function EventPage() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <AlertToast key={alert.id} type={alert.type} text={alert.text} />
+              <AlertToast
+                key={alert.id}
+                type={alert.type}
+                text={alert.text}
+                onDismiss={() => dismissAlert(alert.id)}
+              />
             ))}
           </ToastContainer>
         </div>

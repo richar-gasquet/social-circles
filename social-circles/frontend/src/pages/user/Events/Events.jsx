@@ -34,16 +34,7 @@ function Events() {
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const { userData, isLoading } = useUserContext();
-  const Header = isAdmin ? AdminHeader : UserHeader;
-
-  if (isLoading) {
-    return (
-      <>
-      <Header />
-      <Loading/>
-      </>
-    )
-  }
+  
   // Checking if userData is undefined or email is empty  !userData ||
   if ( userData.email === '') {
     return <Navigate to={"/"} />;
@@ -67,7 +58,24 @@ function Events() {
       }
     });
   };
+
+  const dismissAlert = alertId => {
+    setRegistrationAlerts(prevRegistrationAlerts =>
+      prevRegistrationAlerts.filter(alert => alert.id !== alertId)
+    );
+  };
+
   const filteredEvents = searchEvents(events);  
+
+  const Header = isAdmin ? AdminHeader : UserHeader;
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Loading/>
+      </>
+    )
+  }
 
   return (
     <>
@@ -84,6 +92,7 @@ function Events() {
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}
+                onDismiss={() => dismissAlert(alert.id)}
               />
             ))}
           </ToastContainer>

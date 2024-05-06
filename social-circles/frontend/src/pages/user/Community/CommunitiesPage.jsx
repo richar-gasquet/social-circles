@@ -291,6 +291,12 @@ function CommunitiesPage() {
     });
   };
 
+  const dismissAlert = (alertId) => {
+    setRegistrationAlerts((prevRegistrationAlerts) =>
+      prevRegistrationAlerts.filter((alert) => alert.id !== alertId)
+    );
+  };
+
   const handleUserClick = (user) => {
     if (isAdmin) {
       setSelectedUser(user);
@@ -325,7 +331,12 @@ function CommunitiesPage() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <AlertToast key={alert.id} type={alert.type} text={alert.text} />
+              <AlertToast 
+                key={alert.id} 
+                type={alert.type} 
+                text={alert.text} 
+                onDismiss={() => dismissAlert(alert.id)}
+              />
             ))}
           </ToastContainer>
         </div>

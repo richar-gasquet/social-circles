@@ -34,16 +34,7 @@ function Communities() {
   const { isAdmin } = useAuthContext();
   const [showAddCommunity, setShowAddCommunity] = useState(false);
   const { userData, isLoading } = useUserContext();
-  const Header = isAdmin ? AdminHeader : UserHeader;
 
-  if (isLoading) {
-    return (
-      <>
-      <Header />
-      <Loading/>
-      </>
-    )
-  }
   // Checking if userData is undefined or email is empty
   if ( userData.email === '') {
     return <Navigate to={"/"} />;
@@ -70,7 +61,23 @@ function Communities() {
     });
   };
 
+  const dismissAlert = alertId => {
+    setRegistrationAlerts(prevRegistrationAlerts =>
+      prevRegistrationAlerts.filter(alert => alert.id !== alertId)
+    );
+  };
+
   const filteredCommunities = searchCommunities(communities);
+
+  const Header = isAdmin ? AdminHeader : UserHeader;
+  if (isLoading) {
+    return (
+      <>
+      <Header />
+      <Loading/>
+      </>
+    )
+  }
 
   return (
     <>
@@ -87,6 +94,7 @@ function Communities() {
                 key={alert.id}
                 type={alert.type}
                 text={alert.text}
+                onDismiss={() => dismissAlert(alert.id)}
               />
             ))}
           </ToastContainer>
