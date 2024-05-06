@@ -16,25 +16,21 @@ import styles from "../../css/Toast.module.css";
 import AddAnnouncement from "../../components/user-dashboard-functions/AddAnnouncement";
 
 function UserDashboard() {
-  const { isAdmin } = useAuthContext();
-  const { userData, isLoading } = useUserContext();
   const [announcements, setAnnouncements] = useState([]);
   const [isQuerying, setIsQuerying] = useState(true);
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
-  const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
-  const Header = isAdmin
-    ? AdminHeader
-    : UserHeader;
 
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Loading />
-      </>
-    )
-  }
+  const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
+  const { isAdmin } = useAuthContext();
+  const { userData, isLoading } = useUserContext();
+
+  useEffect(() => {
+    fetchEvents("/get-available-events");
+    fetchAllAnnouncements();
+  }, []);
+
+  const fetchAllEvents = () => fetchEvents("/get-available-events");
 
   // Checking if userData is undefined or email is empty 
   if (userData.email === '') {
@@ -72,7 +68,7 @@ function UserDashboard() {
     }
   };
 
-  const updateAnnouncements = useCallback((ann_id, newAnnouncement) => {
+  const updateAnnouncements = (ann_id, newAnnouncement) => {
     setAnnouncements((prevAnns) =>
       prevAnns.map((oldAnn) => {
         if (oldAnn.announcement_id === ann_id) {
@@ -82,14 +78,7 @@ function UserDashboard() {
         }
       })
     );
-  }, [announcements]);
-
-  useEffect(() => {
-    fetchEvents("/get-available-events");
-    fetchAllAnnouncements();
-  }, []);
-
-  const fetchAllEvents = () => fetchEvents("/get-available-events");
+  };
 
   const addRegistrationAlert = (type, text) => {
     setRegistrationAlerts((prevRegistrationAlerts) => {
@@ -101,6 +90,19 @@ function UserDashboard() {
       }
     });
   };
+
+  const Header = isAdmin
+  ? AdminHeader
+  : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Loading />
+      </>
+    )
+  }
 
   const slicedEvents = events.slice(0, 3);
 
