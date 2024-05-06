@@ -35,17 +35,6 @@ function CommunitiesPage() {
   const [isFetchingCommunity, setIsFetchingCommunity] = useState(false);
   const [isQuerying, setIsQuerying] = useState(false);
 
-  const Header = isAdmin ? AdminHeader : UserHeader;
-
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Loading />
-      </>
-    );
-  }
-
   if (userData.email === "") return <Navigate to={"/"} />;
   if (userData.is_admin === undefined) return <Navigate to={"/profile"} />;
 
@@ -312,6 +301,17 @@ function CommunitiesPage() {
     e.stopPropagation();
     action();
   };
+
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Loading />
+      </>
+    );
+  }
 
   return (
     <>

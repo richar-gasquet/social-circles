@@ -231,11 +231,12 @@ def get_community_info():
             group_info = comm_db.get_community_info(group_id, flask.session['email'])
 
             group_info_dict = {
+                'group_id' : group_info[0],
                 'group_name': group_info[1],
-                'count': group_info[3],
                 'group_desc': group_info[2],
-                'image_link': group_info[4]
-          
+                'count': group_info[3],
+                'image_link': group_info[4],
+                'isRegistered' : group_info[5]
             }
 
             return flask.jsonify({

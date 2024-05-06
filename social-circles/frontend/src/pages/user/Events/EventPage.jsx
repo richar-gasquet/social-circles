@@ -9,7 +9,6 @@ import AdminHeader from "../../../components/headers/AdminHeader.jsx";
 import UserHeader from "../../../components/headers/UserHeader.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 import EventRegisterButton from "../../../components/user-functions/EventRegisterButton.jsx";
-import CardButton from "../../../components/card-components/CardButton.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
 import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
@@ -28,7 +27,7 @@ function EventPage() {
 
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [eventDisplayAlert, setEventDisplayAlert] = useState(null);
-  const [userDisplayAlert, setUserDisplayAlert] = useState(null)
+  const [userDisplayAlert, setUserDisplayAlert] = useState(null);
 
   const { isAdmin } = useAuthContext();
   const { userData, isLoading } = useUserContext();
@@ -37,22 +36,15 @@ function EventPage() {
   const [isFetchingEvent, setIsFetchingEvent] = useState(false);
   const [isQuerying, setIsQuerying] = useState(false);
 
-  const Header = isAdmin ? AdminHeader : UserHeader;
-
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Loading />
-      </>
-    );
-  }
-
   if (userData.email === "") return <Navigate to={"/"} />;
   if (userData.is_admin === undefined) return <Navigate to={"/profile"} />;
 
   // Utility function for handling fetch errors
-  const handleFetchError = (setAlert, message, detail = "Try again or contact the administrator.") => {
+  const handleFetchError = (
+    setAlert,
+    message,
+    detail = "Try again or contact the administrator."
+  ) => {
     setAlert({
       type: "danger",
       header: message,
@@ -63,14 +55,22 @@ function EventPage() {
   const fetchSingleEvent = useCallback(async () => {
     try {
       setIsFetchingEvent(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get-one-event-info-with-user-status?event_id=${eventId}`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/get-one-event-info-with-user-status?event_id=${eventId}`,
+        {
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setEvent(data.results);
       } else {
-        handleFetchError(setEventDisplayAlert, "Could not display the event details!");
+        handleFetchError(
+          setEventDisplayAlert,
+          "Could not display the event details!"
+        );
       }
     } catch (error) {
       handleFetchError(setEventDisplayAlert, "Could not connect to server!");
@@ -82,14 +82,22 @@ function EventPage() {
   const getUsersForEvent = useCallback(async () => {
     try {
       setIsFetchingUsers(true);
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get-users-for-event?event_id=${eventId}`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/get-users-for-event?event_id=${eventId}`,
+        {
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setUsersForEvent(data.results);
       } else {
-        handleFetchError(setUserDisplayAlert, "Could not display the registered users!");
+        handleFetchError(
+          setUserDisplayAlert,
+          "Could not display the registered users!"
+        );
       }
     } catch (error) {
       handleFetchError(setUserDisplayAlert, "Could not connect to server!");
@@ -149,7 +157,9 @@ function EventPage() {
     } catch (error) {
       addRegistrationAlert(
         "danger",
-        `We couldn't unregister the user for ${he.decode(event.event_name)}. There was
+        `We couldn't unregister the user for ${he.decode(
+          event.event_name
+        )}. There was
         most likely a server error.`
       );
     }
@@ -356,6 +366,17 @@ function EventPage() {
     action();
   };
 
+  const Header = isAdmin ? AdminHeader : UserHeader;
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Loading />
+      </>
+    );
+  }
+
   return (
     <>
       <SessionTimeoutHandler />
@@ -378,11 +399,11 @@ function EventPage() {
           <div>
             <h1 className="mt-3 py-3">{he.decode(event.event_name)}</h1>
             <div>
-            <img
-              className={`${pageStyles.img}`}
-              src={event.image_link}
-              alt={event.event_name}
-            />
+              <img
+                className={`${pageStyles.img}`}
+                src={event.image_link}
+                alt={event.event_name}
+              />
             </div>
             <hr />
             <h1 className={`mt-3 py-3`}>Event Details</h1>
@@ -512,11 +533,11 @@ function EventPage() {
           </div>
         ) : userDisplayAlert ? (
           <AlertBox
-          type={userDisplayAlert.type}
-          header={userDisplayAlert.header}
-          text={userDisplayAlert.text}
-          handleClose={() => setUserDisplayAlert(null)}
-        ></AlertBox>
+            type={userDisplayAlert.type}
+            header={userDisplayAlert.header}
+            text={userDisplayAlert.text}
+            handleClose={() => setUserDisplayAlert(null)}
+          ></AlertBox>
         ) : (
           <h4>No users are currently registered for this event.</h4>
         )}

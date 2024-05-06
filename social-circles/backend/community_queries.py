@@ -341,19 +341,23 @@ def get_community_info(group_id: int, user_email: str):
                 SELECT user_id FROM users WHERE email = %s;
             ''', (user_email,))
             user_result = cursor.fetchone()
-            print(user_result)
+
             if not user_result:
+                put_connection(connection)
                 return group_info  # No such user
 
             user_id = user_result[0]
-            print(user_id)
-            print(group_id)
-            # Now, fetch the event details along with registration and waitlist status
+            
+            # Now, fetch the community details along with registration status
             cursor.execute('''
                 SELECT 
                     c.group_id, c.group_name, c.group_desc, 
                     c.member_count, c.image_link, 
-                    (SELECT COUNT(*) FROM community_registrations cr WHERE cr.group_id = c.group_id AND cr.user_id = %s) > 0 AS is_registered
+                    (SELECT COUNT(*)
+                        FROM 
+                            community_registrations cr 
+                        WHERE 
+                            cr.group_id = c.group_id AND cr.user_id = %s) > 0 AS is_registered
                     
                 FROM 
                     communities c
@@ -362,7 +366,7 @@ def get_community_info(group_id: int, user_email: str):
             ''', (user_id, group_id))
 
             group_info = cursor.fetchone()
-            print(group_info)
+            
     except Exception as ex:
         print("Error fetching community info:", ex)
     finally:
