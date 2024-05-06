@@ -58,7 +58,7 @@ function EventPage() {
       const response = await fetch(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/api/get-one-event-info-with-user-status?event_id=${eventId}`,
+        }/api/get-single-event-info?event_id=${eventId}`,
         {
           credentials: "include",
         }

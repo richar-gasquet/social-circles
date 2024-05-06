@@ -15,8 +15,6 @@ import user_dashboard
 from datetime import datetime, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 
-
-
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -55,7 +53,6 @@ def make_session_permanent():
         last_session_init_time = now  # Update the last initialization time
 
         visitors.log_visit(flask.session['session_id'])
-
 
 @app.route('/login', methods = ['GET'])
 def login_route():
@@ -107,11 +104,9 @@ def get_all_users():
 def block_and_delete_user_route():
     return users.block_and_delete_user_route()
     
-
 @app.route('/get-blocked-users', methods=['GET'])
 def get_blocked_users():
     return users.get_blocked_users()
-
 
 @app.route('/remove-user-from-block', methods=['POST'])
 def remove_user_from_block():
@@ -174,7 +169,7 @@ def delete_event_waitlist_route():
 def unregister_user_route():
     return events.unregister_user()
 
-@app.route('/api/get-one-event-info-with-user-status', methods = ['GET'])
+@app.route('/api/get-single-event-info', methods = ['GET'])
 def get_event_info_route():
     return events.get_event_info()
 
@@ -227,11 +222,11 @@ def delete_community_registration_route():
 def remove_user_route():
     return communities.remove_user()
 
-@app.route('/api/get-one-group-info-with-user-status', methods = ['GET'])
+@app.route('/api/get-single-community-info', methods = ['GET'])
 def get_community_info_route():
     return communities.get_community_info()
 
-@app.route('/api/get-users-for-group', methods = ['GET'])
+@app.route('/api/get-users-for-community', methods = ['GET'])
 def get_users_for_group():
     return communities.get_users_for_group()
 

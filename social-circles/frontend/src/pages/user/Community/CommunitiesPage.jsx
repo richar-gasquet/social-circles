@@ -57,7 +57,7 @@ function CommunitiesPage() {
       const response = await fetch(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/api/get-one-group-info-with-user-status?group_id=${groupId}`,
+        }/api/get-single-community-info?group_id=${groupId}`,
         {
           credentials: "include",
         }
@@ -87,7 +87,7 @@ function CommunitiesPage() {
       const response = await fetch(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/api/get-users-for-group?group_id=${groupId}`,
+        }/api/get-users-for-community?group_id=${groupId}`,
         {
           credentials: "include",
         }
