@@ -28,8 +28,16 @@ function AddAnnouncement(props) {
       return;
     }
 
+    async function isImage(url) {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res.headers.get('Content-Type').startsWith('image');
+    }
+
     try {
-      new URL(imageLink)
+      new URL(imageLink);
+      if (!(await isImage(imageLink))) {
+        throw new Error("Image link is not an image file.");
+      }
     } catch (error) {
       setAlert({
         type: "warning",
