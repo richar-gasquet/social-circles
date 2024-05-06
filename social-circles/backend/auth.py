@@ -1,3 +1,7 @@
+#----------------------------------------------------------------------
+# auth.py: Authentication with Google for Social Circles
+#----------------------------------------------------------------------
+
 import os
 import sys
 import json
@@ -8,6 +12,7 @@ import oauthlib.oauth2
 import user_queries as db
 
 #----------------------------------------------------------------------
+
 # Load in relevant Google IDs/URLs for authentication
 load_dotenv()
 GOOGLE_DISCOVERY_URL = (
@@ -24,7 +29,12 @@ client = oauthlib.oauth2.WebApplicationClient(GOOGLE_CLIENT_ID)
 
 #----------------------------------------------------------------------
 
-def login():
+def login() -> flask.Response:
+    """ Prepares request to redirects the user to Google 'Login' screen
+
+    Returns:
+        flask.Response: flask.redirect to Google 'Login'
+    """
     # Determine URL for Google login
     google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
     auth_endpoint = (
@@ -42,7 +52,12 @@ def login():
 
 #----------------------------------------------------------------------
     
-def callback():
+def callback() -> flask.Response:
+    """ Gets authorization cookie sent and user information sent by Google
+
+    Returns:
+        flask.Response: flask.redirect to User/Admin dashboard
+    """
     # Get authorization code sent by Google
     auth_code = flask.request.args.get('code')
     
@@ -58,7 +73,7 @@ def callback():
         code = auth_code 
     )
     
-    # Fetch tokens
+    # Fetch tokens from Google
     token_response = requests.post(
         url = token_url,
         headers = headers,
@@ -66,7 +81,7 @@ def callback():
         auth = (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_ID_SECRET)
     )
     
-    # Parse tokens
+    # Parse tokens from Google as JSON
     client.parse_request_body_response(
         json.dumps(token_response.json())
     )
@@ -76,6 +91,7 @@ def callback():
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers = headers, 
                                      data = body).json()
+    
     flask.session['email'] = userinfo_response.get('email')
     flask.session['name'] = userinfo_response.get('name')
     flask.session['picture'] = userinfo_response.get('picture')
@@ -89,20 +105,24 @@ def callback():
     user_details = db.get_user_details(flask.session['email'])
     
     if user_details:
-        # If user exists, direct them to the appropriate dashboard
+        # If user exists, redirect them to the appropriate dashboard
         if user_details['is_admin']:
             return flask.redirect(f'{REACT_FRONTEND}/admin-dashboard')
         elif user_details['is_admin'] is False:
             return flask.redirect(f'{REACT_FRONTEND}/user-dashboard')
     else:
-        # If user does not exists, direct them to the profile to create the account
+        # If user does not exists, redirect them to profile creation
         return flask.redirect(f'{REACT_FRONTEND}/profile')
         
 #----------------------------------------------------------------------
 
-def logout():
-    # This will remove all other keys except for 'session_id', 'visited', 'session_start'
-    # Define a set of keys that we want to preserve
+def logout() -> flask.Response:
+    """ Log the user out from the flask session.  
+
+    Returns:
+        flask.Response: flask.redirect to landing page
+    """
+    # Define a set of keys that we want to preserve after logout
     keys_to_preserve = {'session_id', 'visited', 'session_start'}
 
     # Collect keys that are not in the keys_to_preserve set
@@ -116,25 +136,30 @@ def logout():
 
 #----------------------------------------------------------------------
 
-def authenticate():
+def authenticate() -> tuple: 
+    """ Authenticates the user against the current flask session
+
+    Returns:
+        tuple: JSON containing authentication status and HTML code
+    """
+    
+    # Check if the user has their email stored from logging in
     if 'email' in flask.session:
         if db.is_in_block(flask.session['email']):
-            # User is blacklisted; clear the session and return unauthorized
+            # User is blacklisted; clear the session and return Forbidden
             flask.session.clear()
             return flask.jsonify({'status': 'blocked'}), 403 # Forbidden
         
-        # Function get_user_details(email) that returns user details including is_admin
         is_admin = db.get_user_authorization(flask.session['email'])
         
-        # THIS CODE IS GOING TO BE CHANGE
+        # If there's no such user in the database, consider not authenticated
         if not is_admin:
-            # If there's no such user in the database, consider not authenticated
-            return flask.jsonify({'status': 'auth'}), 200 # unauthorized
+            return flask.jsonify({'status': 'not auth'}), 200 # Unauthorized
 
-        # Adjusting the response to include is_admin status
+        # User has passed all checks, authenticated
         return flask.jsonify({
             'status': 'auth',
             'is_admin': is_admin
         }), 200 # ok
     else: 
-        return flask.jsonify({'status': 'not auth'}), 401 # unauthorized
+        return flask.jsonify({'status': 'not auth'}), 401 # Unauthorized

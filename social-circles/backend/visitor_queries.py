@@ -1,5 +1,5 @@
 #----------------------------------------------------------------------
-# vistor_queries.py: SQL Queries for Social Circles Vistors_log
+# vistor_queries.py: SQL Queries for Social Circles visitors log
 #----------------------------------------------------------------------
 import psycopg2
 from database import get_connection, put_connection
@@ -27,8 +27,6 @@ def current_visitors():
         put_connection(connection)
         
     return {'current_visitors': count}
-
-
 
 def delete_expired_sessions_from_database():
     connection = get_connection()

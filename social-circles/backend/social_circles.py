@@ -102,7 +102,7 @@ def get_all_users():
     
 @app.route('/block-and-delete-user', methods=['POST'])
 def block_and_delete_user_route():
-    return users.block_and_delete_user_route()
+    return users.block_and_delete_user()
     
 @app.route('/get-blocked-users', methods=['GET'])
 def get_blocked_users():
@@ -181,7 +181,6 @@ def get_users_for_event():
 def email_event_route():
     return events.get_event_emails()
 
-# grab events for calendar
 @app.route('/calendar', methods=['GET'])
 def calendar_route():
     return events.get_available_events()
@@ -227,8 +226,8 @@ def get_community_info_route():
     return communities.get_community_info()
 
 @app.route('/api/get-users-for-community', methods = ['GET'])
-def get_users_for_group():
-    return communities.get_users_for_group()
+def get_users_for_community_route():
+    return communities.get_users_for_community()
 
 @app.route('/api/get-community-emails', methods = ['POST'])
 def email_community_route():

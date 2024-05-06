@@ -5,7 +5,16 @@
 import psycopg2
 from database import get_connection, put_connection
 
+#----------------------------------------------------------------------
 def get_available_events(email) -> list:
+    """ Get all events and user's registration status from the database
+
+    Args:
+        email (str): email of user sending the request 
+
+    Returns:
+        list: list of lists containing all events' details
+    """
     all_events = []
     connection = get_connection()
     try: 
@@ -21,6 +30,7 @@ def get_available_events(email) -> list:
             ''', (email, ))
             user_info = cursor.fetchone()
             
+            # User is not in database
             if not user_info:
                 put_connection(connection)
                 return all_events
@@ -28,7 +38,8 @@ def get_available_events(email) -> list:
             # Retrieve user's user_id at index 0
             user_id = user_info[0]
             
-            # Get all upcoming  events' info from event table
+            # Get all upcoming  events' info from event table, including
+            # whether the user is registered/in waitlist for each event
             cursor.execute('''
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
@@ -57,6 +68,7 @@ def get_available_events(email) -> list:
             ''', (user_id, user_id, ))
             
             all_events = cursor.fetchall()
+    # Database error
     except Exception:
         raise
     finally:
@@ -65,6 +77,14 @@ def get_available_events(email) -> list:
     return all_events
 
 def get_dana_events(email) -> list:
+    """ Get events Dana is participating in/hosting from database
+    
+    Args:
+        email (str): email of user sending the request 
+
+    Returns:
+        list: list of lists containing all Dana events' details
+    """
     dana_events = []
     connection = get_connection()
     try: 
@@ -80,6 +100,7 @@ def get_dana_events(email) -> list:
             ''', (email, ))
             user_info = cursor.fetchone()
             
+            # User is not in database
             if not user_info:
                 put_connection(connection)
                 return dana_events
@@ -87,7 +108,8 @@ def get_dana_events(email) -> list:
             # Retrieve user's user_id at index 0
             user_id = user_info[0]
             
-            # Get all upcoming  events' info from event table
+            # Retrieve Dana events' information, including
+            # whether the user is registered/in waitlist for each event
             cursor.execute('''
                 SELECT DISTINCT
                     e.event_id, e.event_name, e.event_desc, 
@@ -117,6 +139,7 @@ def get_dana_events(email) -> list:
             ''', (user_id, user_id, ))
             
             all_events = cursor.fetchall()
+    # Database error
     except Exception:
         raise
     finally:
@@ -125,6 +148,14 @@ def get_dana_events(email) -> list:
     return all_events
         
 def get_registered_events(email: str) -> list:
+    """ Get events a user is registered for from the database
+
+    Args:
+        email (str): email of user sending the request 
+
+    Returns:
+        list: list of lists containing registered events' details
+    """
     registered_events = []
     connection = get_connection()
     try: 
@@ -140,6 +171,7 @@ def get_registered_events(email: str) -> list:
             ''', (email, ))
             user_info = cursor.fetchone()
             
+            # User is not in database
             if not user_info:
                 put_connection(connection)
                 return registered_events
@@ -147,7 +179,8 @@ def get_registered_events(email: str) -> list:
             # Retrieve user's user_id at index 0
             user_id = user_info[0]
             
-            # Get events user has registered for
+            # Retrieve registered events' information, including
+            # whether the user is registered/in waitlist for each event
             cursor.execute('''
                 SELECT DISTINCT
                         e.event_id, e.event_name, e.event_desc, 
@@ -177,6 +210,7 @@ def get_registered_events(email: str) -> list:
             ''', (user_id, user_id, user_id, user_id, ))
             
             registered_events = cursor.fetchall()
+    # Database error
     except Exception:
         raise
     finally:
@@ -524,51 +558,53 @@ def get_event_info(event_id: int, user_email: str):
 
 
 def get_users_for_event(event_id):
-    rows = []
-    user_ids= []
-    user_info = []
     connection = get_connection()
-    try: 
-        with connection.cursor() as cursor: 
-            # Get all users registered for the event 
-            # from the event_registrations table
+    try:
+        with connection.cursor() as cursor:
+            # Get all user IDs registered for the event
             cursor.execute('''
-                SELECT *
-                FROM event_registrations
-                WHERE event_id = %s;
-            ''', (event_id, ))
+                SELECT 
+                    user_id
+                FROM 
+                    event_registrations
+                WHERE 
+                    event_id = %s;
+            ''', (event_id,))
             rows = cursor.fetchall()
 
-            if rows:
-                for row in rows:
-                    user_ids.append(row[1])
-                
-                sql_query_base = "SELECT * FROM users WHERE "
+            # If no users are found, return an empty list immediately
+            if not rows:
+                return []
 
-                i = 0
-                for _ in user_ids:
-                    if (i == 0):
-                        sql_query_base += "user_id = %s"
-                    else:
-                        sql_query_base += " OR user_id = %s"
-                    i = i + 1
-                cursor.execute(sql_query_base, tuple(user_ids))
-                user_info = cursor.fetchall()
-            else:
-                pass
+            # Extract user_ids from rows
+            user_ids = [row[0] for row in rows] 
 
+            # Prepare SQL query to retrieve details for registered users
+            placeholders = ', '.join(['%s'] * len(user_ids))
+            sql_query = f"SELECT * FROM users WHERE user_id IN ({placeholders})"
+            
+            cursor.execute(sql_query, tuple(user_ids))
+            user_info = cursor.fetchall()
+            return user_info
+    # Database error
     except Exception:
-        connection.rollback()
         raise
     finally:
         put_connection(connection)
-    return user_info
         
 # ---------------------------------------------------------------------
 # Queries/Helper functions for WAITLIST functionality
 # ---------------------------------------------------------------------
 
-def get_event_spots(event_id: str) -> tuple:
+def get_event_spots(event_id: str) -> list:
+    """ Get filled spots and capacity for a particular event
+
+    Args:
+        event_id (str): ID of event to get spots for
+
+    Returns:
+        list: list containing filled spots and capacity for the event
+    """
     event_spots = []
     connection = get_connection()
     try:
@@ -589,6 +625,12 @@ def get_event_spots(event_id: str) -> tuple:
     return event_spots
 
 def add_to_waitlist(email: str, event_id: int) -> None:
+    """ Add a user to an event's waitlist
+
+    Args:
+        email (str): email of the user to be added to the waitlist
+        event_id (int): id of the event the waitlist is for
+    """
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -615,13 +657,20 @@ def add_to_waitlist(email: str, event_id: int) -> None:
                     (%s, %s)             
             ''', values)
             connection.commit()
+    # Database error
     except Exception:
         connection.rollback()
         raise
     finally:
         put_connection(connection)
     
-def remove_from_waitlist(email, event_id) -> None:
+def remove_from_waitlist(email: str, event_id: int) -> None:
+    """ Remove a user from an event's waitlist
+
+    Args:
+        email (str): email of the user to be removed from the waitlist
+        event_id (int): id of the event the waitlist is for
+    """
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -654,11 +703,20 @@ def remove_from_waitlist(email, event_id) -> None:
     finally:
         put_connection(connection)
         
-def get_first_waitlist_user(event_id) -> str:
+def get_first_waitlist_user(event_id: int) -> str:
+    """ Get the first user to have joined the waitlist for an event
+
+    Args:
+        event_id (int): id of the event the waitlist is for
+
+    Returns:
+        str: email of the first user who joined the event's waitlist
+    """
     waitlist_user_email = None
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
+            # Retrieve single user's email
             cursor.execute('''
                 SELECT 
                     u.email
@@ -678,6 +736,7 @@ def get_first_waitlist_user(event_id) -> str:
             result = cursor.fetchone()
             if result:
                 waitlist_user_email = result[0]
+    # Database error
     except Exception:
         raise
     finally:
