@@ -3,6 +3,7 @@ import UserHeader from "../../components/headers/UserHeader";
 import AdminHeader from "../../components/headers/AdminHeader";
 import Loading from "../../components/shared-components/LoadingSpinner";
 import { useUserContext } from "../../contexts/UserContextHandler";
+import logo from "../../assets/social-circles-logo.png";
 
 /* 401 Unauthorized page for users attempting unauthorized access */
 function Unauthorized() {
