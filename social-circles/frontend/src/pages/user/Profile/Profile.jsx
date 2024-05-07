@@ -76,7 +76,7 @@ function Profile() {
               borderRadius: "1%",
             }}
           >
-            <h2>Profile</h2>
+            <h2>Profile Setup</h2>
             <p>Please fill in the information to complete your account</p>
             <form onSubmit={handleSubmit} className="mb-3">
               {Object.keys(formData).map((key) => {
