@@ -21,22 +21,6 @@ function ReactCalendar() {
   const { isAdmin } = useAuthContext();
   const { userData, isLoading } = useUserContext();
 
-  if (isLoading) {
-    return (
-      <>
-        <Loading/>
-      </>
-    );
-  }
-
-  // Checking if userData is undefined or email is empty 
-  if (userData.is_admin === undefined || userData.is_admin === null) {
-    return <Navigate to={"/profile"} />;
-  }
-  if (userData.email === '') {
-    return <Navigate to={"/"} />;
-  }
-
   useEffect(() => {
     fetchCalendarEvents();
   }, []);
@@ -75,6 +59,23 @@ function ReactCalendar() {
       setQuerying(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
+  }
+
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
+    return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
+
 
   const Header = isAdmin ? AdminHeader : UserHeader;
 

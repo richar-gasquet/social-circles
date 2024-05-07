@@ -36,22 +36,6 @@ function CommunitiesPage() {
   const [isFetchingCommunity, setIsFetchingCommunity] = useState(false);
   const [isQuerying, setIsQuerying] = useState(false);
 
-  if (isLoading) {
-    return (
-      <>
-        <Loading/>
-      </>
-    );
-  }
-
-  // Checking if userData is undefined or email is empty 
-  if (userData.is_admin === undefined || userData.is_admin === null) {
-    return <Navigate to={"/profile"} />;
-  }
-  if (userData.email === '') {
-    return <Navigate to={"/"} />;
-  }
-
   // Utility function for handling fetch errors
   const handleFetchError = (
     setAlert,
@@ -327,6 +311,22 @@ function CommunitiesPage() {
     e.stopPropagation();
     action();
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
+  }
+
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
+    return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
 
   const Header = isAdmin ? AdminHeader : UserHeader;
 
