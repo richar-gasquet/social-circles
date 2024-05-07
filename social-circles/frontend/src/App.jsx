@@ -34,11 +34,14 @@ function App() {
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/resources" element={
-            <UserContextProvider>
+          <Route
+            exact
+            path="/resources"
+            element={
+              <UserContextProvider>
                 <Resources />
-            </UserContextProvider>
-            } 
+              </UserContextProvider>
+            }
           />
 
           {/* Profile route */}
@@ -67,56 +70,59 @@ function App() {
 
           {/* Events routes */}
           <Route
-            exact path="/events"
+            exact
+            path="/events"
             element={
               <UserContextProvider>
                 <EventContextProvider>
                   <ProtectedRoute component={Events} />
                 </EventContextProvider>
               </UserContextProvider>
-          }
+            }
           />
-          
-           <Route path="/events/:eventId" element={
+
+          <Route
+            path="/events/:eventId"
+            element={
               <UserContextProvider>
                 <EventContextProvider>
-                    <ProtectedRoute component={EventPage} />
+                  <ProtectedRoute component={EventPage} />
                 </EventContextProvider>
               </UserContextProvider>
-
             }
           />
           <Route
-            exact path="/dana-events"
+            exact
+            path="/dana-events"
             element={
               <UserContextProvider>
                 <EventContextProvider>
-                    <ProtectedRoute component={DanaEvents} />
-                </EventContextProvider>  
+                  <ProtectedRoute component={DanaEvents} />
+                </EventContextProvider>
               </UserContextProvider>
-
-              
-              }
+            }
           />
           <Route
-            exact path="/my-events"
+            exact
+            path="/my-events"
             element={
               <UserContextProvider>
                 <EventContextProvider>
-                    <ProtectedRoute component={MyEvents} />
-                </EventContextProvider>  
+                  <ProtectedRoute component={MyEvents} />
+                </EventContextProvider>
               </UserContextProvider>
-              }
+            }
           />
           <Route
-            exact path="/past-events"
+            exact
+            path="/past-events"
             element={
               <UserContextProvider>
                 <EventContextProvider>
-                    <ProtectedRoute component={PastEvents} />
-                </EventContextProvider>  
+                  <ProtectedRoute component={PastEvents} />
+                </EventContextProvider>
               </UserContextProvider>
-              }
+            }
           />
           <Route
             exact
@@ -137,18 +143,19 @@ function App() {
             element={
               <UserContextProvider>
                 <CommunityContextProvider>
-                    <ProtectedRoute component={Communities} />
+                  <ProtectedRoute component={Communities} />
                 </CommunityContextProvider>
               </UserContextProvider>
-
             }
           />
-          <Route path="/communities/:groupId" element={
-            <UserContextProvider>
-              <CommunityContextProvider>
-                <ProtectedRoute component={CommunitiesPage} />
-              </CommunityContextProvider>
-            </UserContextProvider>
+          <Route
+            path="/communities/:groupId"
+            element={
+              <UserContextProvider>
+                <CommunityContextProvider>
+                  <ProtectedRoute component={CommunitiesPage} />
+                </CommunityContextProvider>
+              </UserContextProvider>
             }
           />
           <Route
@@ -157,10 +164,9 @@ function App() {
             element={
               <UserContextProvider>
                 <CommunityContextProvider>
-                    <ProtectedRoute component={MyCommunities} />
+                  <ProtectedRoute component={MyCommunities} />
                 </CommunityContextProvider>
               </UserContextProvider>
-
             }
           />
 
@@ -175,20 +181,25 @@ function App() {
             }
           />
 
-          {/* 404 Not Found */}
-          <Route path="/*" element={
-            <UserContextProvider>
-              <NotFound />
-            </UserContextProvider>
-          } 
+          {/* 401 Unauthorized */}
+          <Route
+            exact
+            path="/unauthorized"
+            element={
+              <UserContextProvider>
+                <Unauthorized />
+              </UserContextProvider>
+            }
           />
 
-          {/* 401 Unauthorized */}
-          <Route exact path="/unauthorized" element={
-            <UserContextProvider>
-              <Unauthorized />
-            </UserContextProvider>
-          } 
+          {/* 404 Not Found */}
+          <Route
+            path="/*"
+            element={
+              <UserContextProvider>
+                <NotFound />
+              </UserContextProvider>
+            }
           />
         </Routes>
       </AuthProvider>
