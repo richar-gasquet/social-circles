@@ -14,7 +14,7 @@ def get_announcements() -> tuple:
     """ Return all announcements
 
     Returns:
-        tuple: JSON containing announcements and HTML code
+        tuple: JSON containing announcements and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:
@@ -53,7 +53,7 @@ def add_announcement() -> tuple:
 
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -94,7 +94,7 @@ def update_announcement() -> tuple:
     """ Edit an already existing announcement
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -136,7 +136,7 @@ def delete_announcement() -> tuple:
     """ Delete an announcement
     
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated

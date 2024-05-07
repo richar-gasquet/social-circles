@@ -11,7 +11,7 @@ def get_all_users() -> tuple:
     """ Return all users in Social Circles
 
     Returns:
-        tuple: JSON containing users and HTML code
+        tuple: JSON containing users and HTTP code
     """
     # Check if user is authenticated and has authorization to perform action
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):  # Check if user is logged in and is authorized
@@ -36,7 +36,7 @@ def get_user_data() -> tuple:
     """ Return all details of the current user
 
     Returns:
-        tuple: JSON containing current user's details and HTML code
+        tuple: JSON containing current user's details and HTTP code
     """
     # Check if user is logged on server-side
     if 'email' in flask.session:
@@ -74,7 +74,7 @@ def add_user_data() -> tuple:
     """ Add a user
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is initially authenticated
@@ -122,7 +122,7 @@ def update_user_data() -> tuple:
     """ Edit an already existing user's data
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -170,7 +170,7 @@ def delete_user_data() -> tuple:
     """ Delete a user
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -201,7 +201,7 @@ def get_blocked_users() -> tuple:
     """ Return all blocked users in Social Circles
 
     Returns:
-        tuple: JSON containing blocked users and HTML code
+        tuple: JSON containing blocked users and HTTP code
     """
     # Check if user is authenticated and has authorization to perform action
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
@@ -225,7 +225,7 @@ def block_and_delete_user() -> tuple:
     """ Block and delete a user from Social Circles
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     # Check if user is authenticated and has authorization to perform action
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):
@@ -255,7 +255,7 @@ def remove_user_from_block() -> tuple:
     """ Remove a user from the blocked users list
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     # Check if user is authenticated and has authorization to perform action
     if 'email' in flask.session and db.get_user_authorization(flask.session['email']):

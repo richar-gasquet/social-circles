@@ -13,7 +13,7 @@ def get_resources() -> tuple:
     """ Return all available resources
         
     Returns:
-        tuple: JSON containing resources and HTML code
+        tuple: JSON containing resources and HTTP code
     """
     
     try:
@@ -46,7 +46,7 @@ def add_resources() -> tuple:
     """Add a resource
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -87,7 +87,7 @@ def update_resources() -> tuple:
     """ Edit an already existing resource
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -129,7 +129,7 @@ def delete_resources() -> tuple:
     """ Delete a resource
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
