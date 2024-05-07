@@ -27,6 +27,12 @@ function EditEvent(props) {
     e.preventDefault();
     setAlert(null);
 
+    /* Check that the URL actually points to an image */
+    async function isImage(url) {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res.headers.get('Content-Type').startsWith('image');
+    }
+
     /* Add only fields that have changed */
     const eventData = { event_id: props.event_id };
     if (eventName !== props.eventName)
@@ -43,6 +49,9 @@ function EditEvent(props) {
       /* Ensure image link has proper URL format */
       try {
         new URL(imageLink)
+        if (!(await isImage(imageLink))) {
+          throw new Error("Image link is not an image file.");
+        }
         eventData.image = imageLink;
       } catch (error) {
         setAlert({

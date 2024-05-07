@@ -22,6 +22,12 @@ function EditCommunity(props) {
     e.preventDefault();
     setAlert(null);
 
+    /* Check that the URL actually points to an image */
+    async function isImage(url) {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res.headers.get('Content-Type').startsWith('image');
+    }
+
     /* Add only fields that have changed */
     const communityData = { group_id: props.group_id };
     if (groupName !== props.name)
@@ -32,6 +38,9 @@ function EditCommunity(props) {
       /* Ensure image link has proper URL format */
       try {
         new URL(imageLink)
+        if (!(await isImage(imageLink))) {
+          throw new Error("Image link is not an image file.");
+        }
         communityData.image = imageLink
       } catch (error) {
         setAlert({
