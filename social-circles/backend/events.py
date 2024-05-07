@@ -285,7 +285,7 @@ def edit_event() -> tuple:
                 'event_id' : event_data.get('event_id'),
                 'event_name' : html.escape(event_data.get('name', '')),
                 'event_desc' : html.escape(event_data.get('desc', '')),
-                'capacity' : event_data.get('capacity', ''),
+                'capacity' : event_data.get('capacity'),
                 'image_link' : html.escape(event_data.get('image', '')),
                 'location' : html.escape(event_data.get('location', '')),
                 'isDanaEvent' : bool(event_data.get('isDanaEvent', 'unchanged')),
