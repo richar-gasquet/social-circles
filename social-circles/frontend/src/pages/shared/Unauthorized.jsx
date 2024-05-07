@@ -26,6 +26,7 @@ function Unauthorized() {
     <>
       <Header />
       <div className="container-fluid col-12 text-center" style={{paddingTop: '15em'}}>
+        <img src={logo} style={{maxWidth: "150px"}}></img>
         <h1>401</h1>
         <h2>Unauthorized</h2>
         <p>Sorry! You are not authorized to view this page.</p>
