@@ -88,7 +88,7 @@ function EditEvent(props) {
       setAlert({
         key: Date.now(),
         type: "warning",
-        text: "Capacity must be greater than 0.",
+        text: "Capacity must be non-negative.",
       });
       return;
     }
@@ -123,6 +123,9 @@ function EditEvent(props) {
             type: "success",
             text: `${he.decode(eventName)} was successfully updated.`,
           });
+          if (capacity <= props.filled && !props.isRegistered) {
+            eventData.isFull = true;
+          }
           props.updateEvents(props.event_id, eventData);
         } else { // Could connect to server, but server error
           setAlert({
