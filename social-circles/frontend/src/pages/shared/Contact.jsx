@@ -1,13 +1,34 @@
 import React from "react";
+import UserHeader from "../../components/headers/UserHeader";
 import GuestHeader from "../../components/headers/GuestHeader";
+import AdminHeader from "../../components/headers/AdminHeader";
+import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
+import { useUserContext } from "../../contexts/UserContextHandler";
+
 
 /* Contact Us page */
 function Contact() {
+  const { userData, isLoading } = useUserContext();
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
+
+  const Header = userData.is_admin 
+  ? AdminHeader
+  : userData.is_admin === false
+  ? UserHeader
+  : GuestHeader;
+  
   return (
     <>
       <SessionTimeoutHandler />
-      <GuestHeader />
+      <Header />
       <div className="container" >
         <div className="row justify-content-center" >
           <div className="col-md-8" style={{marginTop: '15em'}}>

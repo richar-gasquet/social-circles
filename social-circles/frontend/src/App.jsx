@@ -33,7 +33,12 @@ function App() {
           {/* Guest routes */}
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/login" element={<LoginPage />} />
-          <Route exact path="/contact" element={<Contact />} />
+          <Route exact path="/contact" element={
+            <UserContextProvider>
+              <Contact />
+            </UserContextProvider>
+          } 
+          />
           <Route
             exact
             path="/resources"

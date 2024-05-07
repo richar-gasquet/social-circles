@@ -12,7 +12,6 @@ import styles from "../../../css/ProfileForm.module.css";
 function Profile() {
   const {
     formData,
-    setFormData,
     formErrors,
     isLoading,
     editMode,
@@ -23,9 +22,7 @@ function Profile() {
     handleDelete,
     toggleEdit,
     confirmModal,
-    showConfirmModal,
     handleDynamicSelectChange,
-    handleConfirm,
     userData,
     welcomeModal,
   } = useFormLogic();

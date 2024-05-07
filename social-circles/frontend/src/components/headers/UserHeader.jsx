@@ -54,6 +54,11 @@ function UserHeader() {
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`}>
+              <NavLink to="/contact" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+                Contact
+              </NavLink>
+            </li>
+            <li className={`nav-item ${styles.navItem}`}>
               <NavLink to="/profile" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
                 Profile
               </NavLink>
