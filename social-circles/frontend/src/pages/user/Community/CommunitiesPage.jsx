@@ -183,7 +183,8 @@ function CommunitiesPage() {
           body: JSON.stringify({ group_id: groupId }),
         }
       );
-      if (request.ok) { // Fetch successful
+      if (request.ok) {
+        // Fetch successful
         addRegistrationAlert(
           "success",
           `You have joined ${he.decode(community.group_name)}.`
@@ -249,7 +250,8 @@ function CommunitiesPage() {
           body: JSON.stringify({ group_id: groupId }),
         }
       );
-      if (request.ok) { // Fetch successful
+      if (request.ok) {
+        // Fetch successful
         const updatedCommunity = {
           ...community,
           isRegistered: false,
@@ -261,9 +263,7 @@ function CommunitiesPage() {
         );
         addRegistrationAlert(
           "success",
-          `We have cancelled your membership for ${he.decode(
-            community.group_name
-          )}.`
+          `You have left ${he.decode(community.group_name)}.`
         );
       } else {
         addRegistrationAlert(
@@ -338,10 +338,10 @@ function CommunitiesPage() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <AlertToast 
-                key={alert.id} 
-                type={alert.type} 
-                text={alert.text} 
+              <AlertToast
+                key={alert.id}
+                type={alert.type}
+                text={alert.text}
                 onDismiss={() => dismissAlert(alert.id)}
               />
             ))}
@@ -417,22 +417,27 @@ function CommunitiesPage() {
           <div className="row">
             {usersForCommunity.map((user) => (
               <div
-                className="col-12 col-sm-6 col-md-3 col-lg-3 mb-4"
+                className="col-6 col-sm-4 col-md-2 col-lg-2 mb-4"
                 key={user.user_id}
               >
                 <div
-                  className={`card square ${pageStyles.cardContainer} ${
+                  className={`card ${
                     isAdmin ? pageStyles.adminHoverEffect : ""
                   }`}
                   onClick={() => handleUserClick(user)}
                 >
-                  <div className="card-body square-content">
+                  <div className={pageStyles.cardImgContainer}>
                     <img
-                      className={`mb-2 ${pageStyles.cardImgTop}`}
+                      className={pageStyles.cardImg}
                       src={user.profile_photo || logo}
                       alt="Profile Photo"
                     />
-                    <h6 className="card-title">
+                  </div>
+                  <div className="card-body p-2">
+                    <h6
+                      className="card-title text-truncate text-center"
+                      style={{ fontSize: "1rem" }}
+                    >
                       {user.first_name} {user.last_name}
                     </h6>
                   </div>
@@ -450,6 +455,7 @@ function CommunitiesPage() {
         ) : (
           <h4>No users are currently a part of this community.</h4>
         )}
+        {/* View selected user's detailed via a Modal */}
         {selectedUser && isAdmin && (
           <Modal
             show={selectedUser !== null}

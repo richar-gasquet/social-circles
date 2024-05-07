@@ -186,7 +186,8 @@ function EventPage() {
       );
       if (request.ok) {
         const data = await request.json();
-        if (data.status === "waitlist") { // Add user to waitlist
+        if (data.status === "waitlist") {
+          // Add user to waitlist
           addRegistrationAlert(
             "success",
             `You have joined waitlist for ${event.event_name}.`
@@ -201,7 +202,8 @@ function EventPage() {
           };
 
           setEvent(updatedEvent);
-        } else { // Add user to attendees list
+        } else {
+          // Add user to attendees list
           addRegistrationAlert(
             "success",
             `You have registered for ${event.event_name}.`
@@ -237,16 +239,19 @@ function EventPage() {
             ];
           });
         }
-      } else { // Could connect to server, but server error
+      } else {
+        // Could connect to server, but server error
         const data = await request.json();
-        if (data.message === "waitlist_error") { // Display waitlist error
+        if (data.message === "waitlist_error") {
+          // Display waitlist error
           addRegistrationAlert(
             "danger",
             `We couldn't register you for the wailist for ${event.event_name}. 
               Try again or contact the administrator.`
           );
         } else {
-          addRegistrationAlert( // Display registration error
+          addRegistrationAlert(
+            // Display registration error
             "danger",
             `We couldn't register you for ${event.event_name}. 
               Try again or contact the administrator.`
@@ -293,7 +298,7 @@ function EventPage() {
         );
         addRegistrationAlert(
           "success",
-          `We have cancelled your registration for ${event.event_name}.`
+          `You have unregistered for ${event.event_name}.`
         );
       } else {
         addRegistrationAlert(
@@ -525,22 +530,27 @@ function EventPage() {
           <div className="row">
             {usersForEvent.map((user) => (
               <div
-                className="col-12 col-sm-6 col-md-3 col-lg-3 mb-4"
+                className="col-6 col-sm-4 col-md-2 col-lg-2 mb-4"
                 key={user.user_id}
               >
                 <div
-                  className={`card square ${pageStyles.cardContainer} ${
+                  className={`card ${
                     isAdmin ? pageStyles.adminHoverEffect : ""
                   }`}
                   onClick={() => handleUserClick(user)}
                 >
-                  <div className="card-body square-content">
+                  <div className={pageStyles.cardImgContainer}>
                     <img
-                      className={`mb-2 ${pageStyles.cardImgTop}`}
+                      className={pageStyles.cardImg}
                       src={user.profile_photo || logo}
                       alt="Profile Photo"
                     />
-                    <h6 className="card-title">
+                  </div>
+                  <div className="card-body p-2">
+                    <h6
+                      className="card-title text-truncate text-center"
+                      style={{ fontSize: "1rem" }}
+                    >
                       {user.first_name} {user.last_name}
                     </h6>
                   </div>

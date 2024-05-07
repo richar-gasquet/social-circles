@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 import GuestHeader from "../../components/headers/GuestHeader";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import Carousel from "react-bootstrap/Carousel";

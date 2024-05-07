@@ -121,7 +121,7 @@ function EventCard(props) {
         // Successful fetch and cancellation of registration
         props.addRegistrationAlert(
           "success",
-          `You have cancelled your registration for ${he.decode(props.name)}.`
+          `You have unregistered for ${he.decode(props.name)}.`
         );
         props.fetchEvents();
       } else {
