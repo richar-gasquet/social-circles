@@ -7,6 +7,7 @@ import ToastContainer from "react-bootstrap/ToastContainer";
 import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
+import pageStyles from "../../css/ChildPage.module.css";
 
 /* Component to email a community's members via a Modal */
 function EmailCommunity(props) {
@@ -80,7 +81,7 @@ function EmailCommunity(props) {
   return (
     <Modal show={props.isShown} onHide={props.handleClose} backdrop="static">
       <Modal.Header className={`${styles.modalHeader}`}>
-        <Modal.Title className={`${styles.modalTitle}`}>
+        <Modal.Title className={`${styles.modalTitle} ${pageStyles.wrapText}`}>
           Email Members for {he.decode(props.name)}{" "}
         </Modal.Title>
       </Modal.Header>

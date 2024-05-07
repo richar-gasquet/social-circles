@@ -6,6 +6,7 @@ import ToastContainer from "react-bootstrap/ToastContainer";
 import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
+import pageStyles from "../../css/ChildPage.module.css";
 
 /* Component to delete a resource via a Modal */
 function DeleteResource(props) {
@@ -82,7 +83,9 @@ function DeleteResource(props) {
         )}
         <p>
           Are you sure you want to delete the resource{" "}
-          <strong>{he.decode(props.dispName)}</strong>? This action will be irreversible.
+          <div className={`${pageStyles.wrapText}`}>
+            <strong>{he.decode(props.dispName)}</strong>? This action will be irreversible.
+          </div>
         </p>
         { /* Buttons for admin actions */}
         <Button

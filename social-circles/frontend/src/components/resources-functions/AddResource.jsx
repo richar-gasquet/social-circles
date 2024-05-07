@@ -23,7 +23,7 @@ function AddResource(props) {
     setAlert(null);
 
     /* Check that all fields are filled */
-    if (!resourceLink.trim() || !dispName.trim() || !desc,trim()) {
+    if (!resourceLink.trim() || !dispName.trim() || !desc.trim()) {
       setAlert({
         key: Date.now(),
         type: "warning",

@@ -430,7 +430,7 @@ function EventPage() {
         {isFetchingEvent ? (
           <Loading paddingTop="2rem" />
         ) : event ? (
-          <div>
+          <div className={`${pageStyles.wrapText}`}>
             <h1 className="mt-3 py-3">{he.decode(event.event_name)}</h1>
             <div>
               <img
@@ -460,14 +460,17 @@ function EventPage() {
                 </div>
               </div>
               <div className="col-md-3">
-                <div className="d-flex">
+                <div className={`d-flex`} >
                   <div className="icon-container">
                     <i className="fas fa-map-marker-alt">&ensp;</i>
-                  </div>
+                  </div >
                   <h5 className="mb-2">
-                    <strong>Location:</strong> {he.decode(event.location)}
+                    <strong>Location:</strong>
                   </h5>
                 </div>
+                <h5 className="mb-2">
+                  {he.decode(event.location)}
+                  </h5>
               </div>
               <div className="col-md-3 mb-0">
                 <div className="d-flex">
@@ -492,7 +495,7 @@ function EventPage() {
                 </div>
               </div>
             </div>
-            <div className={`row mb-3`}>
+            <div className={`mb-3`}>
               <h5 className={`pl-3`}>
                 <strong>Description</strong>: {he.decode(event.event_desc)}
               </h5>
@@ -594,45 +597,48 @@ function EventPage() {
               <Modal.Title>User Details</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p>
-                <strong>First Name:</strong> {selectedUser.first_name}
-              </p>
-              <p>
-                <strong>Last Name:</strong> {selectedUser.last_name}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedUser.email}
-              </p>
-              <p>
-                <strong>Phone Nmber:</strong> {selectedUser.phone_number}
-              </p>
-              <p>
-                <strong>Address:</strong> {selectedUser.address}
-              </p>
-              <p>
-                <strong>Preferred Name:</strong> {selectedUser.preferred_name}
-              </p>
-              <p>
-                <strong>Pronouns:</strong> {selectedUser.pronouns}
-              </p>
-              <p>
-                <strong>Marital Status:</strong> {selectedUser.marital_status}
-              </p>
-              <p>
-                <strong>Family Circumstance:</strong>{" "}
-                {selectedUser.family_circumstance}
-              </p>
-              <p>
-                <strong>Community Status:</strong>{" "}
-                {selectedUser.community_status}
-              </p>
-              <p>
-                <strong>Interests:</strong> {selectedUser.interests}
-              </p>
-              <p>
-                <strong>Personal Identity:</strong>{" "}
-                {selectedUser.personal_identity}
-              </p>
+              <div className={`${pageStyles.wrapText}`}>
+                <p>
+                  <strong>First Name:</strong> {selectedUser.first_name}
+                </p>
+                <p>
+                  <strong>Last Name:</strong> {selectedUser.last_name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedUser.email}
+                </p>
+                <p>
+                  <strong>Phone Nmber:</strong> {selectedUser.phone_number}
+                </p>
+                <p>
+                  <strong>Address:</strong> {selectedUser.address}
+                </p>
+                <p>
+                  <strong>Preferred Name:</strong> {selectedUser.preferred_name}
+                </p>
+                <p>
+                  <strong>Pronouns:</strong> {selectedUser.pronouns}
+                </p>
+                <p>
+                  <strong>Marital Status:</strong> {selectedUser.marital_status}
+                </p>
+                <p>
+                  <strong>Family Circumstance:</strong>{" "}
+                  {selectedUser.family_circumstance}
+                </p>
+                <p>
+                  <strong>Community Status:</strong>{" "}
+                  {selectedUser.community_status}
+                </p>
+                <p>
+                  <strong>Interests:</strong> {selectedUser.interests}
+                </p>
+                <p>
+                  <strong>Personal Identity:</strong>{" "}
+                  {selectedUser.personal_identity}
+                </p>
+              </div>
+              
             </Modal.Body>
             <Modal.Footer>
               {isAdmin && (

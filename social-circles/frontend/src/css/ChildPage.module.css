@@ -7,6 +7,13 @@
     display: block; 
 }
 
+.wrapText {
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    white-space: normal; 
+    max-width: 100%;
+}
+
 .usersContainer {
     min-height: 400px;
 }
