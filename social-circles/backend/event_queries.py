@@ -318,7 +318,7 @@ def update_event(args: dict) -> None:
             if event_desc:
                 sql_query_base += "event_desc = %s, "
                 values.append(event_desc)
-            if capacity:
+            if capacity is not None:
                 sql_query_base += "capacity = %s, "
                 values.append(capacity)
             if location:
