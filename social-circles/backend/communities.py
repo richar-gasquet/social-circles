@@ -141,7 +141,6 @@ def edit_community() -> tuple:
     Returns:
         tuple: JSON containing request status and HTTP code
     """
-    
     # Check if user is authenticated
     if 'email' in flask.session:
         try:
@@ -156,7 +155,7 @@ def edit_community() -> tuple:
                 'group_id' : community_data.get('group_id', ''),
                 'group_name' : html.escape(community_data.get('name', '')),
                 'group_desc' : html.escape(community_data.get('desc', '')),
-                'image_link' : html.escape(community_data.get('link', ''))
+                'image_link' : html.escape(community_data.get('image', ''))
             }
             
             # Send community data to database for UPDATE

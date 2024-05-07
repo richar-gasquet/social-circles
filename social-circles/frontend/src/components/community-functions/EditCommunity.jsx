@@ -134,7 +134,7 @@ function EditCommunity(props) {
             <Form.Label>Group Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder={props.groupName}
+              placeholder={props.name}
               value={he.decode(groupName)}
               onChange={(e) => setGroupName(e.target.value)}
               maxLength={100}
@@ -145,7 +145,7 @@ function EditCommunity(props) {
             <Form.Control
               as="textarea"
               rows={5}
-              placeholder={props.groupDesc}
+              placeholder={props.desc}
               value={he.decode(groupDesc)}
               onChange={(e) => setGroupDesc(e.target.value)}
               maxLength={500}
@@ -155,7 +155,7 @@ function EditCommunity(props) {
             <Form.Label>Image Link</Form.Label>
             <Form.Control
               as="textarea"
-              placeholder={props.imageLink}
+              placeholder={props.image}
               value={he.decode(imageLink)}
               onChange={(e) => setImageLink(e.target.value)}
               maxLength={200}
