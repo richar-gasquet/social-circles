@@ -36,22 +36,6 @@ function DanaEvents() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const { userData, isLoading } = useUserContext();
 
-  if (isLoading) {
-    return (
-      <>
-        <Loading/>
-      </>
-    );
-  }
-
-  // Checking if userData is undefined or email is empty 
-  if (userData.is_admin === undefined || userData.is_admin === null) {
-    return <Navigate to={"/profile"} />;
-  }
-  if (userData.email === '') {
-    return <Navigate to={"/"} />;
-  }
-
   useEffect(() => {
     fetchEvents("/get-dana-events");
   }, []);
@@ -76,6 +60,22 @@ function DanaEvents() {
   };
 
   const filteredEvents = searchEvents(events);
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
+  }
+
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
+    return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
 
   const Header = isAdmin ? AdminHeader : UserHeader;
 

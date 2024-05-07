@@ -31,6 +31,14 @@ function PastEvents() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const { userData, isLoading } = useUserContext();
 
+  useEffect(() => {
+    fetchEvents("/get-past-events");
+  }, []);
+
+  const fetchPastEvents = () => fetchEvents("/get-past-events");
+
+  const filteredEvents = searchEvents(events);
+
   if (isLoading) {
     return (
       <>
@@ -46,14 +54,6 @@ function PastEvents() {
   if (userData.email === '') {
     return <Navigate to={"/"} />;
   }
-
-  useEffect(() => {
-    fetchEvents("/get-past-events");
-  }, []);
-
-  const fetchPastEvents = () => fetchEvents("/get-past-events");
-
-  const filteredEvents = searchEvents(events);
 
   const Header = isAdmin ? AdminHeader : UserHeader;
 
