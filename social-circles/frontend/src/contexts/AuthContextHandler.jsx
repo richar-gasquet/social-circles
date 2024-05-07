@@ -17,8 +17,6 @@ function AuthProvider({ children }) {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/authenticate`, {
           credentials: "include",
         });
-    
-        // Server issued OK (200)
         if (response.ok) {
           const auth_data = await response.json();
           // User has been authenticated

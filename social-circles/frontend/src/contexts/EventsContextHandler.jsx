@@ -10,6 +10,7 @@ import { useLocation } from "react-router";
 const EventContext = createContext({});
 export const useEventContext = () => useContext(EventContext);
 
+/* Context provider for community components and pages */
 function EventContextProvider({ children }) {
   const [events, setEvents] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -24,6 +25,7 @@ function EventContextProvider({ children }) {
     setQuery("");
   }, [location]);
 
+  /* Fetch events from the parameter backend route */
   const fetchEvents = useCallback(async (route) => {
     try {
       setIsFetching(true);
@@ -33,17 +35,17 @@ function EventContextProvider({ children }) {
           credentials: "include",
         }
       );
-      if (response.ok) {
+      if (response.ok) { // Fetch successful, store events
         const data = await response.json();
         setEvents(data.results);
-      } else {
-        setDisplayAlert({
+      } else { // Connected to server, but server error
+        setDisplayAlert({ 
           type: "danger",
           header: "Could not display events!",
           text: "Try again or contact the administrator.",
         });
-      }
-    } catch (error) {
+      } 
+    } catch (error) { // Could not connect to server
       setDisplayAlert({
         type: "danger",
         header: "Could not connect to server!",
@@ -54,6 +56,7 @@ function EventContextProvider({ children }) {
     }
   }, []);
 
+  /* Update details of event with parameter event_id */
   const updateEvents = useCallback(
     (event_id, newEvent) => {
       setEvents((prevEvents) =>
@@ -69,6 +72,7 @@ function EventContextProvider({ children }) {
     [events]
   );
 
+  /* Filter events based on parameters */
   const searchEvents = useCallback(() => {
     if (!query) return events;
     return events.filter((event) =>
