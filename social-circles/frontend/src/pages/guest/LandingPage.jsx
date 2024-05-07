@@ -14,6 +14,29 @@ import styles from "../../css/LandingPage.module.css";
 function LandingPage() {
   const { userData, isLoading } = useUserContext();
 
+  useEffect(() => {
+    if (!isLoading) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add(styles.fadeIn);
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.8,
+        }
+      );
+  
+      const observedElements = document.querySelectorAll(`.${styles.animated}`);
+      observedElements.forEach(element => observer.observe(element));
+  
+      return () => observer.disconnect();
+    }
+  }, [isLoading]); // Depend on isLoading
 
   if (isLoading) {
     return (
@@ -28,31 +51,6 @@ function LandingPage() {
   : userData.is_admin === false
   ? UserHeader
   : GuestHeader;
-
-  useEffect(() => {
-    /* Determine which part of the page the user is looking add */
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add(styles.fadeIn);
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 0.8,
-      }
-    );
-
-    const observedElements = document.querySelectorAll(`.${styles.animated}`);
-    observedElements.forEach((element) => {
-      observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
 
   return (
