@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import LandingHeader from "../../components/headers/LandingHeader";
+import { useUserContext } from "../../contexts/UserContextHandler";
+import UserHeader from "../../components/headers/UserHeader";
+import GuestHeader from "../../components/headers/GuestHeader";
+import AdminHeader from "../../components/headers/AdminHeader";
+import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import Carousel from "react-bootstrap/Carousel";
 import danaImg from "../../assets/dana.webp";
@@ -8,6 +12,8 @@ import styles from "../../css/LandingPage.module.css";
 
 /* Landing page/index */
 function LandingPage() {
+  const { userData, isLoading } = useUserContext();
+
   useEffect(() => {
     /* Determine which part of the page the user is looking add */
     const observer = new IntersectionObserver(
@@ -33,9 +39,23 @@ function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
+
+  const Header = userData.is_admin 
+  ? AdminHeader
+  : userData.is_admin === false
+  ? UserHeader
+  : GuestHeader;
+
   return (
     <>
-      <LandingHeader />
+      <Header />
       <SessionTimeoutHandler />
       {/* Carousel display for images */}
       <div className={`container-fluid w-100 ${styles.carouselContainer}`}>
