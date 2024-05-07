@@ -1,3 +1,16 @@
+.mainImg {
+    max-width: 100%; 
+    max-height: 500px;
+    width: auto; 
+    height: auto;
+    object-fit: cover; 
+    display: block; 
+}
+
+.usersContainer {
+    min-height: 400px;
+}
+
 .cardImgContainer {
     position: relative;
     height: 120px; 
