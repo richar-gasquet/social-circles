@@ -9,6 +9,7 @@ def get_user_details(email: str) -> list:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
+            # Retrieve user information from their email
             cursor.execute('''
                 SELECT 
                     *
@@ -25,6 +26,7 @@ def get_user_details(email: str) -> list:
     finally:
         put_connection(connection)
     
+    # return all user information
     if user_row:
         return {
             'first_name' : user_row[1],
@@ -214,6 +216,7 @@ def get_all_user_details() -> list:
     all_user_details = []
     connection = get_connection()
     try:
+        # Retrieve information from all users
         with connection.cursor() as cursor:
             cursor.execute('''
                 SELECT 
@@ -224,6 +227,7 @@ def get_all_user_details() -> list:
 
             user_rows = cursor.fetchall()
             
+            # return information from all users
             for user_row in user_rows:
                 user_details = {
                     'user_id': user_row[0],
@@ -286,6 +290,7 @@ def get_all_blocked_users():
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
+            # grab information for all blocked users
             cursor.execute('''
                 SELECT first_name, last_name, email
                 FROM blocked_users
@@ -302,6 +307,7 @@ def get_all_blocked_users():
 def remove_user_from_block(email: str):
     connection = get_connection()
     try:
+        # delete specified user from blocked user list
         with connection.cursor() as cursor:
             cursor.execute('''
                 DELETE FROM blocked_users
@@ -317,6 +323,7 @@ def remove_user_from_block(email: str):
 def is_in_block(email: str) -> bool:
     connection = get_connection()
     try:
+        # check if user is in blocked_users table
         with connection.cursor() as cursor:
             cursor.execute('''
                 SELECT EXISTS(
@@ -330,4 +337,5 @@ def is_in_block(email: str) -> bool:
     finally:
         put_connection(connection)
 
+    # return true if user is in blocked_users table
     return is_blocked
