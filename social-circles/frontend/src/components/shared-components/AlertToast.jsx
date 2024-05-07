@@ -6,13 +6,14 @@ function AlertToast(props) {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
+    setShow(true);
     const timer = setTimeout(() => {
       setShow(false);
-      setTimeout(props.onDismiss, 500);  // Allow some time for fade-out animation
+      setTimeout(props.onDismiss, 300);  // Allow some time for fade-out animation
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [props.onDismiss, props.text, props.type]);
+  }, [props.key, props.onDismiss]);
 
   return (
     <Toast

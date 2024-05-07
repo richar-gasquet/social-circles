@@ -80,7 +80,6 @@ def add_user_data() -> tuple:
     # Check if user is initially authenticated
     if 'email' in flask.session:
         try:
-            
             # Parse user data to add sent from frontend
             user_data = flask.request.json
             user_dict = {
@@ -111,7 +110,7 @@ def add_user_data() -> tuple:
             print(f'users.py: {str(ex)}')
             return flask.jsonify({
                 'status' : 'error',
-                'message': str(ex)
+                'message' : str(ex)
             }), 500 # INTERNAL SERVER ERROR
     else:
         return flask.jsonify({

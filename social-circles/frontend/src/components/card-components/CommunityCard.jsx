@@ -9,6 +9,7 @@ import EmailCommunity from "../community-functions/EmailCommunity";
 import styles from "../../css/Card.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+/* Card containing details about a community */
 function CommunityCard(props) {
   const [showDeleteComm, setShowDeleteComm] = useState(false);
   const [showEditComm, setShowEditComm] = useState(false);
@@ -16,6 +17,7 @@ function CommunityCard(props) {
 
   const [isQuerying, setIsQuerying] = useState(false);
 
+  /* Handler method for registering a user to a commmunity */
   const handleRegistration = async () => {
     try {
       setIsQuerying(true);
@@ -30,21 +32,21 @@ function CommunityCard(props) {
           body: JSON.stringify({ group_id: props.group_id }),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Successful fetch and registration
         props.addRegistrationAlert(
           "success",
           `You have joined ${he.decode(props.name)}.`
         );
         const updatedCard = { isRegistered: true, count: props.count + 1 };
         props.updateCommunities(props.group_id, updatedCard);
-      } else {
+      } else { // Could connect to server, but server error
         props.addRegistrationAlert(
           "danger",
           `We couldn't let you join ${he.decode(props.name)}. 
           Try again or contact the administrator.`
         );
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       props.addRegistrationAlert(
         "danger",
         `We couldn't let you join ${he.decode(props.name)}. 
@@ -55,6 +57,7 @@ function CommunityCard(props) {
     }
   };
 
+  /* Handler method for cancelling a user's registration to a commmunity */
   const handleCancelRegistration = async () => {
     try {
       setIsQuerying(true);
@@ -69,21 +72,21 @@ function CommunityCard(props) {
           body: JSON.stringify({ group_id: props.group_id }),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Successful fetch and cancellation of registration
         props.addRegistrationAlert(
           "success",
           `You have left ${he.decode(props.name)}.`
         );
         const updatedCard = { isRegistered: false, count: props.count - 1 };
         props.updateCommunities(props.group_id, updatedCard);
-      } else {
+      } else { // Could connect to server, but server error
         props.addRegistrationAlert(
           "danger",
           `We couldn't cancel your membership for ${he.decode(props.name)}. 
           Try again or contact the administrator`
         );
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       props.addRegistrationAlert(
         "danger",
         `We couldn't cancel your membership for ${he.decode(props.name)}. 
@@ -96,6 +99,7 @@ function CommunityCard(props) {
 
   const navigate = useNavigate();
 
+  /* Handler method for clicking on the card to view individual page*/
   const handleCardClick = (e) => {
     if (
       !e.target.closest(".edit-community-modal") &&
@@ -128,6 +132,7 @@ function CommunityCard(props) {
             src={props.image}
             alt="Community"
           />
+          {/* Show card buttons if the user is an admin */}
           {props.isAdmin && (
             <div className={`${styles.cardButtons}`}>
               <CardButton
@@ -159,6 +164,7 @@ function CommunityCard(props) {
             </div>
           )}
         </div>
+        {/* Display details about the community */}
         <div className={`card-body d-flex flex-column`}>
           <h2 className={`card-title ${styles.cardTitle}`}>
             {he.decode(props.name)}
@@ -171,6 +177,7 @@ function CommunityCard(props) {
             {he.decode(props.desc)}
           </h6>
           <div>
+            {/* Show registration button for users */}
             <CommunityRegisterButton
               isRegistered={props.isRegistered}
               isDisabled={isQuerying}
@@ -182,6 +189,7 @@ function CommunityCard(props) {
           </div>
         </div>
       </div>
+      {/* Show modals for community CRUD if card buttons are pressed */}
       {showEditComm && props.isAdmin && (
         <div
           className="edit-community-modal"

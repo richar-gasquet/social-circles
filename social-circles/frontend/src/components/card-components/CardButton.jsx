@@ -1,6 +1,7 @@
 import styles from "../../css/CardButton.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+/* Button that can be used on top of a card */
 function CardButton(props) {
   return (
     <button

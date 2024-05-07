@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to edit a community via a Modal */
 function EditCommunity(props) {
   const [groupName, setGroupName] = useState(props.name);
   const [groupDesc, setGroupDesc] = useState(props.desc);
@@ -16,29 +17,35 @@ function EditCommunity(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to edit a community via fetch when 'Submit' is clicked */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
 
+    /* Add only fields that have changed */
     const communityData = { group_id: props.group_id };
     if (groupName !== props.name)
       communityData.name = groupName;
     if (groupDesc !== props.desc)
       communityData.desc = groupDesc;
     if (imageLink !== props.image)
+      /* Ensure image link has proper URL format */
       try {
         new URL(imageLink)
         communityData.image = imageLink
       } catch (error) {
         setAlert({
+          key: Date.now(),
           type: "warning",
           text: "Image link must be a valid URL.",
         });
         return;
       }
 
+    /* Ensure all fields are not blank */
     if ((!groupName.trim() || !groupDesc.trim() || !imageLink.trim())) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled."
       })
@@ -58,20 +65,23 @@ function EditCommunity(props) {
             body: JSON.stringify(communityData),
           }
         );
-        if (request.ok) {
+        if (request.ok) { // Fetch successful, community updated
           setAlert({
+            key: Date.now(),
             type: "success",
             text: `${he.decode(groupName)} was successfully updated.`,
           });
           props.updateCommunities(props.group_id, communityData);
-        } else {
+        } else { // Could connect to server, but server error
           setAlert({
+            key: Date.now(),
             type: "danger",
             text: `${he.decode(groupName)} could not be updated.`,
           });
         }
-      } catch (error) {
+      } catch (error) { // Could not connect to server
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `We could not connect to the server while updating ${he.decode(groupName)}.`,
         });
@@ -80,6 +90,7 @@ function EditCommunity(props) {
       }
     } else {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Please update one or more fields.",
       });
@@ -94,6 +105,7 @@ function EditCommunity(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -107,6 +119,7 @@ function EditCommunity(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="groupName">
             <Form.Label>Group Name</Form.Label>
@@ -139,6 +152,7 @@ function EditCommunity(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

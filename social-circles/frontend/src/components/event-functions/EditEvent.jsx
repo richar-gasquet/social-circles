@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to edit an event via a Modal */
 function EditEvent(props) {
   const [eventName, setEventName] = useState(props.eventName);
   const [eventDesc, setEventDesc] = useState(props.eventDesc);
@@ -21,10 +22,12 @@ function EditEvent(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to edit an event via fetch when 'Submit' is clicked */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
 
+    /* Add only fields that have changed */
     const eventData = { event_id: props.event_id };
     if (eventName !== props.eventName)
       eventData.name = eventName;
@@ -37,11 +40,13 @@ function EditEvent(props) {
     if (isDanaEvent !== props.isDanaEvent)
       eventData.isDanaEvent = isDanaEvent;
     if (imageLink !== props.imageLink) {
+      /* Ensure image link has proper URL format */
       try {
         new URL(imageLink)
         eventData.image = imageLink;
       } catch (error) {
         setAlert({
+          key: Date.now(),
           type: "warning",
           text: "Image link must be a valid URL.",
         });
@@ -53,6 +58,7 @@ function EditEvent(props) {
     if (endTime !== props.end) 
       eventData.end_time = endTime;
 
+    /* Ensure all fields are not blank */
     if (
       !eventName || !eventName.trim() ||
       !eventDesc || !eventDesc.trim() ||
@@ -61,22 +67,27 @@ function EditEvent(props) {
       !startTime || !endTime
     ) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled.",
       });
       return;
     }
 
+    /* Ensure capacity is non-negative */
     if (capacity < 0) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Capacity must be greater than 0.",
       });
       return;
     }
 
+    /* Ensure end time is later than the start time */
     if (endTime < startTime) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "End time must be later than the start time,",
       });
@@ -97,20 +108,23 @@ function EditEvent(props) {
             body: JSON.stringify(eventData),
           }
         );
-        if (request.ok) {
+        if (request.ok) { // Fetch successful, event updated
           setAlert({
+            key: Date.now(),
             type: "success",
             text: `${he.decode(eventName)} was successfully updated.`,
           });
           props.updateEvents(props.event_id, eventData);
-        } else {
+        } else { // Could connect to server, but server error
           setAlert({
+            key: Date.now(),
             type: "danger",
             text: `${he.decode(eventName)} could not be updated.`,
           });
         }
-      } catch (error) {
-        setAlert({
+      } catch (error) { // Could not connect to server
+        setAlert({ 
+          key: Date.now(),
           type: "danger",
           text: `We could not connect to the server while updating ${he.decode(eventName)}.`,
         });
@@ -119,6 +133,7 @@ function EditEvent(props) {
       }
     } else {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Please update one or more fields.",
       });
@@ -133,6 +148,7 @@ function EditEvent(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -146,6 +162,7 @@ function EditEvent(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>
@@ -226,6 +243,7 @@ function EditEvent(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

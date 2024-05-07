@@ -3,8 +3,8 @@ import { useState } from 'react';
 import logo from "../../assets/social-circles-logo.png";
 import styles from '../../css/Header.module.css';
 
+/* Component containing the guest header/navbar */
 function GuestHeader() {
-  // State variables to handle navbar collapse
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
   return (
@@ -16,12 +16,13 @@ function GuestHeader() {
         <NavLink to="/" className={`${styles.aSocial} navbar-brand`}>
           Social Circles
         </NavLink>
-        {/* MUST ADD ANIMATION FOR NAVBAR COLLAPSING */}
+        {/* Button to activate hamburger dropdown */}
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHamburger"
                 aria-controls="navbarHamburger" aria-expanded={!isNavCollapsed ? true : false} aria-label="Toggle navigation"
                 onClick={() => setIsNavCollapsed(!isNavCollapsed)}>
           <span className="navbar-toggler-icon"></span>
         </button>
+        {/* Links in header */}
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
           <ul className={`navbar-nav ml-auto`}>
             <li className={`nav-item ${styles.navItem}`}>

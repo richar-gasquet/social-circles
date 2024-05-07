@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to add a community via a Modal */
 function AddCommunity(props) {
   const [groupName, setGroupName] = useState("");
   const [groupDesc, setGroupDesc] = useState("");
@@ -16,24 +17,27 @@ function AddCommunity(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to add a community via fetch */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
 
-    /* ADD STUFF!!*/
-
+    /* Check that all fields are filled */
     if (!groupName.trim() || !groupDesc.trim() || !imageLink.trim()) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled.",
       });
       return;
     }
 
+    /* Ensure the URL has valid URL formatting. */
     try {
       new URL(imageLink)
     } catch (error) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Image link must be a valid URL.",
       });
@@ -58,23 +62,28 @@ function AddCommunity(props) {
           body: JSON.stringify(communityData),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Fetch successful, community added
         setAlert({
+          key: Date.now(),
           type: "success",
           text: `${he.decode(groupName)} was successfully added.`,
         });
+
+        /* Fetch communities and set fields to default */
         props.fetchCommunities();
         setGroupName("");
         setGroupDesc("");
         setImageLink("");
-      } else {
+      } else { // Could connect to server, but server error
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `${he.decode(groupName)} could not be added.`,
         });
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       setAlert({
+        key: Date.now(),
         type: "danger",
         text: `We could not connect to the server while adding ${he.decode(groupName)}.`
       });
@@ -91,6 +100,7 @@ function AddCommunity(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -104,6 +114,7 @@ function AddCommunity(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="groupName">
             <Form.Label>Group Name</Form.Label>
@@ -136,6 +147,7 @@ function AddCommunity(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

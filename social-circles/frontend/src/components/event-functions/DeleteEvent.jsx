@@ -7,11 +7,13 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to delete an event via a Modal */
 function DeleteEvent(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [isFinalized, setIsFinalized] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to delete an event via fetch when 'Submit' is clicked */
   const handleSubmit = async () => {
     setAlert(null);
 
@@ -29,8 +31,9 @@ function DeleteEvent(props) {
         }
       );
 
-      if (request.ok) {
+      if (request.ok) { // Fetch successful, event deleted
         setAlert({
+          key: Date.now(),
           type: "success",
           text: `${he.decode(props.name)} was successfully deleted.`,
         });
@@ -38,14 +41,16 @@ function DeleteEvent(props) {
           props.fetchEvents();
         }, 2000);
         setIsFinalized(true);
-      } else {
+      } else { // Could connect to server, but server error
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `${he.decode(props.name)} could not be deleted.`,
         });
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       setAlert({
+        key: Date.now(),
         type: "danger",
         text: `We could not connect to the server while deleting ${he.decode(props.name)}.`,
       });
@@ -62,6 +67,7 @@ function DeleteEvent(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -79,6 +85,7 @@ function DeleteEvent(props) {
           Are you sure you want to delete the event{" "}
           <strong>{he.decode(props.name)}</strong>? This action will be irreversible.
         </p>
+        { /* Buttons for admin actions */}
         <Button
           variant="secondary"
           className={`${styles.modalBtn}`}

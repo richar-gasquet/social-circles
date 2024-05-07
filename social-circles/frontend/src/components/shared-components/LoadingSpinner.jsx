@@ -1,3 +1,4 @@
+/* Component to display a loading spinner if necessary*/
 function Loading() {
   return (
     <>

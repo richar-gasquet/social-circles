@@ -1,6 +1,7 @@
 import styles from "../../css/Search.module.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+/* Component to show and handle a search bar for filtering */
 function SearchBar(props) {
   return (
     <div className={`row container-fluid input-group mb-2 ${styles.searchBar}`}>

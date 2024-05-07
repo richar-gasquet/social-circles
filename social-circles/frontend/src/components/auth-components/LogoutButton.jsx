@@ -1,3 +1,4 @@
+/* Button to logout from Social Circles */
 function Logout() {
   const handleLogout = (e) => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;

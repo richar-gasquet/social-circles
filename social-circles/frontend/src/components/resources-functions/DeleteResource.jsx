@@ -7,14 +7,15 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to delete a resource via a Modal */
 function DeleteResource(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [isFinalized, setIsFinalized] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to delete a resource via fetch when 'Submit' is clicked */
   const handleSubmit = async () => {
     setAlert(null);
-
     try {
       setIsQuerying(true);
       const request = await fetch(
@@ -29,8 +30,9 @@ function DeleteResource(props) {
         }
       );
 
-      if (request.ok) {
+      if (request.ok) { // Fetch successful, resource deleted
         setAlert({
+          key: Date.now(),
           type: "success",
           text: `${he.decode(props.dispName)} was successfully deleted.`,
         });
@@ -38,14 +40,16 @@ function DeleteResource(props) {
           props.fetchResources();
         }, 2000);
         setIsFinalized(true);
-      } else {
-        setAlert({
+      } else { // Could connect to server, but server error
+        setAlert({ 
+          key: Date.now(),
           type: "danger",
           text: `${he.decode(props.dispName)} could not be deleted.`,
         });
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       setAlert({
+        key: Date.now(),
         type: "danger",
         text: `We could not connect to the server while deleting ${he.decode(props.dispName)}.`,
       });
@@ -62,6 +66,7 @@ function DeleteResource(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -79,6 +84,7 @@ function DeleteResource(props) {
           Are you sure you want to delete the resource{" "}
           <strong>{he.decode(props.dispName)}</strong>? This action will be irreversible.
         </p>
+        { /* Buttons for admin actions */}
         <Button
           variant="secondary"
           className={`${styles.modalBtn}`}

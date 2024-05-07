@@ -6,6 +6,7 @@ import CommunityContextProvider from "./contexts/CommunityContextHandler.jsx";
 import ProtectedAdminRoute from "./components/auth-components/ProtectedAdminRoute.jsx";
 import ProtectedRoute from "./components/auth-components/ProtectedRoute.jsx";
 import NotFound from "./pages/shared/NotFound.jsx";
+import Unauthorized from "./pages/shared/Unauthorized.jsx";
 import LandingPage from "./pages/guest/LandingPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import Contact from "./pages/shared/Contact.jsx";
@@ -23,7 +24,6 @@ import EventContextProvider from "./contexts/EventsContextHandler.jsx";
 import ReactCalendar from "./pages/shared/Calendar.jsx";
 import EventPage from "./pages/user/Events/EventPage.jsx";
 import CommunitiesPage from "./pages/user/Community/CommunitiesPage.jsx";
-
 
 function App() {
   return (
@@ -171,6 +171,9 @@ function App() {
 
           {/* 404 Not Found */}
           <Route path="/*" element={<NotFound />} />
+
+          {/* 401 Unauthorized */}
+          <Route exact path="/unauthorized" element={<Unauthorized />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

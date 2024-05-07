@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
 import Loading from "../shared-components/LoadingSpinner";
 
+/* Ensures that wrapped components are only accessible to users */
 function ProtectedRoute({ component: Component, ...rest }) {
   const { isAuth, isLoading } = useAuthContext();
   if (isLoading) {

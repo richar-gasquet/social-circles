@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to add an event via a Modal */
 function AddEvent(props) {
   const [eventName, setEventName] = useState("");
   const [eventDesc, setEventDesc] = useState("");
@@ -21,10 +22,12 @@ function AddEvent(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to add an event via fetch when 'Submit' is clicked */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
 
+    /* Check that all fields are filled */
     if (
       !eventName || !eventName.trim() ||
       !eventDesc || !eventDesc.trim() ||
@@ -33,32 +36,39 @@ function AddEvent(props) {
       !startTime || !endTime 
     ) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled.",
       });
       return;
     }
 
+    /* Ensure capacity is non-negative */
     if (capacity < 0) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Capacity must be greater than 0.",
       });
       return;
     }
 
+    /* Ensure end time is later than the start time */
     if (endTime < startTime) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "End time must be later than the start time.,",
       });
       return;
     } 
 
+    /* Ensure the URL has valid URL formatting. */
     try {
       new URL(imageLink)
     } catch (error) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Image link must be a valid URL.",
       });
@@ -89,11 +99,13 @@ function AddEvent(props) {
           body: JSON.stringify(eventData),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Fetch successful, event added
         setAlert({
+          key: Date.now(),
           type: "success",
           text: `${he.decode(eventName)} was successfully added.`,
         });
+        /* Fetch events and set fields to default */
         props.fetchEvents();
         setEventName("");
         setEventDesc("");
@@ -103,14 +115,16 @@ function AddEvent(props) {
         setImageLink("");
         setStartTime("");
         setEndTime("");
-      } else {
+      } else { // Could connect to server, but server error
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `${he.decode(eventName)} could not be added.`,
         });
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       setAlert({
+        key: Date.now(),
         type: "danger",
         text: `We could not connect to the server while adding ${he.decode(eventName)}.`,
       });
@@ -127,6 +141,7 @@ function AddEvent(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -140,6 +155,7 @@ function AddEvent(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="eventName">
             <Form.Label>Event Name</Form.Label>
@@ -221,6 +237,7 @@ function AddEvent(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

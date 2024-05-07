@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';  
 import styles from '../../css/Buttons.module.css';
 
+/* Component to check if user session is active*/
 function SessionTimeoutHandler() {
   const [showModal, setShowModal] = useState(false);
   const sessionTimeout = 30 * 60 * 1000; // 30 minutes

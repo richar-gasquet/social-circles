@@ -3,9 +3,10 @@ import { useState } from 'react';
 import logo from "../../assets/social-circles-logo.png";
 import styles from '../../css/Header.module.css';
 
+/* Component containing the admin header/navbar */
 function AdminHeader() {
-  // State to handle the collapse
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+
   const handleLogout = (e) => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
   };
@@ -19,13 +20,14 @@ function AdminHeader() {
         <NavLink to="/admin-dashboard" className={`${styles.aSocial} navbar-brand`}>
           Social Circles
         </NavLink>
-        {/* MUST ADD ANIMATION FOR NAVBAR COLLAPSING */}
+        {/* Button to activate hamburger dropdown */}
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHamburger"
                 aria-controls="navbarHamburger" aria-expanded={!isNavCollapsed ? true : false} aria-label="Toggle navigation"
                 onClick={() => setIsNavCollapsed(!isNavCollapsed)}>
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarHamburger">
+          {/* Links in header */}
           <ul className="navbar-nav ml-auto">
             <li className={`nav-item ${styles.navItem}`}>
               <NavLink to="/events" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>

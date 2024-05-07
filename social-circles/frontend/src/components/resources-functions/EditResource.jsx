@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to edit a resource via a Modal */
 function EditResource(props) {
   const [resource, setResource] = useState(props.resource);
   const [dispName, setDispName] = useState(props.dispName);
@@ -16,18 +17,21 @@ function EditResource(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to edit a resource via fetch when 'Submit' is clicked */
   const handleSubmit = async (e) => {
-    console.log("click")
     e.preventDefault();
     setAlert(null);
 
+    /* Add only fields that have changed */
     const resourceData = { resource_id: props.resource_id };
     if (resource !== props.resource)
+      /* Ensure image link has proper URL format */
       try {
         new URL(resource);
         resourceData.resource = resource;
       } catch (error) {
         setAlert({
+          key: Date.now(),
           type: "warning",
           text: "Resorce link must be a valid URL.",
         });
@@ -36,6 +40,7 @@ function EditResource(props) {
     if (dispName !== props.dispName) resourceData.disp_name = dispName;
     if (desc !== props.desc) resourceData.descrip = desc;
 
+    /* Ensure all fields are not blank */
     if (
       !resource ||
       !resource.trim() ||
@@ -45,6 +50,7 @@ function EditResource(props) {
       !desc.trim()
     ) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled.",
       });
@@ -65,20 +71,23 @@ function EditResource(props) {
             body: JSON.stringify(resourceData),
           }
         );
-        if (request.ok) {
+        if (request.ok) { // Fetch successful, resource updated
           setAlert({
+            key: Date.now(),
             type: "success",
             text: `${he.decode(dispName)} was successfully updated.`,
           });
           props.updateResources(props.resource_id, resourceData);
-        } else {
+        } else { // Could connect to server, but server error
           setAlert({
+            key: Date.now(),
             type: "danger",
             text: `${he.decode(dispName)} could not be updated.`,
           });
         }
-      } catch (error) {
+      } catch (error) {  // Could not connect to server
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `We could not connect to the server while updating ${he.decode(
             dispName
@@ -89,6 +98,7 @@ function EditResource(props) {
       }
     } else {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Please update one or more fields.",
       });
@@ -103,6 +113,7 @@ function EditResource(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -116,6 +127,7 @@ function EditResource(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="resource">
             <Form.Label>Resource URL Link</Form.Label>
@@ -149,6 +161,7 @@ function EditResource(props) {
               maxLength={500}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

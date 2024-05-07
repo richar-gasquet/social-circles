@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to add a resource via a Modal */
 function AddResource(props) {
   const [resourceLink, setResource] = useState("");
   const [dispName, setDispName] = useState("");
@@ -16,22 +17,27 @@ function AddResource(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to add a resource via fetch */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
 
-    if (!resourceLink || !dispName || !desc) {
+    /* Check that all fields are filled */
+    if (!resourceLink.trim() || !dispName.trim() || !desc,trim()) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled.",
       });
       return;
     }
 
+    /* Ensure the URL has valid URL formatting. */
     try {
       new URL(resourceLink);
     } catch (error) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Resource link must be a valid URL.",
       });
@@ -57,23 +63,27 @@ function AddResource(props) {
           body: JSON.stringify(resourceData),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Fetch successful, resource added
         setAlert({
+          key: Date.now(),
           type: "success",
           text: `${he.decode(dispName)} was successfully added.`,
         });
+        /* Fetch resources and set fields to default */
         props.fetchResources()
         setResource("");
         setDispName("");
         setDesc("");
-      } else {
+      } else { // Could connect to server, but server error
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `${he.decode(dispName)} could not be added.`,
         });
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       setAlert({
+        key: Date.now(),
         type: "danger",
         text: `We could not connect to the server while adding ${he.decode(
           dispName
@@ -92,6 +102,7 @@ function AddResource(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -105,6 +116,7 @@ function AddResource(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="resource">
             <Form.Label>Resource URL Link</Form.Label>
@@ -138,6 +150,7 @@ function AddResource(props) {
               maxLength={500}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

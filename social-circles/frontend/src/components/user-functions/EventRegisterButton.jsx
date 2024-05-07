@@ -1,5 +1,6 @@
 import Button from "react-bootstrap/Button";
 
+/* Button component to register to an event */
 function EventRegisterButton(props) {
   const buttonText = props.isWaitlisted 
     ? "Leave Waitlist"
@@ -9,7 +10,7 @@ function EventRegisterButton(props) {
       
   const buttonType = props.isRegistered 
     ? "secondary" 
-    : props.isWaitlisted || props.isFull ? "warning"
+    : (props.isWaitlisted || props.isFull) ? "warning"
     : "success"
   
   const handleOnClick = props.isWaitlisted

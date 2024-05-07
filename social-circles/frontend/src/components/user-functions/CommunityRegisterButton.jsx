@@ -1,5 +1,6 @@
 import Button from "react-bootstrap/Button";
 
+/* Button component to register to a community */
 function CommunityRegisterButton(props) {
   const buttonText = props.isRegistered 
   ? "Leave" : "Join";

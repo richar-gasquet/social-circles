@@ -1,6 +1,7 @@
 import Alert from "react-bootstrap/Alert"
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+/* Component to show alerts related to displays */
 function AlertBox(props) {
   return (
     <Alert variant={props.type} className="container-fluid">

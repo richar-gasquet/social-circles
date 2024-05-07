@@ -7,6 +7,7 @@ import DeleteAnnouncement from './DeleteAnnouncement';
 import styles from "../../css/Card.module.css";
 import CarouselCaption from 'react-bootstrap/esm/CarouselCaption';
 
+/* Carousel component for announcements in User Dashboard*/
 function CarouselComponent(props) {
   const [showDeleteAnn, setShowDeleteAnn] = useState(false);
   const [selectedAnn, setSelectedAnn] = useState({ id: null, name: null, desc: null, img: null });
@@ -18,6 +19,7 @@ function CarouselComponent(props) {
   
   return (
     <Carousel indicators={false} slide={false}>
+      { /* Display announcements */}
       {props.isQuerying ? (
         <Loading />
       ) : props.announcements.length > 0 ? (
@@ -34,6 +36,7 @@ function CarouselComponent(props) {
               <p>{ann.description}</p>
             </Carousel.Caption>
             <CarouselCaption>
+              {/* Check if user is admin to display CRUD buttons */}
               {props.isAdmin && (
                 <div className={`${styles.cardButtons} d-flex justify-content-center`}>
                   <CardButton
@@ -69,6 +72,7 @@ function CarouselComponent(props) {
           </Carousel.Caption>
         </Carousel.Item>
       )}
+      {/* Show modals if CRUD buttons are clicked*/}
       {showEditAnn && props.isAdmin && (
         <div className="edit-ann-modal" onClick={(e) => stopPropagation(e)}>
         <UpdateAnnouncement

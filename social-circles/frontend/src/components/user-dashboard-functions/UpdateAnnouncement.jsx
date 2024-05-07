@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to edit an announcement via a Modal */
 function UpdateAnnouncement(props) {
   const [annName, setAnnName] = useState(props.announcement_name);
   const [descrip, setDescrip] = useState(props.description);
@@ -16,16 +17,25 @@ function UpdateAnnouncement(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to edit an announcement via fetch when 'Submit' is clicked */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlert(null);
 
+    /* Check that the URL actually points to an image */
+    async function isImage(url) {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res.headers.get('Content-Type').startsWith('image');
+    }
+
+    /* Add only fields that have changed */
     const announcementData = { announcement_id: props.announcement_id };
     if (annName !== props.announcement_name)
       announcementData.announcement_name = annName;
     if (descrip !== props.description)
       announcementData.description = descrip;
     if (imageLink !== props.image_link)
+      /* Ensure image link has proper URL format/image file */
       try {
         new URL(imageLink);
         if (!(await isImage(imageLink))) {
@@ -34,14 +44,17 @@ function UpdateAnnouncement(props) {
         announcementData.image_link = imageLink
       } catch (error) {
         setAlert({
+          key: Date.now(),
           type: "warning",
           text: "Image link must be a valid URL.",
         });
         return;
       }
 
+    /* Ensure all fields are not blank */
     if ((!annName.trim() || !descrip.trim() || !imageLink.trim())) {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "All fields must be filled."
       })
@@ -61,20 +74,23 @@ function UpdateAnnouncement(props) {
             body: JSON.stringify(announcementData),
           }
         );
-        if (request.ok) {
+        if (request.ok) { // Fetch successful, announcement updated
           setAlert({
+            key: Date.now(),
             type: "success",
             text: `${he.decode(annName)} was successfully updated.`,
           });
           props.updateAnnouncements(props.announcement_id, announcementData);
-        } else {
+        } else { // Could connect to server, but server error
           setAlert({
+            key: Date.now(),
             type: "danger",
             text: `${he.decode(annName)} could not be updated.`,
           });
         }
-      } catch (error) {
+      } catch (error) { // Could not connect to server
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: `We could not connect to the server while updating ${he.decode(annName)}.`,
         });
@@ -83,6 +99,7 @@ function UpdateAnnouncement(props) {
       }
     } else {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Please update one or more fields.",
       });
@@ -97,6 +114,7 @@ function UpdateAnnouncement(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -110,6 +128,7 @@ function UpdateAnnouncement(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="annName">
             <Form.Label>Announcement Name</Form.Label>
@@ -142,6 +161,7 @@ function UpdateAnnouncement(props) {
               maxLength={200}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

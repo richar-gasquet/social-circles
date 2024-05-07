@@ -8,6 +8,7 @@ import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css";
 
+/* Component to email an event's attendees via a Modal */
 function EmailEventGroup(props) {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -15,9 +16,11 @@ function EmailEventGroup(props) {
   const [isQuerying, setIsQuerying] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  /* Handler method to email an event via fetch when 'Submit' is clicked */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim().length > 0) {
+    /* Ensure message and subject are not blank */
+    if (message.trim().length > 0 && subject.trim().length > 0) {
       try {
         setIsQuerying(true);
         const request = await fetch(
@@ -31,11 +34,13 @@ function EmailEventGroup(props) {
             body: JSON.stringify({ event_id: props.event_id }),
           }
         );
-        if (request.ok) {
+        if (request.ok) { // Fetch successful, emails acquired
           setAlert({
+            key: Date.now(),
             type: "success",
             text: "You will be redirected shortly to your mail app.",
           });
+          // Create mailto with subjects and messages
           const data = await request.json();
           const encoded_subject = encodeURIComponent(String(subject));
           const encoded_msg = encodeURIComponent(String(message));
@@ -47,14 +52,16 @@ function EmailEventGroup(props) {
             "&body=" +
             encoded_msg;
           window.open(mailToLink);
-        } else {
+        } else { // Could connect to server, but server error
           setAlert({
+            key: Date.now(),
             type: "danger",
             text: `We could not fetch the user emails for ${he.decode(props.name)}.`,
           });
         }
-      } catch (error) {
+      } catch (error) { // Could not connect to server
         setAlert({
+          key: Date.now(),
           type: "danger",
           text: "We could not connect to the server while fetching the event's emails.",
         });
@@ -63,6 +70,7 @@ function EmailEventGroup(props) {
       }
     } else {
       setAlert({
+        key: Date.now(),
         type: "warning",
         text: "Please fill out the subject line and email message.",
       });
@@ -77,6 +85,7 @@ function EmailEventGroup(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        { /* Display alert if it exists */}
         {alert && (
           <ToastContainer
             className={`p-3 ${toastStyles.toastContainer}`}
@@ -90,6 +99,7 @@ function EmailEventGroup(props) {
             />
           </ToastContainer>
         )}
+        { /* Form entries and labels */}
         <Form onSubmit={handleSubmit}>
           <Form.Group className={`mb-2`} controlId="subject">
             <Form.Label>Subject</Form.Label>
@@ -110,6 +120,7 @@ function EmailEventGroup(props) {
               onChange={(e) => setMessage(e.target.value)}
             ></Form.Control>
           </Form.Group>
+          { /* Buttons for admin actions */}
           <Button
             variant="secondary"
             className={`${styles.modalBtn}`}

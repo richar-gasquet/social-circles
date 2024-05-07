@@ -5,12 +5,14 @@ import DeleteResource from "../resources-functions/DeleteResource";
 import EditResource from "../resources-functions/EditResource";
 import styles from "../../css/Card.module.css";
 
+/* Card containing details about a resource */
 function ResourceCard(props) {
   const [showDeleteResource, setShowDeleteResource] = useState(false);
   const [showEditResource, setShowEditResource] = useState(false);
 
   return (
     <div className="card">
+      {/* Show card buttons if the user is an admin */}
       {props.isAdmin && (
         <div className={`${styles.cardButtons}`}>
           <CardButton
@@ -26,6 +28,7 @@ function ResourceCard(props) {
           ></CardButton>
         </div>
       )}
+      {{/* Display details about the resource */}}
       <div className="card-body" style={{ width: "90%" }}>
         <h3 className="card-title">
             {he.decode(props.dispName)}
@@ -40,6 +43,7 @@ function ResourceCard(props) {
           Go to Resource
         </a>
       </div>
+      {/* Show modals for resources CRUD if card buttons are pressed */}
       {showEditResource && props.isAdmin && (
         <EditResource
           isShown={showEditResource}
