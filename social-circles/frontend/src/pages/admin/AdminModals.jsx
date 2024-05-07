@@ -1,7 +1,17 @@
-import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React from "react";
+import { Modal, Button } from "react-bootstrap";
 
-const CustomModal = ({ show, onHide, title, body, confirmAction, cancelButtonText = "Cancel", confirmButtonText = "Confirm", confirmButtonVariant = "danger" }) => {
+/* Custom Admin Modal for admin functions*/
+const CustomModal = ({
+  show,
+  onHide,
+  title,
+  body,
+  confirmAction,
+  cancelButtonText = "Cancel",
+  confirmButtonText = "Confirm",
+  confirmButtonVariant = "danger",
+}) => {
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
@@ -9,8 +19,14 @@ const CustomModal = ({ show, onHide, title, body, confirmAction, cancelButtonTex
       </Modal.Header>
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>{cancelButtonText}</Button>
-        {confirmAction && <Button variant={confirmButtonVariant} onClick={confirmAction}>{confirmButtonText}</Button>}
+        <Button variant="secondary" onClick={onHide}>
+          {cancelButtonText}
+        </Button>
+        {confirmAction && (
+          <Button variant={confirmButtonVariant} onClick={confirmAction}>
+            {confirmButtonText}
+          </Button>
+        )}
       </Modal.Footer>
     </Modal>
   );

@@ -2,6 +2,7 @@ import React from "react";
 import GuestHeader from "../../components/headers/GuestHeader";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 
+/* Contact Us page */
 function Contact() {
   return (
     <>

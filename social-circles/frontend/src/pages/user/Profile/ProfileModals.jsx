@@ -1,5 +1,5 @@
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 export const ConfirmModal = ({ show, onHide, onConfirm, message }) => (
   <Modal show={show} onHide={onHide}>
@@ -23,7 +23,9 @@ export const WelcomeModal = ({ show, onHide, onRedirect }) => (
     <Modal.Header closeButton>
       <Modal.Title>Welcome!</Modal.Title>
     </Modal.Header>
-    <Modal.Body>Thank you for signing up, get started with your first event</Modal.Body>
+    <Modal.Body>
+      Thank you for signing up, get started with your first event
+    </Modal.Body>
     <Modal.Footer>
       <Button variant="danger" onClick={onRedirect}>
         To Events

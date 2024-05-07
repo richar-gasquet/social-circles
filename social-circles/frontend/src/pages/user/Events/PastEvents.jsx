@@ -14,7 +14,7 @@ import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 import { Navigate } from "react-router-dom";
 
-function Events() {
+function PastEvents() {
   const {
     events,
     isFetching,
@@ -142,4 +142,4 @@ function Events() {
   );
 }
 
-export default Events;
+export default PastEvents;

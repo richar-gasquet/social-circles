@@ -18,6 +18,7 @@ import Modal from "react-bootstrap/Modal";
 import styles from "../../../css/Buttons.module.css";
 import pageStyles from "../../../css/ChildPage.module.css";
 
+/* Single event page */
 function EventPage() {
   const { eventId } = useParams();
 
@@ -52,6 +53,7 @@ function EventPage() {
     });
   };
 
+  // Fetch single event from the backend
   const fetchSingleEvent = useCallback(async () => {
     try {
       setIsFetchingEvent(true);
@@ -79,6 +81,7 @@ function EventPage() {
     }
   }, [eventId, setIsFetchingEvent, setEventDisplayAlert]);
 
+  // Fetch all users for this event from the backend
   const getUsersForEvent = useCallback(async () => {
     try {
       setIsFetchingUsers(true);
@@ -111,6 +114,7 @@ function EventPage() {
     getUsersForEvent();
   }, [fetchSingleEvent, getUsersForEvent]);
 
+  // Forcefully unbregister a user from this event
   const unregisterUser = async () => {
     if (!selectedUser) return; // Guard clause if no user is selected
 
@@ -165,6 +169,7 @@ function EventPage() {
     }
   };
 
+  // Register current user to the event
   const handleRegistration = async () => {
     setIsQuerying(true);
     try {
@@ -181,7 +186,7 @@ function EventPage() {
       );
       if (request.ok) {
         const data = await request.json();
-        if (data.status === "waitlist") {
+        if (data.status === "waitlist") { // Add user to waitlist
           addRegistrationAlert(
             "success",
             `You have joined waitlist for ${event.event_name}.`
@@ -196,7 +201,7 @@ function EventPage() {
           };
 
           setEvent(updatedEvent);
-        } else {
+        } else { // Add user to attendees list
           addRegistrationAlert(
             "success",
             `You have registered for ${event.event_name}.`
@@ -232,16 +237,16 @@ function EventPage() {
             ];
           });
         }
-      } else {
+      } else { // Could connect to server, but server error
         const data = await request.json();
-        if (data.message === "waitlist_error") {
+        if (data.message === "waitlist_error") { // Display waitlist error
           addRegistrationAlert(
             "danger",
             `We couldn't register you for the wailist for ${event.event_name}. 
               Try again or contact the administrator.`
           );
         } else {
-          addRegistrationAlert(
+          addRegistrationAlert( // Display registration error
             "danger",
             `We couldn't register you for ${event.event_name}. 
               Try again or contact the administrator.`
@@ -259,6 +264,7 @@ function EventPage() {
     }
   };
 
+  // Cancel the current user's registration to the event
   const handleCancelRegistration = async () => {
     setIsQuerying(true);
     try {
@@ -307,6 +313,7 @@ function EventPage() {
     }
   };
 
+  // Remove the current user from the waitlist
   const handleCancelWaitlist = async () => {
     setIsQuerying(true);
     try {

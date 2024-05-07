@@ -16,6 +16,7 @@ import Loading from "../../../components/shared-components/LoadingSpinner.jsx";
 import SessionTimeoutHandler from "../../../components/session-checker/SessionTimeoutHandler.jsx";
 import styles from "../../../css/Toast.module.css";
 
+/* Dana Events page */
 function DanaEvents() {
   const {
     events,

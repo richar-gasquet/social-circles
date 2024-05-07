@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
+/* Chart component for current visitors */
 const UserAnalyticsChart = ({ chartData }) => {
   return (
     <ReactApexChart

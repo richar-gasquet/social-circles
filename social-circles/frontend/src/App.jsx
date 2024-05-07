@@ -41,7 +41,7 @@ function App() {
             } 
           />
 
-          {/* Member routes */}
+          {/* Profile route */}
           <Route
             exact
             path="/profile"
@@ -51,6 +51,8 @@ function App() {
               </UserContextProvider>
             }
           />
+
+          {/* User dashboard route */}
           <Route
             exact
             path="/user-dashboard"
@@ -62,6 +64,8 @@ function App() {
               </UserContextProvider>
             }
           />
+
+          {/* Events routes */}
           <Route
             exact path="/events"
             element={
@@ -125,6 +129,8 @@ function App() {
               </UserContextProvider>
             }
           />
+
+          {/* Communities routes */}
           <Route
             exact
             path="/communities"

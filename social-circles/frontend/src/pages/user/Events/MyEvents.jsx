@@ -17,6 +17,7 @@ import SessionTimeoutHandler from "../../../components/session-checker/SessionTi
 import { Navigate } from "react-router-dom";
 import styles from "../../../css/Toast.module.css";
 
+/* My Events page */
 function MyEvents() {
   const {
     events,

@@ -17,7 +17,7 @@ import SessionTimeoutHandler from "../../../components/session-checker/SessionTi
 import { Navigate } from "react-router-dom";
 import styles from "../../../css/Toast.module.css";
 
-function Communities() {
+function MyCommunities() {
   const {
     communities,
     isFetching,
@@ -175,4 +175,4 @@ function Communities() {
   );
 }
 
-export default Communities;
+export default MyCommunities;

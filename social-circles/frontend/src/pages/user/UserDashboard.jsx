@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import { Navigate } from "react-router-dom";
-import { useUserContext } from '../../contexts/UserContextHandler';
+import { useUserContext } from "../../contexts/UserContextHandler";
 import { useEventContext } from "../../contexts/EventsContextHandler";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
 import UserHeader from "../../components/headers/UserHeader";
@@ -8,7 +8,7 @@ import AdminHeader from "../../components/headers/AdminHeader";
 import EventCard from "../../components/card-components/EventCard";
 import ToastContainer from "react-bootstrap/esm/ToastContainer";
 import AlertToast from "../../components/shared-components/AlertToast";
-import CarouselComponent from "../../components/user-dashboard-functions/CarouselComponent"
+import CarouselComponent from "../../components/user-dashboard-functions/CarouselComponent";
 import Loading from "../../components/shared-components/LoadingSpinner";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import AddButton from "../../components/admin-functions/AddButton";
@@ -21,7 +21,14 @@ function UserDashboard() {
   const [registrationAlerts, setRegistrationAlerts] = useState([]);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
 
-  const { events, isFetching, fetchEvents, displayAlert, setDisplayAlert, updateEvents } = useEventContext();
+  const {
+    events,
+    isFetching,
+    fetchEvents,
+    displayAlert,
+    setDisplayAlert,
+    updateEvents,
+  } = useEventContext();
   const { isAdmin } = useAuthContext();
   const { userData, isLoading } = useUserContext();
 
@@ -32,8 +39,8 @@ function UserDashboard() {
 
   const fetchAllEvents = () => fetchEvents("/get-available-events");
 
-  // Checking if userData is undefined or email is empty 
-  if (userData.email === '') {
+  // Checking if userData is undefined or email is empty
+  if (userData.email === "") {
     return <Navigate to={"/"} />;
   }
   if (userData.is_admin === undefined) {
@@ -91,9 +98,7 @@ function UserDashboard() {
     });
   };
 
-  const Header = isAdmin
-  ? AdminHeader
-  : UserHeader;
+  const Header = isAdmin ? AdminHeader : UserHeader;
 
   if (isLoading) {
     return (
@@ -101,7 +106,7 @@ function UserDashboard() {
         <Header />
         <Loading />
       </>
-    )
+    );
   }
 
   const slicedEvents = events.slice(0, 3);
@@ -110,11 +115,11 @@ function UserDashboard() {
     <>
       <SessionTimeoutHandler />
       <Header />
-      <div style={{ paddingTop: '7em' }}>
+      <div style={{ paddingTop: "7em" }}>
         <CarouselComponent
           announcements={announcements}
           isQuerying={isQuerying}
-          isAdmin={ isAdmin }
+          isAdmin={isAdmin}
           fetchAnnouncements={fetchAllAnnouncements}
           updateAnnouncements={updateAnnouncements}
         />
@@ -136,15 +141,14 @@ function UserDashboard() {
             style={{ zIndex: 100 }}
           >
             {registrationAlerts.map((alert) => (
-              <AlertToast
-                key={alert.id}
-                type={alert.type}
-                text={alert.text}
-              />
+              <AlertToast key={alert.id} type={alert.type} text={alert.text} />
             ))}
           </ToastContainer>
         </div>
-        <div className={`row container-fluid align-items-center`} style={{ paddingTop: '2em' }}>
+        <div
+          className={`row container-fluid align-items-center`}
+          style={{ paddingTop: "2em" }}
+        >
           <h1 className={`ml-4`} style={{ fontSize: "2.5rem" }}>
             Upcoming Events
           </h1>

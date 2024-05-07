@@ -17,6 +17,7 @@ import Modal from "react-bootstrap/Modal";
 import styles from "../../../css/Buttons.module.css";
 import pageStyles from "../../../css/ChildPage.module.css";
 
+/* Single community page */
 function CommunitiesPage() {
   const { groupId } = useParams();
 
@@ -51,6 +52,7 @@ function CommunitiesPage() {
     });
   };
 
+  /* Retrieve details about a single community from the backend */
   const fetchSingleCommunity = useCallback(async () => {
     try {
       setIsFetchingCommunity(true);
@@ -81,6 +83,7 @@ function CommunitiesPage() {
     }
   }, [groupId, setIsFetchingCommunity, setCommunityDisplayAlert]);
 
+  /* Retrieve all users belonging to this community */
   const getUsersForCommunity = useCallback(async () => {
     try {
       setIsFetchingUsers(true);
@@ -113,6 +116,7 @@ function CommunitiesPage() {
     getUsersForCommunity();
   }, [fetchSingleCommunity, getUsersForCommunity]);
 
+  /* Forcefully remove a user from the community via FETCH*/
   const unregisterUser = async () => {
     if (!selectedUser) return; // Guard clause if no user is selected
 
@@ -134,7 +138,7 @@ function CommunitiesPage() {
       );
 
       if (response.ok) {
-        // Refresh the list of users or remove the user from the state
+        // Refresh the list of users
         setUsersForCommunity(() =>
           usersForCommunity.filter((user) => user.email !== selectedUser.email)
         );
@@ -164,6 +168,7 @@ function CommunitiesPage() {
     }
   };
 
+  /* Allow user to register for the event on 'Submit' */
   const handleRegistration = async () => {
     try {
       setIsQuerying(true);
@@ -178,7 +183,7 @@ function CommunitiesPage() {
           body: JSON.stringify({ group_id: groupId }),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Fetch successful
         addRegistrationAlert(
           "success",
           `You have joined ${he.decode(community.group_name)}.`
@@ -189,6 +194,7 @@ function CommunitiesPage() {
           count: community.count + 1,
         };
         setCommunity(updatedCommunity);
+        /* Add current user to the registered users list*/
         setUsersForCommunity(() => {
           return [
             {
@@ -228,6 +234,7 @@ function CommunitiesPage() {
     }
   };
 
+  /* Cancel the current user's registration voluntarily */
   const handleCancelRegistration = async () => {
     setIsQuerying(true);
     try {
@@ -242,7 +249,7 @@ function CommunitiesPage() {
           body: JSON.stringify({ group_id: groupId }),
         }
       );
-      if (request.ok) {
+      if (request.ok) { // Fetch successful
         const updatedCommunity = {
           ...community,
           isRegistered: false,

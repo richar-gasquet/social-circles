@@ -17,6 +17,7 @@ import SessionTimeoutHandler from "../../../components/session-checker/SessionTi
 import { Navigate } from "react-router-dom";
 import styles from "../../../css/Toast.module.css";
 
+/* Communities page */
 function Communities() {
   const {
     communities,
@@ -69,7 +70,6 @@ function Communities() {
 
   const filteredCommunities = searchCommunities(communities);
 
-
   const Header = isAdmin ? AdminHeader : UserHeader;
   if (isLoading) {
     return (
@@ -86,6 +86,7 @@ function Communities() {
       <Header />
       <div className={`container-fluid p-5`}>
         <div className="position-relative">
+          {/* Display alert if necessary */}
           <ToastContainer
             className={`p-3 ${styles.toastContainer}`}
             style={{ zIndex: 100 }}

@@ -6,8 +6,10 @@ import Carousel from "react-bootstrap/Carousel";
 import danaImg from "../../assets/dana.webp";
 import styles from "../../css/LandingPage.module.css";
 
+/* Landing page/index */
 function LandingPage() {
   useEffect(() => {
+    /* Determine which part of the page the user is looking add */
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -35,6 +37,7 @@ function LandingPage() {
     <>
       <GuestHeader />
       <SessionTimeoutHandler />
+      {/* Carousel display for images */}
       <div className={`container-fluid w-100 ${styles.carouselContainer}`}>
         <Carousel fade indicators={false} controls={false}>
           <Carousel.Item className={`${styles.carouselItem}`}>
@@ -81,6 +84,7 @@ function LandingPage() {
           </NavLink>
         </div>
       </div>
+      {/* Description container */}
       <div
         className={`container-fluid px-5 py-5 d-flex flex-column justify-content-center ${styles.descContainer}`}
       >
@@ -128,7 +132,7 @@ function LandingPage() {
           </div>
         </div>
       </div>
-
+      {/* Dana container */}
       <div className={`container-fluid py-5 px-5 ${styles.danaContainer}`}>
         <h1 className={`text-center ${styles.animated}`}>
           Who is Dana H. Moorhead?
@@ -167,6 +171,7 @@ function LandingPage() {
           </div>
         </div>
       </div>
+      {/* Dana quote container */}
       <div
         className={`text-center ${styles.animated} py-5 px-5 ${styles.quoteContainer}`}
       >
@@ -179,6 +184,7 @@ function LandingPage() {
           <em>- Dana Hughes Moorhead</em>
         </h3>
       </div>
+      {/* Join Us Container */}
       <div
         className={`text-center py-5 px-5 ${styles.joinContainer}`}
       >

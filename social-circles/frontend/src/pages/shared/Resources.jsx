@@ -10,6 +10,7 @@ import AddResource from "../../components/resources-functions/AddResource";
 import AddButton from "../../components/admin-functions/AddButton";
 import ResourceCard from "../../components/card-components/ResourcesCard";
 
+/* Resources page */
 function Resources() {
   const { userData, isLoading } = useUserContext();
 
@@ -24,6 +25,7 @@ function Resources() {
     fetchAllResources();
   }, []);
 
+  /* Retrieve all resources from backend */
   const fetchAllResources = async () => {
     try {
       setQuerying(true);
@@ -31,17 +33,17 @@ function Resources() {
         `${import.meta.env.VITE_BACKEND_URL}/api/get-resources`,
         { credentials: "include" }
       );
-      if (response.ok) {
+      if (response.ok) { // Successful fetch, store resources
         const data = await response.json();
         setResources(data.results);
-      } else {
+      } else { // Could connect to server, but server error
         setDisplayAlert({
           type: "danger",
           header: "Could not display resources!",
           text: "Try again or contact the administrator.",
         });
       }
-    } catch (error) {
+    } catch (error) { // Could not connect to server
       setDisplayAlert({
         type: "danger",
         header: "Could not connect to server!",
@@ -52,6 +54,7 @@ function Resources() {
     }
   };
 
+  /* Update resource with resource_id with details from new Resource*/
   const updateResources = useCallback((resource_id, newResource) => {
     setResources((prevResources) =>
       prevResources.map((oldResource) => {

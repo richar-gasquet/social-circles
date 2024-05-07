@@ -1,5 +1,6 @@
 import React from 'react';
 
+/* Component to display user details */
 const UserDetails = ({ selectedUser }) => (
   <>
     <p><strong>First Name:</strong> {selectedUser.first_name}</p>

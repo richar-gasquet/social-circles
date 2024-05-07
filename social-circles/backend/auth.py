@@ -100,7 +100,7 @@ def callback() -> flask.Response:
     if db.is_in_block(flask.session['email']):
         # Clear session and redirect user to a blocked page or notice
         flask.session.clear()
-        return flask.redirect(f'{REACT_FRONTEND}/')
+        return flask.redirect(f'{REACT_FRONTEND}/unauthorized')
 
     user_details = db.get_user_details(flask.session['email'])
     
