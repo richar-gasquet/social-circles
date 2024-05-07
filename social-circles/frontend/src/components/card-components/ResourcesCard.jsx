@@ -28,7 +28,7 @@ function ResourceCard(props) {
           ></CardButton>
         </div>
       )}
-      {{/* Display details about the resource */}}
+      {/* Display details about the resource */}
       <div className="card-body" style={{ width: "90%" }}>
         <h3 className="card-title">
             {he.decode(props.dispName)}
