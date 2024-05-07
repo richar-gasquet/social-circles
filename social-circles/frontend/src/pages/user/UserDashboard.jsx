@@ -98,16 +98,15 @@ function UserDashboard() {
     });
   };
 
-  const Header = isAdmin ? AdminHeader : UserHeader;
-
   if (isLoading) {
     return (
       <>
-        <Header />
         <Loading />
       </>
     );
   }
+
+  const Header = isAdmin ? AdminHeader : UserHeader;
 
   const slicedEvents = events.slice(0, 3);
 

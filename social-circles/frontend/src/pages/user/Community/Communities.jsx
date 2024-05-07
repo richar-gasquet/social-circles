@@ -36,6 +36,14 @@ function Communities() {
   const [showAddCommunity, setShowAddCommunity] = useState(false);
   const { userData, isLoading } = useUserContext();
 
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
+  }
+
   // Checking if userData is undefined or email is empty 
   if (userData.is_admin === undefined || userData.is_admin === null) {
     return <Navigate to={"/profile"} />;
@@ -71,14 +79,6 @@ function Communities() {
   const filteredCommunities = searchCommunities(communities);
 
   const Header = isAdmin ? AdminHeader : UserHeader;
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Loading/>
-      </>
-    )
-  }
   
   return (
     <>

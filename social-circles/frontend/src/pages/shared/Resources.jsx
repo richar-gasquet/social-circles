@@ -68,20 +68,19 @@ function Resources() {
     );
   }, [resources]);
 
-  const Header = userData.is_admin 
-    ? AdminHeader
-    : userData.is_admin === false
-    ? UserHeader
-    : GuestHeader;
-
   if (isLoading) {
     return (
       <>
-        <Header />
         <Loading />
       </>
     );
   }
+
+  const Header = userData.is_admin 
+  ? AdminHeader
+  : userData.is_admin === false
+  ? UserHeader
+  : GuestHeader;
 
   return (
     <>
