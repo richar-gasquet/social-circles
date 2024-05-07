@@ -37,8 +37,13 @@ function EventPage() {
   const [isFetchingEvent, setIsFetchingEvent] = useState(false);
   const [isQuerying, setIsQuerying] = useState(false);
 
-  if (userData.email === "") return <Navigate to={"/"} />;
-  if (userData.is_admin === undefined) return <Navigate to={"/profile"} />;
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
+    return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
 
   // Utility function for handling fetch errors
   const handleFetchError = (

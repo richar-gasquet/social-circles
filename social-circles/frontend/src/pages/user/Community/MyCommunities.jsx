@@ -35,12 +35,12 @@ function MyCommunities() {
   const [showAddCommunity, setShowAddCommunity] = useState(false);
   const { userData, isLoading } = useUserContext();
 
-  // Checking if userData is undefined or email is empty
-  if ( userData.email === '') {
-    return <Navigate to={"/"} />;
-  }
-  if ( userData.is_admin === undefined) {
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
     return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
   }
 
   useEffect(() => {

@@ -68,11 +68,11 @@ function Resources() {
     );
   }, [resources]);
 
-  const Header = isAdmin
+  const Header = userData.is_admin 
     ? AdminHeader
-    : userData.is_admin === null
-    ? GuestHeader
-    : UserHeader;
+    : userData.is_admin === false
+    ? UserHeader
+    : GuestHeader;
 
   if (isLoading) {
     return (
