@@ -596,11 +596,11 @@ def get_users_for_event(event_id):
 # Queries/Helper functions for WAITLIST functionality
 # ---------------------------------------------------------------------
 
-def get_event_spots(event_id: str) -> list:
+def get_event_spots(event_id: int) -> list:
     """ Get filled spots and capacity for a particular event
 
     Args:
-        event_id (str): ID of event to get spots for
+        event_id (int): ID of event to get spots for
 
     Returns:
         list: list containing filled spots and capacity for the event
@@ -616,7 +616,7 @@ def get_event_spots(event_id: str) -> list:
                     events e
                 WHERE
                     e.event_id = %s            
-            ''', (event_id, ))
+            ''', (event_id,))
             event_spots = cursor.fetchone()
     except Exception:
         raise
