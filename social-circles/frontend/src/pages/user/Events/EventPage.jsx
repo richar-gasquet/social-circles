@@ -38,22 +38,6 @@ function EventPage() {
   const [isQuerying, setIsQuerying] = useState(false);
   const [redirectOnNotFound, setRedirectOnNotFound] = useState(false);
 
-  if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    );
-  }
-
-  // Checking if userData is undefined or email is empty
-  if (userData.is_admin === undefined || userData.is_admin === null) {
-    return <Navigate to={"/profile"} />;
-  }
-  if (userData.email === "") {
-    return <Navigate to={"/"} />;
-  }
-
   // Utility function for handling fetch errors
   const handleFetchError = (
     setAlert,
@@ -400,9 +384,24 @@ function EventPage() {
     action();
   };
 
-
   if (redirectOnNotFound) {
     return <Navigate to="/not-found" replace />;
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
+  }
+
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
+    return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
   }
 
   const Header = isAdmin ? AdminHeader : UserHeader;
@@ -514,7 +513,7 @@ function EventPage() {
         )}
         <div>
           {isFetchingEvent || !event ? (
-            <Loading />
+            <div />
           ) : event.in_past ? (
             <Button variant="secondary" disabled>
               Passed
