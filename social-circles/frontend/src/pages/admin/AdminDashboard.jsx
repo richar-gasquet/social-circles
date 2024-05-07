@@ -7,12 +7,8 @@ import BlockedUsersList from "./BlockedUsersList";
 import CustomModal from "./AdminModals";
 import AdminHeader from "../../components/headers/AdminHeader";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import { Line } from "react-chartjs-2";
 import { Link } from "react-router-dom";
 import styles from "../../css/Buttons.module.css";
-import dashstyles from "../../css/AdminDash.module.css";
 import Loading from "../../components/shared-components/LoadingSpinner";
 
 /* Dashboard component for the administrator */

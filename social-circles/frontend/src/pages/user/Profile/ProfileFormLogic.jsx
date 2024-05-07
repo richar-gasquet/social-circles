@@ -125,7 +125,6 @@ export const useFormLogic = (initialUserData) => {
 
     // Handle validation and character limit
     const newErrors = {};
-    let characterLimitExceeded = false;
 
     Object.keys(formData).forEach((field) => {
       if (

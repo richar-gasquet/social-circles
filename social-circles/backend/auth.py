@@ -152,9 +152,9 @@ def authenticate() -> tuple:
         
         is_admin = db.get_user_authorization(flask.session['email'])
         
-        # If there's no such user in the database, consider not authenticated
+        # If user is not an admin
         if not is_admin:
-            return flask.jsonify({'status': 'not auth'}), 200 # Unauthorized
+            return flask.jsonify({'status': 'auth'}), 200 # ok
 
         # User has passed all checks, authenticated
         return flask.jsonify({

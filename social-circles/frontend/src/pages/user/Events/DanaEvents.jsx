@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../../contexts/AuthContextHandler.jsx";
 import { useUserContext } from "../../../contexts/UserContextHandler";
 import { useEventContext } from "../../../contexts/EventsContextHandler.jsx";
+import { Navigate } from "react-router-dom";
 import ToastContainer from "react-bootstrap/esm/ToastContainer.js";
 import AlertToast from "../../../components/shared-components/AlertToast.jsx";
 import AlertBox from "../../../components/shared-components/AlertBox.jsx";
@@ -35,12 +36,20 @@ function DanaEvents() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const { userData, isLoading } = useUserContext();
 
-  // Checking if userData is undefined or email is empty  !userData ||
-  if (userData.email === "") {
-    return <Navigate to={"/"} />;
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
   }
-  if (userData.is_admin === undefined) {
+
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
     return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
   }
 
   useEffect(() => {
@@ -69,14 +78,6 @@ function DanaEvents() {
   const filteredEvents = searchEvents(events);
 
   const Header = isAdmin ? AdminHeader : UserHeader;
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Loading />
-      </>
-    );
-  }
 
   return (
     <>

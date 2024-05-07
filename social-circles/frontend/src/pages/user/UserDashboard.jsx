@@ -31,6 +31,14 @@ function UserDashboard() {
   } = useEventContext();
   const { isAdmin } = useAuthContext();
   const { userData, isLoading } = useUserContext();
+  
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
+    return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
+  }
 
   useEffect(() => {
     fetchEvents("/get-available-events");
@@ -38,14 +46,6 @@ function UserDashboard() {
   }, []);
 
   const fetchAllEvents = () => fetchEvents("/get-available-events");
-
-  // Checking if userData is undefined or email is empty
-  if (userData.email === "") {
-    return <Navigate to={"/"} />;
-  }
-  if (userData.is_admin === undefined) {
-    return <Navigate to={"/profile"} />;
-  }
 
   const fetchAllAnnouncements = async () => {
     try {
@@ -98,16 +98,15 @@ function UserDashboard() {
     });
   };
 
-  const Header = isAdmin ? AdminHeader : UserHeader;
-
   if (isLoading) {
     return (
       <>
-        <Header />
         <Loading />
       </>
     );
   }
+
+  const Header = isAdmin ? AdminHeader : UserHeader;
 
   const slicedEvents = events.slice(0, 3);
 

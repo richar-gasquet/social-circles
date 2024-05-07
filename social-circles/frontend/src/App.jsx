@@ -176,10 +176,20 @@ function App() {
           />
 
           {/* 404 Not Found */}
-          <Route path="/*" element={<NotFound />} />
+          <Route path="/*" element={
+            <UserContextProvider>
+              <NotFound />
+            </UserContextProvider>
+          } 
+          />
 
           {/* 401 Unauthorized */}
-          <Route exact path="/unauthorized" element={<Unauthorized />} />
+          <Route exact path="/unauthorized" element={
+            <UserContextProvider>
+              <Unauthorized />
+            </UserContextProvider>
+          } 
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

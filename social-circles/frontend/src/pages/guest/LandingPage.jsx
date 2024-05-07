@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { NavLink, Navigate } from "react-router-dom";
-import GuestHeader from "../../components/headers/GuestHeader";
+import { NavLink } from "react-router-dom";
+import LandingHeader from "../../components/headers/LandingHeader";
 import SessionTimeoutHandler from "../../components/session-checker/SessionTimeoutHandler";
 import Carousel from "react-bootstrap/Carousel";
 import danaImg from "../../assets/dana.webp";
@@ -35,7 +35,7 @@ function LandingPage() {
 
   return (
     <>
-      <GuestHeader />
+      <LandingHeader />
       <SessionTimeoutHandler />
       {/* Carousel display for images */}
       <div className={`container-fluid w-100 ${styles.carouselContainer}`}>

@@ -31,12 +31,20 @@ function PastEvents() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const { userData, isLoading } = useUserContext();
 
-  // Checking if userData is undefined or email is empty
-  if (userData.email === "") {
-    return <Navigate to={"/"} />;
+  if (isLoading) {
+    return (
+      <>
+        <Loading/>
+      </>
+    );
   }
-  if (userData.is_admin === undefined) {
+
+  // Checking if userData is undefined or email is empty 
+  if (userData.is_admin === undefined || userData.is_admin === null) {
     return <Navigate to={"/profile"} />;
+  }
+  if (userData.email === '') {
+    return <Navigate to={"/"} />;
   }
 
   useEffect(() => {
@@ -48,14 +56,6 @@ function PastEvents() {
   const filteredEvents = searchEvents(events);
 
   const Header = isAdmin ? AdminHeader : UserHeader;
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Loading />
-      </>
-    );
-  }
 
   return (
     <>

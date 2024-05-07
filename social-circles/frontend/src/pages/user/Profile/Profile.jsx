@@ -30,12 +30,6 @@ function Profile() {
     welcomeModal,
   } = useFormLogic();
 
-  const Header = formData.is_admin
-    ? AdminHeader
-    : formData.is_admin === false
-    ? UserHeader
-    : GuestHeader;
-
   const pronounsOptions = ["He/His", "She/Her", "They/Them", "Other"];
   const maritalStatusOptions = [
     "Single",
@@ -52,6 +46,7 @@ function Profile() {
       </>
     );
   }
+  
   const handleLogout = (e) => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`;
   };
@@ -59,6 +54,12 @@ function Profile() {
   const redirectToEvents = () => {
     window.location.href = "/events";
   };
+
+  const Header = formData.is_admin
+  ? AdminHeader
+  : formData.is_admin === false
+  ? UserHeader
+  : GuestHeader;
 
   if (
     !userData ||

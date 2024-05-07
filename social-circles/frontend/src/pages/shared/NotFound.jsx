@@ -1,15 +1,30 @@
 import GuestHeader from "../../components/headers/GuestHeader";
 import UserHeader from "../../components/headers/UserHeader";
 import AdminHeader from "../../components/headers/AdminHeader";
-import { useAuthContext } from "../../contexts/AuthContextHandler";
+import Loading from "../../components/shared-components/LoadingSpinner";
+import { useUserContext } from "../../contexts/UserContextHandler";
 
 /* 404 Not Found page for unvalid routes */
 function NotFound() {
-  const { isAuth, isAdmin } = useAuthContext();
+  const { userData, isLoading } = useUserContext();
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
+
+  const Header = userData.is_admin 
+  ? AdminHeader
+  : userData.is_admin === false
+  ? UserHeader
+  : GuestHeader;
 
   return (
     <>
-      {isAdmin ? <AdminHeader /> : isAuth ? <UserHeader /> : <GuestHeader />}
+      <Header />
       <div
         className="container-fluid col-12 text-center"
         style={{ paddingTop: "15em" }}
