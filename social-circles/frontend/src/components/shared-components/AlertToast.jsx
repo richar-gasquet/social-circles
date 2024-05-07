@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Toast from "react-bootstrap/Toast";
 import styles from "../../css/Toast.module.css";
+import pageStyles from "../../css/ChildPage.module.css";
 
 function AlertToast(props) {
   const [show, setShow] = useState(true);
@@ -26,7 +27,7 @@ function AlertToast(props) {
       className={`${styles.toast} ${!show ? styles.fadeOut : ''}`}
     >
       <Toast.Body>
-        <h6 className="text-center" style={{ color: "white", margin: "0px" }}>
+        <h6 className={`text-center ${pageStyles.wrapText}`}style={{ color: "white", margin: "0px" }}>
           {props.text}
         </h6>
       </Toast.Body>

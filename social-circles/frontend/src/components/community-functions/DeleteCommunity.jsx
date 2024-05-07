@@ -6,6 +6,8 @@ import ToastContainer from "react-bootstrap/ToastContainer";
 import AlertToast from "../shared-components/AlertToast";
 import styles from "../../css/Modal.module.css";
 import toastStyles from "../../css/Toast.module.css"
+import pageStyles from "../../css/ChildPage.module.css";
+
 
 /* Component to delete a community via a Modal */
 function DeleteCommunity(props) {
@@ -82,7 +84,9 @@ function DeleteCommunity(props) {
         )}
         <p>
           Are you sure you want to delete the community{" "}
-          <strong>{he.decode(props.name)}</strong>? This action will be irreversible.
+          <div className={`${pageStyles.wrapText}`}>
+            <strong>{he.decode(props.name)}</strong>? This action will be irreversible.
+          </div>
         </p>
         { /* Buttons for admin actions */}
         <Button
