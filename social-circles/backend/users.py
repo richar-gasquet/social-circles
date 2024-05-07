@@ -91,10 +91,10 @@ def add_user_data() -> tuple:
                 'pronouns': user_data.get('pronouns', '')[:50],
                 'phone_number': user_data.get('phone_number', '')[:15],
                 'marital_status': user_data.get('marital_status', '')[:50],
-                'family_circumstance': user_data.get('family_circumstance', '')[:50],
-                'community_status': user_data.get('community_status', '')[:50],
-                'interests': user_data.get('interests', '')[:50],
-                'personal_identity': user_data.get('personal_identity', '')[:50],
+                'family_circumstance': user_data.get('family_circumstance', '')[:150],
+                'community_status': user_data.get('community_status', '')[:150],
+                'interests': user_data.get('interests', '')[:150],
+                'personal_identity': user_data.get('personal_identity', '')[:150],
                 'profile_photo' : flask.session['picture']
             }
             
@@ -139,10 +139,10 @@ def update_user_data() -> tuple:
                 'pronouns': user_data.get('pronouns', 'N/A')[:50] if user_data.get('pronouns') != '' else 'N/A',
                 'phone_number': user_data.get('phone_number', '')[:15],
                 'marital_status': user_data.get('marital_status', 'N/A')[:50] if user_data.get('marital_status') != '' else 'N/A',
-                'family_circumstance': user_data.get('family_circumstance', 'N/A')[:50] if user_data.get('family_circumstance') != '' else 'N/A',
-                'community_status': user_data.get('community_status', 'N/A')[:50] if user_data.get('community_status') != '' else 'N/A',
-                'interests': user_data.get('interests', 'N/A')[:50] if user_data.get('interests') != '' else 'N/A',
-                'personal_identity': user_data.get('personal_identity', 'N/A')[:50] if user_data.get('personal_identity') != '' else 'N/A',
+                'family_circumstance': user_data.get('family_circumstance', 'N/A')[:150] if user_data.get('family_circumstance') != '' else 'N/A',
+                'community_status': user_data.get('community_status', 'N/A')[:150] if user_data.get('community_status') != '' else 'N/A',
+                'interests': user_data.get('interests', 'N/A')[:150] if user_data.get('interests') != '' else 'N/A',
+                'personal_identity': user_data.get('personal_identity', 'N/A')[:150] if user_data.get('personal_identity') != '' else 'N/A',
                 'profile_photo' :  flask.session['picture']
             }
             

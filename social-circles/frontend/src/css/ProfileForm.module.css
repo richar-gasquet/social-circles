@@ -19,6 +19,9 @@
   padding-top: 2em;
   padding-bottom: 2em;
   width: fit-content;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  white-space: normal; 
 }
 
 .infoH3{

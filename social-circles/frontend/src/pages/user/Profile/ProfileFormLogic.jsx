@@ -117,10 +117,10 @@ export const useFormLogic = (initialUserData) => {
       preferred_name: 50,
       pronouns: 50,
       marital_status: 50,
-      family_circumstance: 50,
-      community_status: 50,
-      interests: 50,
-      personal_identity: 50,
+      family_circumstance: 150,
+      community_status: 150,
+      interests: 150,
+      personal_identity: 150,
     };
 
     // Handle validation and character limit

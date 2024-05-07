@@ -100,10 +100,10 @@ function Profile() {
                   preferred_name: 55,
                   pronouns: 55,
                   marital_status: 55,
-                  family_circumstance: 55,
-                  community_status: 55,
-                  interests: 55,
-                  personal_identity: 55,
+                  family_circumstance: 155,
+                  community_status: 155,
+                  interests: 155,
+                  personal_identity: 155,
                 };
                 const placeholders = {
                   first_name: "Enter your first name",
