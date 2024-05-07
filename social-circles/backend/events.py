@@ -271,9 +271,20 @@ def edit_event() -> tuple:
             is_admin = user_db.get_user_authorization(flask.session['email'])
             if not is_admin:
                 raise Exception("User is not authorized!")
+            
+            event_data = flask.request.json
+            event_id = event_data.get('event_id')
+            
+            curr_event_info = event_db.get_event_info(event_id, flask.session['email'])
+            curr_capacity = curr_event_info[5]
+            
+            # Calculate new capacity if capacity is provided
+            new_capacity = event_data.get('capacity')
+            if new_capacity is not None:
+                new_capacity = int(new_capacity)
 
             # Parse event data to be edited sent from frontend
-            event_data = flask.request.json
+            
             start_time = event_data.get('start_time', '')
             if start_time:
                 start_time = parser.parse(start_time).isoformat()
@@ -282,10 +293,10 @@ def edit_event() -> tuple:
                 end_time = parser.parse(end_time).isoformat()
             
             event_dict = {
-                'event_id' : event_data.get('event_id'),
+                'event_id' : event_id,
                 'event_name' : html.escape(event_data.get('name', '')),
                 'event_desc' : html.escape(event_data.get('desc', '')),
-                'capacity' : event_data.get('capacity'),
+                'capacity' : new_capacity,
                 'image_link' : html.escape(event_data.get('image', '')),
                 'location' : html.escape(event_data.get('location', '')),
                 'isDanaEvent' : bool(event_data.get('isDanaEvent', 'unchanged')),
@@ -295,6 +306,15 @@ def edit_event() -> tuple:
             
             # Send event data to database for UPDATE
             event_db.update_event(event_dict)
+
+            # Calculate the difference if there's an increase and promote from waitlist
+            if new_capacity is not None and new_capacity > curr_capacity:
+                capacity_difference = new_capacity - curr_capacity
+                for _ in range(capacity_difference):
+                    # Call the function to promote from the waitlist for each available spot
+                    promote_from_waitlist(event_id)
+
+
             
             # Return success after editing community
             return flask.jsonify({
