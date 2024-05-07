@@ -31,7 +31,12 @@ function App() {
       <AuthProvider>
         <Routes>
           {/* Guest routes */}
-          <Route exact path="/" element={<LandingPage />} />
+          <Route exact path="/" element={
+            <UserContextProvider>
+              <LandingPage />
+            </UserContextProvider>
+          } 
+          />
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/contact" element={
             <UserContextProvider>
