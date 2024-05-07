@@ -60,7 +60,7 @@ function AdminHeader() {
               </NavLink>
             </li>
             <li className={`nav-item ${styles.navItem}`} onClick={handleLogout}>
-              <NavLink to="/" className={({ isActive }) => `nav-link ${styles.navLink} ${isActive ? styles.activeNavLink : ''}`}>
+              <NavLink to="/" className={`nav-link ${styles.navLink}`}>
                 Log Out
               </NavLink>
             </li>

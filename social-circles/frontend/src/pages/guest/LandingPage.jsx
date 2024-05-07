@@ -14,6 +14,21 @@ import styles from "../../css/LandingPage.module.css";
 function LandingPage() {
   const { userData, isLoading } = useUserContext();
 
+
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
+
+  const Header = userData.is_admin 
+  ? AdminHeader
+  : userData.is_admin === false
+  ? UserHeader
+  : GuestHeader;
+
   useEffect(() => {
     /* Determine which part of the page the user is looking add */
     const observer = new IntersectionObserver(
@@ -39,19 +54,6 @@ function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
-  if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    );
-  }
-
-  const Header = userData.is_admin 
-  ? AdminHeader
-  : userData.is_admin === false
-  ? UserHeader
-  : GuestHeader;
 
   return (
     <>
