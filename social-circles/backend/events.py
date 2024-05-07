@@ -24,7 +24,7 @@ def get_available_events() -> tuple:
         for each one
 
     Returns:
-        tuple: JSON containing events and HTML code
+        tuple: JSON containing events and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:
@@ -73,7 +73,7 @@ def get_dana_events() -> tuple:
         and user's registration status for each one 
 
     Returns:
-        tuple: JSON containing events and HTML code
+        tuple: JSON containing events and HTTP code
     """
     
     # Check if user is authenticated
@@ -122,7 +122,7 @@ def get_registered_events() -> tuple:
     """ Return all events the user is registered for
 
     Returns:
-        tuple: JSON containing events and HTML code
+        tuple: JSON containing events and HTTP code
     """
     # Check if the user is authenticated
     if 'email' in flask.session:
@@ -170,7 +170,7 @@ def get_past_events() -> tuple:
     """ Return all past event
 
     Returns:
-        tuple: JSON containing events and HTML code
+        tuple: JSON containing events and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:
@@ -215,7 +215,7 @@ def add_event():
     """ Add an event
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -261,7 +261,7 @@ def edit_event() -> tuple:
     """ Edit an already existing event
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -315,7 +315,7 @@ def delete_event() -> tuple:
     """ Delete an event
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -352,7 +352,7 @@ def add_event_registration() -> tuple:
     """ Add a user to an event's registrations
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -394,7 +394,7 @@ def delete_event_registration() -> tuple:
     """ Voluntarily delete a user from an event's registrations
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:
@@ -431,7 +431,7 @@ def delete_event_waitlist() -> tuple:
     """ Voluntarily delete a user from a event's waitlist
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:
@@ -465,7 +465,7 @@ def get_event_emails() -> tuple:
     """ Return all user emails belonging to a particular event
 
     Returns:
-        tuple: JSON containing emails and HTML code
+        tuple: JSON containing emails and HTTP code
     """
     
     # Check if user is authenticated
@@ -504,7 +504,7 @@ def get_event_info() -> tuple:
     """ Return all details for a particular event
 
     Returns:
-        tuple: JSON containing details and HTML code
+        tuple: JSON containing details and HTTP code
     """
     
     # Check if user is authenticated
@@ -519,6 +519,9 @@ def get_event_info() -> tuple:
                 
             # Send event ID to database for READ
             event_info = event_db.get_event_info(event_id, flask.session['email'])
+
+            if not event_info:
+                return flask.jsonify({'results' : 'not found'}), 404 # BAD REQUEST
 
             # Create dict containing event details
             event_info_dict = {
@@ -557,7 +560,7 @@ def unregister_user() -> tuple:
     """ Forcefully remove a target user from an event's registrations 
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     # Check if user issuing request is authenticated
     if 'email' in flask.session:
@@ -595,7 +598,7 @@ def get_users_for_event() -> tuple:
     """ Return all users belonging to a particular event
 
     Returns:
-        tuple: JSON containing all users in an event and HTML code
+        tuple: JSON containing all users in an event and HTTP code
     """
     
     # Check if user is authenticated

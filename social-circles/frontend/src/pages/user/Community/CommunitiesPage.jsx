@@ -35,6 +35,7 @@ function CommunitiesPage() {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [isFetchingCommunity, setIsFetchingCommunity] = useState(false);
   const [isQuerying, setIsQuerying] = useState(false);
+  const [redirectOnNotFound, setRedirectOnNotFound] = useState(false);
 
   if (isLoading) {
     return (
@@ -80,6 +81,8 @@ function CommunitiesPage() {
       if (response.ok) {
         const data = await response.json();
         setCommunity(data.results);
+      } else if (response.status === 404) {
+        setRedirectOnNotFound(true); // Trigger redirection when 404 is found
       } else {
         handleFetchError(
           setCommunityDisplayAlert,
@@ -328,6 +331,10 @@ function CommunitiesPage() {
     action();
   };
 
+  if (redirectOnNotFound) {
+    return <Navigate to="/not-found" replace />;
+  }
+
   const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
@@ -352,13 +359,13 @@ function CommunitiesPage() {
           </ToastContainer>
         </div>
         {isFetchingCommunity ? (
-          <Loading />
+          <Loading paddingTop="2rem"/>
         ) : community ? (
           <div>
             <h1 className="mt-3 py-3">{he.decode(community.group_name)}</h1>
             <div>
               <img
-                className={`${pageStyles.img}`}
+                className={`${pageStyles.mainImg}`}
                 src={community.image_link}
                 alt={community.group_name}
               />
@@ -394,11 +401,14 @@ function CommunitiesPage() {
             handleClose={() => setCommunityDisplayAlert(null)}
           ></AlertBox>
         ) : (
-          <p>This community does not exist.</p>
+          <div>
+            <h2> Inexistent community ID </h2>
+            <h4>This community does not exist.</h4>
+          </div>
         )}
         <div>
           {isFetchingCommunity || !community ? (
-            <Loading />
+            <div />
           ) : (
             <CommunityRegisterButton
               isRegistered={community.isRegistered}
@@ -416,7 +426,7 @@ function CommunitiesPage() {
         <hr />
         <h1 className={`mt-3 pb-3`}> Community Members </h1>
         {isFetchingUsers ? (
-          <Loading />
+          <Loading paddingTop="2rem" size="5rem"/>
         ) : usersForCommunity && usersForCommunity.length > 0 ? (
           <div className="row">
             {usersForCommunity.map((user) => (

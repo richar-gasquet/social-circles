@@ -15,7 +15,7 @@ def get_available_communities() -> tuple:
         for each one 
         
     Returns:
-        tuple: JSON containing communities and HTML code
+        tuple: JSON containing communities and HTTP code
     """
     
     # Check if user is authenticated
@@ -57,7 +57,7 @@ def get_registered_communities() -> tuple:
     """ Return all communities the user is registered for
 
     Returns:
-        tuple: JSON containing communities and HTML code
+        tuple: JSON containing communities and HTTP code
     """
     
     # Check if user is authenticated
@@ -98,7 +98,7 @@ def add_community() -> tuple:
     """ Add a community
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -139,7 +139,7 @@ def edit_community() -> tuple:
     """ Edit an already existing community
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -181,7 +181,7 @@ def delete_community() -> tuple:
     """ Delete a community
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -218,7 +218,7 @@ def add_community_registration() -> tuple:
     """ Add a user to a community's membership
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -253,7 +253,7 @@ def delete_community_registration() -> tuple:
     """ Voluntarily delete a user from a community's membership
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     
     # Check if user is authenticated
@@ -288,7 +288,7 @@ def get_community_emails() -> tuple:
     """ Return all user emails belonging to a particular community
 
     Returns:
-        tuple: JSON containing emails and HTML code
+        tuple: JSON containing emails and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:
@@ -326,7 +326,7 @@ def get_community_info() -> tuple:
     """ Return all details for a particular community
 
     Returns:
-        tuple: JSON containing details and HTML code
+        tuple: JSON containing details and HTTP code
     """
     
     # Check if user is authenticated
@@ -341,6 +341,9 @@ def get_community_info() -> tuple:
             
             # Send community ID to database for READ
             group_info = comm_db.get_community_info(group_id, flask.session['email'])
+            
+            if not group_info:
+                return flask.jsonify({'results' : 'not found'}), 404 # NOT FOUND
 
             # Create dict containing community details
             group_info_dict = {
@@ -371,7 +374,7 @@ def remove_user() -> tuple:
     """ Forcefully remove a target user from a community's membership 
 
     Returns:
-        tuple: JSON containing request status and HTML code
+        tuple: JSON containing request status and HTTP code
     """
     # Check if user issuing request is authenticated
     if 'email' in flask.session:
@@ -408,7 +411,7 @@ def get_users_for_community() -> tuple:
     """ Return all users belonging to a particular community
 
     Returns:
-        tuple: JSON containing all users in a community and HTML code
+        tuple: JSON containing all users in a community and HTTP code
     """
     # Check if user is authenticated
     if 'email' in flask.session:

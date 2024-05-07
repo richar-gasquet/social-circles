@@ -36,20 +36,21 @@ function EventPage() {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [isFetchingEvent, setIsFetchingEvent] = useState(false);
   const [isQuerying, setIsQuerying] = useState(false);
+  const [redirectOnNotFound, setRedirectOnNotFound] = useState(false);
 
   if (isLoading) {
     return (
       <>
-        <Loading/>
+        <Loading />
       </>
     );
   }
 
-  // Checking if userData is undefined or email is empty 
+  // Checking if userData is undefined or email is empty
   if (userData.is_admin === undefined || userData.is_admin === null) {
     return <Navigate to={"/profile"} />;
   }
-  if (userData.email === '') {
+  if (userData.email === "") {
     return <Navigate to={"/"} />;
   }
 
@@ -81,10 +82,12 @@ function EventPage() {
       if (response.ok) {
         const data = await response.json();
         setEvent(data.results);
+      } else if (response.status === 404) {
+        setRedirectOnNotFound(true); // Trigger redirection when 404 is found
       } else {
         handleFetchError(
           setEventDisplayAlert,
-          "Could not display the event details!"
+          "Could not display the group details!"
         );
       }
     } catch (error) {
@@ -397,6 +400,11 @@ function EventPage() {
     action();
   };
 
+
+  if (redirectOnNotFound) {
+    return <Navigate to="/not-found" replace />;
+  }
+
   const Header = isAdmin ? AdminHeader : UserHeader;
 
   return (
@@ -421,13 +429,13 @@ function EventPage() {
           </ToastContainer>
         </div>
         {isFetchingEvent ? (
-          <Loading />
+          <Loading paddingTop="2rem" />
         ) : event ? (
           <div>
             <h1 className="mt-3 py-3">{he.decode(event.event_name)}</h1>
             <div>
               <img
-                className={`${pageStyles.img}`}
+                className={`${pageStyles.mainImg}`}
                 src={event.image_link}
                 alt={event.event_name}
               />
@@ -499,7 +507,10 @@ function EventPage() {
             handleClose={() => setEventDisplayAlert(null)}
           ></AlertBox>
         ) : (
-          <p>This event does not exist.</p>
+          <div>
+            <h2> Inexistent event ID </h2>
+            <h4>This event does not exist.</h4>
+          </div>
         )}
         <div>
           {isFetchingEvent || !event ? (
@@ -530,7 +541,7 @@ function EventPage() {
         <hr />
         <h1 className={`mt-3 pb-3`}> Registered Users </h1>
         {isFetchingUsers ? (
-          <Loading />
+          <Loading paddingTop="2rem" size="5rem" />
         ) : usersForEvent && usersForEvent.length > 0 ? (
           <div className="row">
             {usersForEvent.map((user) => (
