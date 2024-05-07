@@ -31,9 +31,11 @@ function CarouselComponent(props) {
               alt={ann.announcement_name}
               style={{ objectFit: 'cover', maxHeight: '100%' }}
             />
-            <Carousel.Caption style={{ margin: '5em'}}>
-              <h3>{ann.announcement_name}</h3>
-              <p>{ann.description}</p>
+            <Carousel.Caption style={{ position: 'absolute', top: '40%', left: '50%', 
+              transform: 'translate(-50%, -50%)', textAlign: 'center', width: '60%',
+              whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+              <h3 style={{ fontSize: '2.5vw' }}>{ann.announcement_name}</h3>
+              <p style={{ fontSize: '1.8vw' }}>{ann.description}</p>
             </Carousel.Caption>
             <CarouselCaption>
               {/* Check if user is admin to display CRUD buttons */}
@@ -60,7 +62,7 @@ function CarouselComponent(props) {
           </Carousel.Item>
         ))
       ) : (
-        <Carousel.Item key="no-announcements" style={{ maxHeight: '400px', overflow: 'hidden' }}>
+        <Carousel.Item key="no-announcements" style={{ maxHeight: '350px', overflow: 'hidden' }}>
           <img
             className="d-block w-100"
             src="https://t3.ftcdn.net/jpg/03/08/93/14/360_F_308931411_1lkVPXmBNd2IojYMSdGaz7sedkSr5Q2w.jpg"

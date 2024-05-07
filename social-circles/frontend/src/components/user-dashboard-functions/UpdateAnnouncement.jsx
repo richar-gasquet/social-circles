@@ -137,7 +137,7 @@ function UpdateAnnouncement(props) {
               placeholder={props.announcement_name}
               value={he.decode(annName)}
               onChange={(e) => setAnnName(e.target.value)}
-              maxLength={100}
+              maxLength={40}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="descrip">
@@ -148,7 +148,7 @@ function UpdateAnnouncement(props) {
               placeholder={props.description}
               value={he.decode(descrip)}
               onChange={(e) => setDescrip(e.target.value)}
-              maxLength={500}
+              maxLength={300}
             ></Form.Control>
           </Form.Group>
           <Form.Group className={`mb-2`} controlId="imageLink">
