@@ -517,6 +517,13 @@ def get_event_info() -> tuple:
                     'message' : 'event_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
                 
+            try:
+                event_id = int(event_id) 
+            except ValueError:
+                return flask.jsonify({
+                    'message': 'Invalid input syntax for event_id. It must be an integer.'
+                }), 404  # Not Found
+            
             # Send event ID to database for READ
             event_info = event_db.get_event_info(event_id, flask.session['email'])
 
@@ -610,6 +617,13 @@ def get_users_for_event() -> tuple:
                 return flask.jsonify({
                     'message' : 'event_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
+                
+            try:
+                event_id = int(event_id) 
+            except ValueError:
+                return flask.jsonify({
+                    'message': 'Invalid input syntax for event_id. It must be an integer.'
+                }), 404  # Not Found
                 
             # Send event ID to database for READ
             users = event_db.get_users_for_event(event_id)

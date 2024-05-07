@@ -337,6 +337,14 @@ def get_community_info() -> tuple:
                 return flask.jsonify({
                     'message' : 'group_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
+                
+            # Validate that group_id is an integer
+            try:
+                group_id = int(group_id) 
+            except ValueError:
+                return flask.jsonify({
+                    'message': 'Invalid input syntax for group_id. It must be an integer.'
+                }), 404  # Not found
             
             # Send community ID to database for READ
             group_info = comm_db.get_community_info(group_id, flask.session['email'])
@@ -421,6 +429,14 @@ def get_users_for_community() -> tuple:
                 return flask.jsonify({
                     'message' : 'group_id parameter is missing in the URL.'
                 }), 400 # BAD REQUEST
+                
+            # Validate that group_id is an integer
+            try:
+                group_id = int(group_id) 
+            except ValueError:
+                return flask.jsonify({
+                    'message': 'Invalid input syntax for group_id. It must be an integer.'
+                }), 404  # Not found
                 
             # Send community ID to database for READ
             users = comm_db.get_users_for_community(group_id)
