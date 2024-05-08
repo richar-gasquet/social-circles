@@ -18,7 +18,7 @@ const useDashboardLogic = (backendUrl) => {
   const [chartData, setChartData] = useState({
     series: [
       {
-        name: "Current Users",
+        name: "Total Visitors",
         data: [],
       },
     ],
@@ -174,12 +174,16 @@ const useDashboardLogic = (backendUrl) => {
   /* Filter users based on all their details */
   const filterUsers = (term) => {
     const lowerCaseTerm = term.toLowerCase();
+    console.log(lowerCaseTerm);
     const filtered = allUsers.filter((user) => {
+      const fullName = user.first_name && user.last_name ? 
+                    (user.first_name + " " + user.last_name).toLowerCase() : "";
       return (
         (user.first_name &&
           user.first_name.toLowerCase().includes(lowerCaseTerm)) ||
         (user.last_name &&
           user.last_name.toLowerCase().includes(lowerCaseTerm)) ||
+        (fullName && fullName.includes(lowerCaseTerm)) ||
         (user.email && user.email.toLowerCase().includes(lowerCaseTerm)) ||
         (user.phone_number &&
           user.phone_number.toLowerCase().includes(lowerCaseTerm)) ||

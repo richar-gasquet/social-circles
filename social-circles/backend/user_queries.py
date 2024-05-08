@@ -182,11 +182,33 @@ def delete_user(email: str):
             # Retrieve user's user_id at index 0
             user_id = user_info[0]
 
-            # Execute the DELETE statement to remove the user
             # Start transaction
+            # Reduce filled_spots in events where the user is registered
+            cursor.execute('''
+                UPDATE events
+                SET filled_spots = filled_spots - 1
+                WHERE event_id IN (
+                    SELECT event_id
+                    FROM event_registrations
+                    WHERE user_id = %s
+                )
+            ''', (user_id,))
+
+            # Reduce filled_spots in communities where the user is registered
+            cursor.execute('''
+                UPDATE communities
+                SET member_count = member_count - 1
+                WHERE group_id IN (
+                    SELECT group_id
+                    FROM community_registrations
+                    WHERE user_id = %s
+                )
+            ''', (user_id,))
+
+            # Execute the DELETE statement to remove the user
 
             # Dependent tables
-            dependent_tables = ['event_registrations', 'community_registrations']
+            dependent_tables = ['event_registrations', 'community_registrations', 'event_waitlists']
             for table in dependent_tables:
                 cursor.execute(f'''
                     DELETE FROM 

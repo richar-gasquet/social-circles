@@ -143,6 +143,7 @@ function AdminDashboard() {
         onHide={() => setAlertModal({ ...alertModal, show: false })}
         title="Alert"
         body={alertModal.message}
+        cancelButtonText="Close" 
       />
     </>
   );
