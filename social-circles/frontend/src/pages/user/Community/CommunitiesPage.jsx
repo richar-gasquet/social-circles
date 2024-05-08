@@ -150,7 +150,7 @@ function CommunitiesPage() {
 
         setSelectedUser(null);
 
-        addRegistrationAlert("success", `User has been successfully removed..`);
+        addRegistrationAlert("success", `User has been successfully removed.`);
       } else {
         addRegistrationAlert(
           "danger",
