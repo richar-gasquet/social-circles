@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useUserContext } from "../../contexts/UserContextHandler";
 import { useEventContext } from "../../contexts/EventsContextHandler";
 import { useAuthContext } from "../../contexts/AuthContextHandler";
+import he from "he";
 import UserHeader from "../../components/headers/UserHeader";
 import AdminHeader from "../../components/headers/AdminHeader";
 import EventCard from "../../components/card-components/EventCard";

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import CardButton from '../card-components/CardButton';
 import Loading from "../../components/shared-components/LoadingSpinner";
+import he from "he";
 import UpdateAnnouncement from './UpdateAnnouncement';
 import DeleteAnnouncement from './DeleteAnnouncement';
 import styles from "../../css/Card.module.css";
@@ -28,14 +29,14 @@ function CarouselComponent(props) {
             <img
               className="d-block w-100"
               src={ann.image_link}
-              alt={ann.announcement_name}
+              alt={he.decode(ann.announcement_name)}
               style={{ objectFit: 'cover', maxHeight: '100%' }}
             />
             <Carousel.Caption style={{ position: 'absolute', top: '40%', left: '50%', 
               transform: 'translate(-50%, -50%)', textAlign: 'center', width: '60%',
               whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-              <h3 style={{ fontSize: '2.5vw' }}>{ann.announcement_name}</h3>
-              <p style={{ fontSize: '1.8vw' }}>{ann.description}</p>
+              <h3 style={{ fontSize: '2.5vw' }}>{he.decode(ann.announcement_name)}</h3>
+              <p style={{ fontSize: '1.8vw' }}>{he.decode(ann.description)}</p>
             </Carousel.Caption>
             <CarouselCaption>
               {/* Check if user is admin to display CRUD buttons */}
@@ -44,15 +45,15 @@ function CarouselComponent(props) {
                   <CardButton
                     className="mr-2"
                     action={(e) => { e.stopPropagation(); setShowEditAnn(true); 
-                      setSelectedAnn({ id: ann.announcement_id, name: ann.announcement_name,
-                        desc: ann.description, img: ann.image_link}); }}
+                      setSelectedAnn({ id: ann.announcement_id, name: he.decode(ann.announcement_name),
+                        desc: he.decode(ann.description), img: ann.image_link}); }}
                     message="Edit Announcement"
                     icon="fas fa-edit"
                   ></CardButton>
                   <CardButton
                     action={(e) => { e.stopPropagation(); setShowDeleteAnn(true);
-                      setSelectedAnn({ id: ann.announcement_id, name: ann.announcement_name,
-                        desc: ann.description, img: ann.image_link}); }}
+                      setSelectedAnn({ id: ann.announcement_id, name: he.decode(ann.announcement_name),
+                        desc: he.decode(ann.description), img: ann.image_link}); }}
                     message="Delete Announcement"
                     icon="fas fa-trash"
                   ></CardButton>
@@ -82,8 +83,8 @@ function CarouselComponent(props) {
           handleClose={(e) => { e.stopPropagation(); setShowEditAnn(false);
             setSelectedAnn({ id: null, name: null, desc: null, img: null }); }}
           announcement_id={selectedAnn.id}
-          announcement_name={selectedAnn.name}
-          description={selectedAnn.desc}
+          announcement_name={he.decode(selectedAnn.name)}
+          description={he.decode(selectedAnn.desc)}
           image_link={selectedAnn.img}
           updateAnnouncements={props.updateAnnouncements}
         />
